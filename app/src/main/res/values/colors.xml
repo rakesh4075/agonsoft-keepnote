@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+<!--    <color name="yellow">#FFE66E</color>-->
+<!--    <color name="lightGreen">#a0ef9a</color>-->
+<!--    <color name="pink">#ffaedf</color>-->
+<!--    <color name="lightPurple">#d7afff</color>-->
+<!--    <color name="skyblue">#9edfff</color>-->
+<!--    <color name="gray">#e0e0e0</color>-->
+<!--    <color name="red">#DB4848</color>-->
+<!--    <color name="blue">#8C9EFF</color>-->
+<!--    <color name="greenlight">#96D162</color>-->
+<!--    <color name="notgreen">#EA80FC</color>-->
+    <color name="white" >#ffffff</color>
+    <color name="tabunsel" >#a5a5a5</color>
+    <color name="subtxtcolor">#4b4b4b</color>
+    <color name="blackgrey">#bfbfbf</color>
+    <color name="palegreen">#98fb98</color>
+    <color name="failurecolor">#ff0000</color>
+    <color name="text_lt_clr">#a5a5a5</color>
+    <color name="light_red">#FFF05A50</color>
+
+
+    <color name="edit_yellow">#FFE66E</color>
+    <color name="edit_lightgreen">#a0ef9a</color>
+    <color name="edit_pink">#ffaedf</color>
+    <color name="edit_pinklove">#d7afff</color>
+    <color name="edit_darkbrown">#ff9966</color>
+    <color name="edit_lightgrey">#e0e0e0</color>
+    <color name="edit_red">#ff8080</color>
+    <color name="edit_darkblue">#8C9EFF</color>
+    <color name="edit_darkgreen">#96D162</color>
+    <color name="edit_white">#ffffff</color>
+    <color name="edit_darkpink">#EA80FC</color>
+    <color name="edit_paalgreen">#66ffcc</color>
+    <color name="edit_skyblue">#9edfff</color>
+    <color name="edit_brown">#ffb380</color>
+    <color name="edit_darkgrey">#bfbfbf</color>
+
+
+
+
+    <color name="lightwindoebackground">#FFF0EEE8</color>
+    <color name="window_background">#00000000</color>
+    <color name="lite_blue">#42a5f5</color>
+    <color name="accestcolor">#FFF05A50</color>
+
+
+
+
+
+        <!-- Default Colors !-->
+
+        <color name="color1">#2062af</color>
+        <color name="color2">#58AEB7</color>
+        <color name="color3">#F4B528</color>
+        <color name="color4">#DD3E48</color>
+        <color name="color5">#BF89AE</color>
+
+        <color name="color6">#5C88BE</color>
+        <color name="color7">#59BC10</color>
+        <color name="color8">#E87034</color>
+        <color name="color9">#f84c44</color>
+        <color name="color10">#8c47fb</color>
+
+        <color name="color11">#51C1EE</color>
+        <color name="color12">#8cc453</color>
+        <color name="color13">#C2987D</color>
+        <color name="color14">#CE7777</color>
+        <color name="color15">#9086BA</color>
+
+    <color name="lightcoloraccent">#FFF05A50</color>
+    <color name="lightprimarydark">#FF524E4A</color>
+    <color name="lightprimary">#FFF8F7F4</color>
+
+</resources>

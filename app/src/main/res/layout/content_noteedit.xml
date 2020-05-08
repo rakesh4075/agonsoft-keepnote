@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/txt_contentll"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.keepnote.NoteDetails"
+    tools:showIn="@layout/activity_note_details">
+
+    <ScrollView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/raksToolbar"
+        android:overScrollMode="never"
+        android:scrollbars="vertical"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true">
+        <RelativeLayout
+            android:id="@+id/edit_content_linearll"
+            android:scrollbars="vertical"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <androidx.recyclerview.widget.RecyclerView
+                android:visibility="gone"
+                android:id="@+id/imagerecyclerview"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+            <com.keepnote.raksEditor.RREEditText
+                android:fontFamily="@font/robotoslabregular"
+                android:inputType="textMultiLine"
+                android:autofillHints="@string/note_hint"
+                android:visibility="visible"
+                android:id="@+id/editNoteContent"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:lineSpacingExtra="@dimen/_1sdp"
+                android:isScrollContainer="true"
+                android:padding="@dimen/_5sdp"
+                android:hint="@string/note_hint"
+                android:textColor="#000000"
+                android:paddingBottom="@dimen/_10sdp"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <com.keepnote.raksEditor.RRE_Toolbar
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingTop="@dimen/_5sdp"
+        android:gravity="center_vertical"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/raksToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/white" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

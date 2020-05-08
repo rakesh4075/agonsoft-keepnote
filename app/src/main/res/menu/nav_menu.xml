@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="General">
+        <menu>
+            <item
+                app:actionViewClass="android.widget.TextView"
+                android:icon="@drawable/ic_event_note"
+                android:id="@+id/notes"
+                android:title="@string/Notes"/>
+            <item
+                android:icon="@drawable/ic_favorite"
+                android:id="@+id/myfav"
+                android:title="@string/my_favourites_txt"/>
+            <item
+                android:icon="@drawable/ic_sync_black"
+                android:id="@+id/syncnote"
+                android:title="@string/sync_note"/>
+        </menu>
+    </item>
+
+    <item
+        android:title="Support">
+        <menu>
+            <item
+                app:actionViewClass="android.widget.TextView"
+                android:icon="@drawable/ic_lock"
+                android:id="@+id/menu_privacy"
+                android:title="Privacy"/>
+            <item
+                android:icon="@drawable/ic_delete"
+                android:id="@+id/trash"
+                app:actionViewClass="android.widget.TextView"
+                android:title="@string/trash_menu"/>
+            <item
+                android:icon="@drawable/ic_backup"
+                android:id="@+id/backup"
+                android:title="@string/export_backup"/>
+            <item
+                android:icon="@drawable/ic_settings"
+                android:id="@+id/menu_settings"
+                android:title="@string/settings"/>
+
+        </menu>
+    </item>
+    <item
+        android:title="@string/logouttxt">
+        android:title="Support">
+        <menu>
+            <item
+                android:icon="@drawable/ic_logout_key"
+                android:id="@+id/logout"
+                android:title="@string/logintxt"/>
+        </menu>
+    </item>
+</menu>

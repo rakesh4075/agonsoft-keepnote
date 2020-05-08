@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/savenote"
+        android:title="@string/save"/>
+    <item android:id="@+id/getnote"
+        android:title="Notes"/>
+    <item android:id="@+id/bolds"
+        android:title="Bold"/>
+    <item android:id="@+id/italics"
+        android:title="Italic"/>
+    <item android:id="@+id/insertimage"
+        android:title="Insert image"/>
+
+</menu>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.keepnote.viewmodel.HomeViewmodel" />
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.keepnote.view.settings.Privacy">
+    <include
+        android:id="@+id/toolbar_privacy"
+        layout="@layout/toolbar"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="visible"
+        android:id="@+id/pattern_ll"
+        android:layout_marginTop="@dimen/_60sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_privacy"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+        <TextView
+            android:id="@+id/privacy_tittle"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:fontFamily="@font/robotoslabregular"
+            android:text="@string/privacy_title_text"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/privacy_action_text"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:fontFamily="@font/robotoslabregular"
+            android:text="Draw unlock pattern"
+            android:layout_margin="@dimen/_5sdp"
+            app:layout_constraintTop_toBottomOf="@id/privacy_tittle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <com.andrognito.patternlockview.PatternLockView
+            android:layout_marginTop="@dimen/_35sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:id="@+id/pattern_lock_view"
+            app:layout_constraintTop_toBottomOf="@id/privacy_action_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:dotNormalSize="@dimen/_10sdp"
+            app:dotSelectedSize="@dimen/_25sdp"
+            app:dotAnimationDuration="150"
+            app:normalStateColor="@color/blackgrey"
+            app:correctStateColor="@color/palegreen"
+            app:wrongStateColor="@color/failurecolor"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_250sdp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="gone"
+        android:id="@+id/privacynotes_ll"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_privacy"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+        <androidx.recyclerview.widget.RecyclerView
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/trash_recycler"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/hello_blank_fragment" />
+        <include
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/err_layout"
+            layout="@layout/error_layout"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="gone"
+        android:id="@+id/secquestion_ll"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_privacy"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+        <TextView
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+           android:layout_marginTop="@dimen/_20sdp"
+            android:id="@+id/security_tittle"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textAlignment="textStart"
+            android:fontFamily="@font/robotoslabregular"
+            android:text="Forget the password can through the security question to reset"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+        <RelativeLayout
+            android:id="@+id/spinner_rl"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            app:layout_constraintTop_toBottomOf="@id/security_tittle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_weight=".28"
+            android:background="@drawable/box_edittext"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/security_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:spinnerMode="dropdown" />
+            <ImageView
+                android:paddingEnd="@dimen/_5sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_drop_down" />
+
+        </RelativeLayout>
+        <RelativeLayout
+
+            android:id="@+id/spinner_answer_ll"
+            android:layout_margin="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            app:layout_constraintTop_toBottomOf="@id/spinner_rl"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:background="@drawable/box_edittext">
+            <EditText
+                android:textColor="@color/subtxtcolor"
+                android:fontFamily="@font/robotoslabregular"
+                android:layout_centerVertical="true"
+                android:inputType="textAutoComplete"
+                android:singleLine="true"
+                android:gravity="center_vertical"
+                android:hint="Input your answer"
+                android:id="@+id/security_answer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_7sdp"
+                android:background="@android:color/transparent" />
+        </RelativeLayout>
+
+
+        <Button
+            android:id="@+id/submit_btn"
+            android:textColor="@color/black"
+            android:fontFamily="@font/robotoslabregular"
+            android:text="Done"
+            android:textAllCaps="false"
+            android:background="@drawable/box_outine"
+            android:layout_margin="@dimen/_20sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

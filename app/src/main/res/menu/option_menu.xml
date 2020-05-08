@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <item
+        android:id="@+id/sortby"
+        android:title="Sort by">
+        <menu>
+            <item
+                android:id="@+id/sort_color"
+                android:title="Color"/>
+            <item
+                android:id="@+id/created_time"
+                android:title="Created time"/>
+            <item
+                android:id="@+id/modified_time"
+                android:title="Modified time"/>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/view_ll"
+        android:title="View as">
+        <menu>
+            <item
+                android:id="@+id/view_list"
+                android:title="List"/>
+            <item
+                android:id="@+id/view_grid"
+                android:title="Grid"/>
+
+        </menu>
+    </item>
+
+</menu>

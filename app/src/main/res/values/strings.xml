@@ -1,0 +1,52 @@
+<resources>
+    <string name="app_name">KeepNote</string>
+    <string name="Notes">Notes</string>
+    <string name="addnote">Add Note</string>
+    <string name="sync_note">Sync Notes</string>
+    <string name="rate_app">Rate App</string>
+    <string name="Share_app">ShareApp</string>
+    <string name="logouttxt">Logout</string>
+    <string name="closes">close</string>
+    <string name="opens">open</string>
+    <string name="settings">Settings</string>
+    <string name="save">Save</string>
+    <string name="my_favourites_txt">My favourites</string>
+    <string name="export_backup">Export &amp; Backup</string>
+    <string name="trash_menu">Trash</string>
+    <string name="backup_data">Backup data</string>
+    <string name="import_data">Import data</string>
+    <string name="backup_before_import">Do you want backup current database before import an old database?</string>
+    <string name="select_file">Select file</string>
+    <string name="backup_empty">Backup file is empty</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="note_hint">Note:</string>
+    <string name="privacy_title_text">Please keep your password in mind</string>
+    <string name="lib_name">PatternLockView</string>
+    <string name="message_pattern_dot_added">Dot added to pattern</string>
+    <string name="message_pattern_started">Pattern drawing started</string>
+    <string name="message_pattern_detected">Pattern drawing completed</string>
+    <string name="message_pattern_cleared">Pattern cleared</string>
+
+
+    <string name="colorpicker_dialog_title">Choose the color</string>
+    <string name="colorpicker_dialog_cancel">CANCEL</string>
+    <string name="colorpicker_dialog_ok">OK</string>
+
+    <string name="tedpermission_setting">Setting</string>
+    <string name="tedpermission_close">Close</string>
+    <string name="tedpermission_confirm">Confirm</string>
+
+    <string name="rationale_title">Permission required</string>
+    <string name="rationale_message">We need permission for Write and Read <b>storage</b></string>
+    <string name="are_link_title">Link</string>
+    <string name="are_link_insert_hint">Insert a link</string>
+    <string name="backup_title">History saved backup data</string>
+    <string name="export_text">Export text</string>
+    <string name="backup_notes">Backup notes</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="logintxt">Login</string>
+
+</resources>
