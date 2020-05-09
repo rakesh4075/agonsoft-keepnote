@@ -1,21 +1,13 @@
 package com.keepnote.view.exportbackup
 
-import android.content.IntentSender
 import android.util.Log
-import android.widget.Toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.TaskCompletionSource
-import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.keepnote.HomeScreen
 import com.keepnote.HomeScreen.Companion.GOOGLE_SIGN_IN
-import com.keepnote.HomeScreen.Companion.REQUEST_CODE_CREATION
-import com.keepnote.HomeScreen.Companion.REQUEST_CODE_OPENING
-import java.io.*
 
 
 class RemoteBackup(activitys:HomeScreen) {
