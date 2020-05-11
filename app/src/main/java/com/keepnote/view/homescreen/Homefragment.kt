@@ -64,6 +64,8 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
                 // mbinding.adView.visibility = View.GONE
                 mbinding.errLayout.root.visibility  = View.VISIBLE
             }else{
+                mbinding.swiperefresh.visibility = View.VISIBLE
+                mbinding.errLayout.root.visibility  = View.GONE
                 noteDBAdapter =
                     NoteListAdapter(nonDeletedNotes, this)
                 val layout = StoreSharedPrefData.INSTANCE.getPref("layout",3,context)

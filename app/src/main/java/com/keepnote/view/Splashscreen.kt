@@ -15,7 +15,7 @@ class Splashscreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splashscreen)
         GlobalScope.launch {
-            delay(2000)
+            delay(1000)
             startActivity(Intent(this@Splashscreen, HomeScreen::class.java))
             finish()
         }

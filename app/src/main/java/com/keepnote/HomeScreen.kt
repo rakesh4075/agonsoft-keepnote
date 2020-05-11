@@ -29,6 +29,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.services.drive.DriveScopes
 import com.google.firebase.firestore.FirebaseFirestore
@@ -124,8 +126,18 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
                 }
 
                 R.id.logout->{
-                    isBackup = false
-                    remoteBackup?.connectToDrive(isBackup)
+                    val menu = mbinding.navMain.menu
+                    val loginMenu = menu.findItem(R.id.logout)
+                    val account = GoogleSignIn.getLastSignedInAccount(this)
+                    if (account==null){
+                        remoteBackup?.connectToDrive(true)
+                    }else{
+                        GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN).revokeAccess()
+                            .addOnCompleteListener {
+                                loginMenu.title = "Login"
+                                Constants.showToast("Logged out",this)
+                            }
+                    }
 
                 }
                 R.id.syncnote->{
@@ -203,7 +215,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
 
 
-    private fun initFragment(For:Int){
+     fun initFragment(For:Int){
         var fragment: Fragment? = null
         var fragmentClass: Class<*>?=null
         when(For){
@@ -426,15 +438,6 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
             .addOnSuccessListener { googlesigninaccount->
                 val loginMenu = mbinding.navMain.menu.findItem(R.id.logout)
                 loginMenu.title="Logout"
-
-               // credentials?.selectedAccount = googlesigninaccount.account
-                val name = googlesigninaccount.displayName
-                Log.d("@@@@@@2",name)
-
-                val credential = GoogleAccountCredential.usingOAuth2(this,Collections.singleton(DriveScopes.DRIVE_FILE))
-                credential.selectedAccount = googlesigninaccount.account
-
-
             }
     }
 

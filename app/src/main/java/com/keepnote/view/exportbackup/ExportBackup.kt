@@ -1,7 +1,9 @@
 package com.keepnote.view.exportbackup
 
 import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
@@ -19,10 +21,14 @@ import com.keepnote.roomdatabasebackupandrestore.Restore
 import com.keepnote.tedpermission.TedPermission
 import com.keepnote.utils.Constants
 import com.raks.roomdatabase.NoteDatabase
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.log
 
 class ExportBackup : AppCompatActivity() {
 
@@ -48,11 +54,11 @@ class ExportBackup : AppCompatActivity() {
 
 
         mbinding.exportbackup.setOnClickListener {
-            backup() }
+            backup(this) }
 
 
         mbinding.exporttxt.setOnClickListener {
-            restore()}
+            restore(0,this)}
 
         mbinding.delete.setOnClickListener {
             val builder: AlertDialog.Builder =
@@ -113,38 +119,52 @@ class ExportBackup : AppCompatActivity() {
 
     }
 
-    private fun restore() {
+     fun restore(restoreFor:Int,activity: Activity) {
+         var backupFilePath = ""
+         if (restoreFor==0){
+             backupFilePath = "/storage/emulated/0/Android/data/com.keepnote/files/Documents/note_2020_05_01__15_32_31"
+         } else backupFilePath = "/storage/emulated/0/Android/data/com.keepnote/files/Documents/drive_db"
+
         Restore.Init()
             .database(NoteDatabase.invoke(this))
 //            .backupFilePath("/storage/emulated/0/Android/data/com.keepnote/files/Documents/file.db")
-            .backupFilePath("/storage/emulated/0/Android/data/com.keepnote/files/Documents/note_2020_05_01__15_32_31")
+            .backupFilePath(backupFilePath)
             .secretKey("123")
             .onWorkFinishListener {
-                    success, message -> Constants.showToast("$message",this@ExportBackup)
-                startActivity(Intent(this,HomeScreen::class.java))
-                finish()
+                    success, message -> Constants.showToast("$message",activity)
+                if (restoreFor==0){
+                    startActivity(Intent(activity,HomeScreen::class.java))
+                    finish()
+                }else{
+
+                        Log.d("@@@@","frgament")
+                        (activity as HomeScreen).initFragment(1)
+
+
+                }
+
             }
             .execute()
 
     }
 
-    private fun backup() {
-        if (TedPermission.isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            createFolder()
+     fun backup(context: Context) {
+        if (TedPermission.isGranted(context, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            createFolder(context)
             val formatTime = SimpleDateFormat("yyyy_MM_dd__HH_mm_ss")
             backupDBPath = "note" + "_" + formatTime.format(Date())
             Log.d("@@@@@dbpath",backupDBPath)
             Backup.Init()
-                .database(NoteDatabase.invoke(this))
+                .database(NoteDatabase.invoke(context))
                 .path("/storage/emulated/0/Android/data/com.keepnote/files/Documents")
                 .fileName(backupDBPath)
                 .secretKey("123")
                 .onWorkFinishListener { success, message ->
                     if (success){
                         populateDB()
-                        Constants.showToast("Backed up successfully", this@ExportBackup)
+                        Constants.showToast("Backed up successfully", context)
                     }else
-                    Constants.showToast("$message", this@ExportBackup)
+                    Constants.showToast("$message", context)
                 }
                 .execute()
         }
@@ -161,8 +181,8 @@ class ExportBackup : AppCompatActivity() {
 
 
     // create folder if it not exist
-    private fun createFolder() {
-            val sd = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString())
+    private fun createFolder(context: Context) {
+            val sd = File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString())
             if (!sd.exists()) {
                 sd.mkdir()
                 Log.d("@@@@","folder created")
