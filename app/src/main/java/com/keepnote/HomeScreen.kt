@@ -1,6 +1,7 @@
 package com.keepnote
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
@@ -141,8 +142,12 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
                 }
                 R.id.syncnote->{
-                    isBackup = true
-                    remoteBackup?.connectToDrive(isBackup)
+                    val showAlert = StoreSharedPrefData.INSTANCE.getPref("drivealert",false,this) as Boolean
+                    if (!showAlert) showSyncAlert() else{
+                        isBackup = true
+                        remoteBackup?.connectToDrive(isBackup)
+                    }
+
                 }
 
             }
@@ -171,6 +176,21 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
 
 
+    }
+
+    private fun showSyncAlert() {
+        val builder: AlertDialog.Builder =
+            AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+        builder.setTitle("Synchronization").setIcon(null)
+            .setMessage("Online synchronization will allow you to access notes from multiple devices.\nAll your notes wiil be stored online on Google Drive.")
+        builder.setPositiveButton(R.string.no) { dialog, which ->
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("Continue") { dialog, which ->
+            isBackup = true
+            remoteBackup?.connectToDrive(isBackup)
+        }
+        builder.show()
     }
 
 
@@ -416,6 +436,20 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
         when(requestCode){
             GOOGLE_SIGN_IN ->{
                 if (resultCode == Activity.RESULT_OK){
+                    val account = GoogleSignIn.getLastSignedInAccount(this)
+                    val credential = GoogleAccountCredential.usingOAuth2(this, mutableListOf(DriveScopes.DRIVE_FILE,DriveScopes.DRIVE_APPDATA))
+                    credential.selectedAccount = account?.account
+                    remoteBackup?.connectToDrive(isBackup)
+                    if (data!=null){
+                        handleSignInIntent(data)
+                    }
+                }
+            }
+            200->{
+                if (resultCode == Activity.RESULT_OK){
+                    val account = GoogleSignIn.getLastSignedInAccount(this)
+                    val credential = GoogleAccountCredential.usingOAuth2(this, mutableListOf(DriveScopes.DRIVE_FILE,DriveScopes.DRIVE_APPDATA))
+                    credential.selectedAccount = account?.account
                     remoteBackup?.connectToDrive(isBackup)
                     if (data!=null){
                         handleSignInIntent(data)
@@ -438,6 +472,12 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
             .addOnSuccessListener { googlesigninaccount->
                 val loginMenu = mbinding.navMain.menu.findItem(R.id.logout)
                 loginMenu.title="Logout"
+            }
+            .addOnCanceledListener {
+                Log.d("@@@@","cancelled")
+            }
+            .addOnFailureListener {e->
+                Log.d("@@@@exception",e.message)
             }
     }
 

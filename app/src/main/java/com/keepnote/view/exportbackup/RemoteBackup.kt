@@ -17,13 +17,13 @@ import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
 import com.keepnote.HomeScreen
 import com.keepnote.HomeScreen.Companion.GOOGLE_SIGN_IN
+import com.keepnote.model.preferences.StoreSharedPrefData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
-import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -43,10 +43,16 @@ class RemoteBackup(activitys:HomeScreen) {
             val account = GoogleSignIn.getLastSignedInAccount(activity)
             if (account == null) {
                 signIn()
-            } else {
+            }else if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(activity),
+                Scope(DriveScopes.DRIVE_FILE), Scope(DriveScopes.DRIVE_APPDATA))){
+                signIn()
+            }else {
                 //Initialize the drive api
                 if (activity!=null){
-                    if (backup) startDriveBackup(account) else startDriveRestore()
+                    if (backup) {
+                        StoreSharedPrefData.INSTANCE.savePrefValue("drivealert",true,activity!!)
+                        startDriveBackup(account)
+                    } else startDriveRestore()
                 }
 
             }
@@ -57,39 +63,44 @@ class RemoteBackup(activitys:HomeScreen) {
     }
 
     private fun startDriveBackup(account: GoogleSignInAccount) {
-        val credential = GoogleAccountCredential.usingOAuth2(activity, mutableListOf(DriveScopes.DRIVE_FILE,DriveScopes.DRIVE_APPDATA))
-        credential.selectedAccount = account.account
-        val driveService= Drive.Builder(
-            AndroidHttp.newCompatibleTransport(),
-            GsonFactory(),credential)
-            .setApplicationName("KeepNote")
-            .build()
-        uiScope.launch {
-            val fileid = listFile(driveService)
-            if (fileid!=null && fileid.isNotEmpty()){
-               if (!midnight){
-                   val retriveFile = uiScope.async {
-                       retriveFile(driveService,fileid[fileid.size-1])
-                   }.await()
-                   activity?.let { ExportBackup().restore(1, it) }
-               }else{
-                   for (i in 0 until fileid.size){
-                       deleteFile(driveService,fileId = fileid[i])
-                       if (fileid.size==1) createFile(driveService)
-                       val fileid = listFile(driveService)
-                       if (fileid != null) {
-                           val retriveFile = uiScope.async {
-                               retriveFile(driveService,fileid[fileid.size-1])
-                           }.await()
-                           activity?.let { ExportBackup().restore(1, it) }
+        try {
+            val credential = GoogleAccountCredential.usingOAuth2(activity, mutableListOf(DriveScopes.DRIVE_FILE,DriveScopes.DRIVE_APPDATA))
+            credential.selectedAccount = account.account
+            val driveService= Drive.Builder(
+                AndroidHttp.newCompatibleTransport(),
+                GsonFactory(),credential)
+                .setApplicationName("KeepNote")
+                .build()
+            uiScope.launch {
+                val fileid = listFile(driveService)
+                if (fileid!=null && fileid.isNotEmpty()){
+                    if (!midnight){
+                        val retriveFile = uiScope.async {
+                            retriveFile(driveService,fileid[fileid.size-1])
+                        }.await()
+                        activity?.let { ExportBackup().restore(1, it) }
+                    }else{
+                        for (i in 0 until fileid.size){
+                            deleteFile(driveService,fileId = fileid[i])
+                            if (fileid.size==1) createFile(driveService)
+                            val fileid = listFile(driveService)
+                            if (fileid != null) {
+                                val retriveFile = uiScope.async {
+                                    retriveFile(driveService,fileid[fileid.size-1])
+                                }.await()
+                                activity?.let { ExportBackup().restore(1, it) }
 
-                       }
-                   }
-               }
+                            }
+                        }
+                    }
 
-            }else{
-               createFile(driveService)
+                }else{
+                    createFile(driveService)
+                }
             }
+
+        }catch (e:Exception){
+            Log.d("@@@@@",e.printStackTrace().toString())
         }
 
         }

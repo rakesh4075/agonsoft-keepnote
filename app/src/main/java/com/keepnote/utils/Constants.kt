@@ -6,6 +6,7 @@ import com.keepnote.R
 import com.keepnote.tedpermission.PermissionListener
 import com.keepnote.tedpermission.TedPermission
 import java.util.*
+import java.util.jar.Manifest
 import kotlin.collections.ArrayList
 
 class Constants {
@@ -77,7 +78,7 @@ class Constants {
                 .setDeniedMessage(
                     "If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setGotoSettingButtonText("Settings")
-                .setPermissions(android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .setPermissions(android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.GET_ACCOUNTS)
                 .setGotoSettingButton(true)
                 .check()
         }
