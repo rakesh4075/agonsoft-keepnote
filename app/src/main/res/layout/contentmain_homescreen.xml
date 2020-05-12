@@ -60,5 +60,16 @@
         ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
         android:layout_height="wrap_content"/>
 
+    <ProgressBar
+        android:visibility="gone"
+        android:layout_margin="@dimen/_10sdp"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:id="@+id/process_progress"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

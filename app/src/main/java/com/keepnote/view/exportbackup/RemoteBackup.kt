@@ -28,7 +28,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class RemoteBackup(activitys:HomeScreen) {
+class RemoteBackup(activitys:HomeScreen,val listner:DriveUtil?) {
     private val TAG = "Google Drive Activity"
     val uiScope = CoroutineScope(Dispatchers.Default)
     var activity: HomeScreen? = null
@@ -37,6 +37,7 @@ class RemoteBackup(activitys:HomeScreen) {
     init {
         activity = activitys
     }
+
 
 
     fun connectToDrive(backup: Boolean) {
@@ -75,9 +76,12 @@ class RemoteBackup(activitys:HomeScreen) {
                 val fileid = listFile(driveService)
                 if (fileid!=null && fileid.isNotEmpty()){
                     if (!midnight){
+                        listner?.showProgress(30)
                         val retriveFile = uiScope.async {
                             retriveFile(driveService,fileid[fileid.size-1])
+
                         }.await()
+                        listner?.showProgress(100)
                         activity?.let { ExportBackup().restore(1, it) }
                     }else{
                         for (i in 0 until fileid.size){
@@ -144,6 +148,7 @@ class RemoteBackup(activitys:HomeScreen) {
 
         try {
             outputStream.writeTo(fileOutputStream)
+            listner?.showProgress(70)
         }catch (E:Exception){
             Log.d("@@@",E.message)
         }finally {
@@ -188,8 +193,10 @@ class RemoteBackup(activitys:HomeScreen) {
             java.io.File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString())
         if (!sd.exists()) {
             sd.mkdir()
+            listner?.showProgress(45)
             Log.d("@@@@","folder created")
         } else {
+            listner?.showProgress(45)
             Log.d("@@@@","folder exists")
         }
 

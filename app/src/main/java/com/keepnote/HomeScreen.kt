@@ -2,16 +2,21 @@ package com.keepnote
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -27,11 +32,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.material.snackbar.Snackbar
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.services.drive.DriveScopes
 import com.google.firebase.firestore.FirebaseFirestore
@@ -39,6 +45,7 @@ import com.keepnote.databinding.HomescreenBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
+import com.keepnote.view.exportbackup.DriveUtil
 import com.keepnote.view.exportbackup.ExportBackup
 import com.keepnote.view.exportbackup.RemoteBackup
 import com.keepnote.view.homescreen.Homefragment
@@ -47,16 +54,14 @@ import com.keepnote.view.trash.TrashFragment
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
 import com.raks.roomdatabase.NoteDatabase
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.android.synthetic.main.nav_header.view.*
+import kotlinx.coroutines.*
 import java.io.File
-import java.util.*
-import kotlin.collections.ArrayList
 
 class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
 
+    private lateinit var dialog: Dialog
     private var mmenu: Menu?=null
     private  var noteDBAdapter: NoteListAdapter?=null
     private lateinit var toolbar: Toolbar
@@ -90,8 +95,25 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
         toolbar = mbinding.mainContent.toolbarLl.toolbar
 
         initLayout()
+        dialog= Dialog(this)
 
-        remoteBackup = RemoteBackup(this)
+        remoteBackup = RemoteBackup(this,object :DriveUtil{
+            @RequiresApi(Build.VERSION_CODES.N)
+            override fun showProgress(progress: Int) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    Log.d("@@@@progress",progress.toString())
+                    if (progress==100)
+                    showSyncDialog(progress,false)
+                    else{
+                        showSyncDialog(progress,true)
+
+                    }
+
+                }
+
+                }
+
+        })
         if (StoreSharedPrefData.INSTANCE.getPref("firsttimepermmision",true,this) as Boolean){
             Constants.verifyPermission(this)
             StoreSharedPrefData.INSTANCE.savePrefValue("firsttimepermmision",false,this)
@@ -136,6 +158,12 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
                         GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN).revokeAccess()
                             .addOnCompleteListener {
                                 loginMenu.title = "Login"
+                                mbinding.navMain.getHeaderView(0).mem_name.textSize = 24f
+                                mbinding.navMain.getHeaderView(0).mem_name.text = "KeepNote"
+                                mbinding.navMain.getHeaderView(0).mem_email.visibility= View.VISIBLE
+                                mbinding.navMain.getHeaderView(0).mem_email.text=""
+                                mbinding.navMain.getHeaderView(0).mem_image.visibility= View.VISIBLE
+                                StoreSharedPrefData.INSTANCE.savePrefValue("memPhoto","",this)
                                 Constants.showToast("Logged out",this)
                             }
                     }
@@ -162,6 +190,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
             true
         }
 
+
         mbinding.mainContent.swiperefresh.setOnRefreshListener {
             GlobalScope.launch {
                 delay(1000L)
@@ -178,6 +207,9 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
     }
 
+
+    
+
     private fun showSyncAlert() {
         val builder: AlertDialog.Builder =
             AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
@@ -193,6 +225,21 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
         builder.show()
     }
 
+
+    private fun showSyncDialog(progress:Int,show:Boolean){
+        dialog.setContentView(R.layout.sync_dialog)
+        dialog.setCanceledOnTouchOutside(false)
+        val syncProgress = dialog.findViewById<ProgressBar>(R.id.syncprogress)
+        val syncText = dialog.findViewById<TextView>(R.id.progress_txt)
+        syncProgress.progress = progress
+        syncText.text = "${progress} %"
+        if (show) {
+            dialog.show()
+        } else {
+            dialog.dismiss()
+        }
+
+    }
 
     private fun converthtmlTopdf() {
         val folderSD: String? =
@@ -346,8 +393,9 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
                         lockedNotes.add(notes[i])
                 }
                 notesCount.text = nonDeletedNotes.size.toString()
-                trasCount.text = ((notes.size - nonDeletedNotes.size).toString())
-                privacyCount.text = lockedNotes.size.toString()
+                val trashcount = notes.size - nonDeletedNotes.size
+                if (trashcount==0) trasCount.text = "" else trasCount.text =trashcount.toString()
+                if (lockedNotes.size==0) privacyCount.text="" else privacyCount.text = lockedNotes.size.toString()
             }
 
         })
@@ -472,6 +520,19 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
             .addOnSuccessListener { googlesigninaccount->
                 val loginMenu = mbinding.navMain.menu.findItem(R.id.logout)
                 loginMenu.title="Logout"
+                val memName= googlesigninaccount.displayName
+                val memEmail= googlesigninaccount.email
+                val memPhoto = googlesigninaccount.photoUrl.toString()
+
+                StoreSharedPrefData.INSTANCE.savePrefValue("memName",memName,this)
+                StoreSharedPrefData.INSTANCE.savePrefValue("memEmail",memEmail,this)
+                StoreSharedPrefData.INSTANCE.savePrefValue("memPhoto",memPhoto,this)
+
+                mbinding.navMain.getHeaderView(0).mem_name.text = memName
+                mbinding.navMain.getHeaderView(0).mem_email.text = memEmail
+                Glide.with(this)
+                    .load(memPhoto)
+                    .into(mbinding.navMain.getHeaderView(0).mem_image)
             }
             .addOnCanceledListener {
                 Log.d("@@@@","cancelled")
@@ -489,8 +550,24 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
         val loginMenu = menu.findItem(R.id.logout)
         if (account!=null) {
             loginMenu.title="Logout"
-        }else
+            mbinding.navMain.getHeaderView(0).mem_email.visibility= View.VISIBLE
+            mbinding.navMain.getHeaderView(0).mem_email.setPadding(0,0,0,10)
+            mbinding.navMain.getHeaderView(0).mem_name.text = StoreSharedPrefData.INSTANCE.getPref("memName","",this) as String
+            mbinding.navMain.getHeaderView(0).mem_email.text = StoreSharedPrefData.INSTANCE.getPref("memEmail","",this) as String
+            Glide.with(this)
+                .load(StoreSharedPrefData.INSTANCE.getPref("memPhoto","",this) as String)
+                .error(R.drawable.note_logo)
+                .into(mbinding.navMain.getHeaderView(0).mem_image)
+        }else{
             loginMenu.title="Login"
+            mbinding.navMain.getHeaderView(0).mem_name.textSize = 24f
+            mbinding.navMain.getHeaderView(0).mem_name.text = "KeepNote"
+            mbinding.navMain.getHeaderView(0).mem_email.visibility= View.VISIBLE
+            mbinding.navMain.getHeaderView(0).mem_email.text=""
+            mbinding.navMain.getHeaderView(0).mem_image.visibility= View.VISIBLE
+
+        }
+
     }
 
 

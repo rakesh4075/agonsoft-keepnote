@@ -41,17 +41,24 @@
                 android:icon="@drawable/ic_settings"
                 android:id="@+id/menu_settings"
                 android:title="@string/settings"/>
+            <item
+                app:showAsAction="never"
+                android:icon="@drawable/ic_logout_key"
+                android:id="@+id/logout"
+                android:title="@string/logintxt"/>
 
         </menu>
     </item>
-    <item
+   <!-- <item
+
         android:title="@string/logouttxt">
         android:title="Support">
         <menu>
             <item
+                app:showAsAction="never"
                 android:icon="@drawable/ic_logout_key"
                 android:id="@+id/logout"
                 android:title="@string/logintxt"/>
         </menu>
-    </item>
+    </item>-->
 </menu>
