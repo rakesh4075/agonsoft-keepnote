@@ -7,13 +7,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:background="@color/white"
+        android:background="?attr/toolbarbg"
         android:theme="@style/ActionBarTheme.Light"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
         <ImageView
+            android:backgroundTintMode="?attr/icontintcolor"
             android:layout_marginEnd="@dimen/_10sdp"
             android:backgroundTint="@color/black"
             android:id="@+id/toolbar_search"
@@ -23,6 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <ImageView
+            android:backgroundTintMode="?attr/icontintcolor"
             android:layout_marginEnd="@dimen/_10sdp"
             android:visibility="gone"
             android:id="@+id/toolbar_editicon"
@@ -42,7 +44,7 @@
             android:backgroundTint="@android:color/transparent"
             android:fontFamily="@font/robotoslabregular"
             android:hint="@android:string/untitled"
-            android:textColor="@color/black"
+            android:textColor="?attr/txttitle"
             />
     </androidx.appcompat.widget.Toolbar>
     <View
@@ -53,6 +55,6 @@
         android:id="@+id/vw_1"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:background="@color/tabunsel"/>
+        android:background="?attr/icontintcolor"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

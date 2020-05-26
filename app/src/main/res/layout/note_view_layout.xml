@@ -29,7 +29,18 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
+            <ToggleButton
+                app:layout_constraintBottom_toTopOf="@id/content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textOff=""
+                android:layout_margin="@dimen/_5sdp"
+                android:textOn=""
+                android:layout_marginBottom="0dp"
+                android:visibility="gone"
+                android:id="@+id/fav_toogle"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"/>
             <TextView
                 android:id="@+id/content"
                 android:layout_width="0dp"
@@ -39,6 +50,8 @@
                 android:textAlignment="viewStart"
                 android:textColor="#000"
                 android:textSize="15sp"
+                android:paddingTop="0dp"
+                android:layout_marginTop="0dp"
                 android:textStyle="normal|italic"
                 app:layout_constraintBottom_toTopOf="@+id/cardView"
                 app:layout_constraintEnd_toEndOf="parent"

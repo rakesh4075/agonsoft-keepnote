@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -33,8 +34,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import com.keepnote.colorpicker.ColorPicker
-import com.keepnote.R
 import com.keepnote.databinding.ActivityEditNoteBinding
+import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.notesDB.NoteViewmodel
 import com.keepnote.notesDB.NoteViewmodelFactory
 import com.keepnote.notesDB.Notes
@@ -44,6 +45,7 @@ import com.raks.roomdatabase.NoteDatabase
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
+import kotlin.math.log
 
 
 class EditNote : AppCompatActivity() {
@@ -52,7 +54,6 @@ class EditNote : AppCompatActivity() {
     private val GALLERY_REQUEST_IMAGE: Int = 1
     private var notecolor: Int = 0
     private lateinit var viewmodel: NoteViewmodel
-    private lateinit var datasource: NotesDao
     private var title:String?=null
     private  var content:String?=null
     private var colorcode:Int?=null
@@ -61,17 +62,26 @@ class EditNote : AppCompatActivity() {
     lateinit var fstore:FirebaseFirestore
     private var noteId:Long?=null
     private var tempContent=""
+    private var isFavourite=0
     private var note:Notes?=null
     private var addImageRecyclerview: AddImageRecyclerview?=null
     private var imageUri:ArrayList<Bitmap?>?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,this))as Boolean)
+            setTheme(R.style.DarkTheme)
+        else
+            setTheme(R.style.LightTheme)
+
         binding = DataBindingUtil.setContentView(this,
             R.layout.activity_edit_note
         )
 
+        binding.toolbar.overflowIcon = getDrawable(R.drawable.ic_nav_menu)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
         fstore = FirebaseFirestore.getInstance()
 
         val application = requireNotNull(this).application
@@ -92,7 +102,6 @@ class EditNote : AppCompatActivity() {
                 intent ->
             title = intent.getStringExtra("title")
             content = intent.getStringExtra("content")
-            colorcode = intent.getIntExtra("colorcode",0)
             fromPage = intent.getIntExtra("from",0)
             noteId = intent.getLongExtra("noteid",5)
         }
@@ -104,33 +113,44 @@ class EditNote : AppCompatActivity() {
         displayWidth = displayMetrics.widthPixels
 
 
+        binding.favToogle.isChecked = false
+        binding.favToogle.background = ContextCompat.getDrawable(this,R.drawable.ic_favorite)
+        binding.favToogle.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked){
+                isFavourite =1
+                binding.favToogle.background = ContextCompat.getDrawable(this,R.drawable.ic_favorite_checked)
+            }else{
+                isFavourite = 0
+                binding.favToogle.background = ContextCompat.getDrawable(this,R.drawable.ic_favorite)
+            }
+
+        }
+
+
         if (fromPage!=null && fromPage==0){
             if (noteId!=null) {
                viewmodel.getNotebyId(noteId)
                 viewmodel.note.observe(this, Observer {
                    note = it
                     if (note!=null) {
+                        binding.favToogle.isChecked = note?.isFavourite==1
                         binding.editNoteTitle.setText(note?.title)
                         binding.noteContenteditll.editNoteContent.setText(Html.fromHtml(note?.content))
-                        val colorcode = note?.notecolor
+                        colorcode = note?.notecolor
                         if ((colorcode.toString().subSequence(0, 1) as String) == "-") {
-                            binding.noteContenteditll.editNoteContent.setBackgroundColor(colorcode!!)
-                            binding.noteContenteditll.txtContentll.setBackgroundColor(colorcode)
+                            binding.noteContenteditll.editNoteContent.backgroundTintList = ColorStateList.valueOf(colorcode!!)
+                            binding.noteContenteditll.txtContentll.backgroundTintList = ColorStateList.valueOf(colorcode!!)
                         } else {
-                            binding.noteContenteditll.editNoteContent.setBackgroundColor(
-                                ContextCompat.getColor(this, colorcode!!)
-                            )
-                            binding.noteContenteditll.txtContentll.setBackgroundColor(
-                                ContextCompat.getColor(this, colorcode)
-                            )
+                            binding.noteContenteditll.editNoteContent.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this,colorcode!!))
+                            binding.noteContenteditll.txtContentll.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this,colorcode!!))
                         }
                     }
                 })
 
             }
         }else{
-           // binding.noteContenteditll.editNoteContent.setBackgroundColor(ContextCompat.getColor(this,R.color.blackgrey))
-           // binding.noteContenteditll.txtContentll.setBackgroundColor(ContextCompat.getColor(this,R.color.blackgrey))
+//            binding.noteContenteditll.editNoteContent.setBackgroundColor(ContextCompat.getColor(this,R.color.blackgrey))
+//            binding.noteContenteditll.txtContentll.setBackgroundColor(ContextCompat.getColor(this,R.color.blackgrey))
         }
 
         notecolor = Constants.getRandomColor()
@@ -143,52 +163,20 @@ class EditNote : AppCompatActivity() {
         binding.noteContenteditll.editNoteContent.setToolbar(binding.noteContenteditll.raksToolbar)
     }
 
-    private fun updateNote(title:String,content:String) {
-        viewmodel.updateNote(noteId,title,content,colorcode)
+    private fun updateNote(title:String,content:String,isFavourite:Int) {
+        viewmodel.updateNote(noteId,title,content,colorcode,isFavourite = isFavourite)
         Constants.showToast("Note updated",this)
     }
-
-
-    private fun addImageInEditText(drawable: Bitmap?) {
-       // drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-        var selectionCursorPos: Int = binding.noteContenteditll.editNoteContent.selectionStart
-        binding.noteContenteditll.editNoteContent.text?.insert(selectionCursorPos, ".")
-        selectionCursorPos = binding.noteContenteditll.editNoteContent.selectionStart
-        val builder = SpannableStringBuilder(binding.noteContenteditll.editNoteContent.text)
-        val startPos = selectionCursorPos - ".".length
-        builder.setSpan(
-            drawable?.let { ImageSpan(it) },
-            startPos,
-            selectionCursorPos,
-            Spannable.SPAN_INCLUSIVE_INCLUSIVE
-        )
-        binding.noteContenteditll.editNoteContent.text = builder
-        binding.noteContenteditll.editNoteContent.setSelection(selectionCursorPos)
-
-        val html = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.toHtml(SpannableString(binding.noteContenteditll.editNoteContent.text),Html.FROM_HTML_MODE_COMPACT)
-        } else {
-            TODO("VERSION.SDK_INT < N")
-        }
-
-        //val spans = builder.getSpans(0,builder.length,ImageSpan::class.java)
-        Log.d("@@@@@@",html)
-
-    }
-
-
-
-
-
 
 
     private fun colorImageBox() {
         val coloPicker = ColorPicker(this)
         coloPicker.setOnFastChooseColorListener(object :ColorPicker.OnFastChooseColorListener{
             override fun setOnFastChooseColorListener(position: Int, color: Int) {
-                binding.noteContenteditll.editNoteContent.setBackgroundColor(color)
-                binding.noteContenteditll.txtContentll.setBackgroundColor(color)
+                binding.noteContenteditll.editNoteContent.backgroundTintList = ColorStateList.valueOf(color)
+                binding.noteContenteditll.txtContentll.backgroundTintList = ColorStateList.valueOf(color)
                 notecolor = color
+                colorcode = color
             }
 
             override fun onCancel() {
@@ -225,36 +213,15 @@ class EditNote : AppCompatActivity() {
               saveNote()
             }
 
-            R.id.getnote ->{
-
-            }
-
-            R.id.bolds ->{
+            R.id.addfav ->{
 
             }
 
 
-            R.id.insertimage ->{
-                getImageFromAlbum()
-            }
 
         }
         return super.onOptionsItemSelected(item)
     }
-
-    private fun getImageFromAlbum() {
-        val photoPickerIntent = Intent(Intent.ACTION_PICK)
-        photoPickerIntent.type = "image/*"
-        startActivityForResult(photoPickerIntent, GALLERY_REQUEST_IMAGE)
-    }
-
-    private fun getNote() {
-        viewmodel.getallNotes()
-        viewmodel.allNotes.observe(this, Observer {
-            Log.d("@@@@2",it.toString())
-        })
-    }
-
 
     private fun saveNote() {
         binding.noteSaveProgress.visibility = View.VISIBLE
@@ -266,37 +233,13 @@ class EditNote : AppCompatActivity() {
             if (title.isEmpty() && content.equals("<html><body></body></html>")){
                 Constants.showToast("Required field is empty",this)
             }else{
-                /*val docref = fstore.collection("notes").document()
-                val note = HashMap<String,Any>()
-                note.put("title",title)
-                note.put("content",content)
-
-                docref.set(note).addOnSuccessListener {
-                    binding.noteSaveProgress.visibility = View.GONE
-                    Constants.showToast("Note saved",this)
-                    finish()
-                }
-                    .addOnFailureListener {execption->
-                        binding.noteSaveProgress.visibility = View.GONE
-                        Constants.showToast(execption.message.toString(),this)
-                        return@addOnFailureListener
-                    }*/
 
                 if (fromPage==0) {
-                    if (tempContent!="")
-                        updateNote(title, tempContent)
-                    else
-                        updateNote(title,content)
+                    updateNote(title,content,isFavourite)
                 } else {
                     try {
-                        if (tempContent!="")
-                            viewmodel.insertNote(Notes(0,title, tempContent,notecolor))
-                        else{
-                            viewmodel.insertNote(Notes(0,title, content,notecolor))
+                        viewmodel.insertNote(Notes(0,title, content,notecolor,isFavourite = isFavourite))
                             finish()
-                        }
-
-
 
                     }catch (e:Exception){
 

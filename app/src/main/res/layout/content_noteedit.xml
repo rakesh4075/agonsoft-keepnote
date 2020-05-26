@@ -3,6 +3,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/txt_contentll"
     android:orientation="vertical"
+    android:backgroundTint="?attr/bodybg"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -34,6 +35,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"/>
             <com.keepnote.raksEditor.RREEditText
+                android:backgroundTint="?attr/bodybg"
                 android:fontFamily="@font/robotoslabregular"
                 android:inputType="textMultiLine"
                 android:autofillHints="@string/note_hint"
@@ -45,7 +47,7 @@
                 android:isScrollContainer="true"
                 android:padding="@dimen/_5sdp"
                 android:hint="@string/note_hint"
-                android:textColor="#000000"
+                android:textColor="?attr/txtcontent"
                 android:paddingBottom="@dimen/_10sdp"
                 android:textSize="16sp" />
 
@@ -53,6 +55,7 @@
     </ScrollView>
 
     <com.keepnote.raksEditor.RRE_Toolbar
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +65,7 @@
         android:id="@+id/raksToolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:background="@color/white" />
+        android:background="?attr/toolbarbg" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

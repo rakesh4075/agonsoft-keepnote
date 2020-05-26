@@ -62,12 +62,12 @@ class NoteViewmodel(val database: NotesDao, application: Application):AndroidVie
         }
     }
 
-    fun updateNote(noteId:Long?,title:String?,content:String?,notecolor:Int?){
+    fun updateNote(noteId:Long?,title:String?,content:String?,notecolor:Int?,isFavourite:Int){
         uiScope.launch {
             withContext(Dispatchers.IO){
                 if (noteId!=null){
-                  if (title!=null && content!=null && notecolor!=null){
-                      database.updateNoteById(noteId, title, content,notecolor,System.currentTimeMillis())
+                  if (title!=null && content!=null && notecolor!=null && isFavourite!=null){
+                      database.updateNoteById(noteId,isFavourite, title, content,notecolor,System.currentTimeMillis())
                   }
                 }
 

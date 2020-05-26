@@ -18,6 +18,7 @@
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <androidx.appcompat.widget.Toolbar
+                android:background="?attr/toolbarbg"
                 android:id="@+id/toolbar"
                 android:theme="@style/ActionBarTheme.Light"
                 android:layout_width="match_parent"
@@ -37,14 +38,26 @@
                     android:fontFamily="@font/robotoslabregular"
                     android:hint="@android:string/untitled"
                     android:inputType="textAutoCorrect"
-                    android:textColor="@color/black"
-                    app:layout_constraintEnd_toStartOf="@id/image_box"
+                    android:textColor="?attr/txttitle"
+                    app:layout_constraintEnd_toStartOf="@id/fav_toogle"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:textColorHint="@color/black"
+                    android:textColorHint="?attr/txttitle"
                     />
+                    <ToggleButton
+                        app:layout_constraintEnd_toStartOf="@id/image_box"
+                        app:layout_constraintTop_toTopOf="@id/image_box"
+                        app:layout_constraintBottom_toBottomOf="@id/image_box"
+                        android:textOff=""
+                        android:layout_margin="@dimen/_10sdp"
+                        android:textOn=""
+                        android:id="@+id/fav_toogle"
+                        android:layout_width="@dimen/_25sdp"
+                        android:layout_height="@dimen/_25sdp"/>
                     <ImageView
                         android:id="@+id/image_box"
                         android:layout_margin="@dimen/_5sdp"
+                        android:layout_marginEnd="0dp"
+
                         android:src="@drawable/ic_color_lens"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"

@@ -18,21 +18,17 @@ import com.google.api.services.drive.model.File
 import com.keepnote.HomeScreen
 import com.keepnote.HomeScreen.Companion.GOOGLE_SIGN_IN
 import com.keepnote.model.preferences.StoreSharedPrefData
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class RemoteBackup(activitys:HomeScreen,val listner:DriveUtil?) {
-    private val TAG = "Google Drive Activity"
-    val uiScope = CoroutineScope(Dispatchers.Default)
+class RemoteBackup(activitys:HomeScreen, private val listner:DriveUtil?) {
+    private val uiScope = CoroutineScope(Dispatchers.Default)
     var activity: HomeScreen? = null
-    val midnight= false
+    private val midnight= false
 
     init {
         activity = activitys
@@ -75,24 +71,37 @@ class RemoteBackup(activitys:HomeScreen,val listner:DriveUtil?) {
             uiScope.launch {
                 val fileid = listFile(driveService)
                 if (fileid!=null && fileid.isNotEmpty()){
-                    if (!midnight){
-                        listner?.showProgress(30)
-                        val retriveFile = uiScope.async {
-                            retriveFile(driveService,fileid[fileid.size-1])
+                    val firstSync = StoreSharedPrefData.INSTANCE.getPref("drivefirstsync",false,activity) as Boolean
 
+                    if (firstSync){
+                        StoreSharedPrefData.INSTANCE.savePrefValue("drivefirstsync",false, activity!!)
+                        listner?.showProgress(30)
+                        val retrivefile = uiScope.async {
+                            retriveFile(driveService, fileid[fileid.size - 1])
                         }.await()
-                        listner?.showProgress(100)
-                        activity?.let { ExportBackup().restore(1, it) }
+                        val restoreFile= uiScope.async {
+                            activity?.let { ExportBackup().restore(1, it) }
+                            listner?.showProgress(100)
+                        }.await()
                     }else{
                         for (i in 0 until fileid.size){
                             deleteFile(driveService,fileId = fileid[i])
-                            if (fileid.size==1) createFile(driveService)
-                            val fileid = listFile(driveService)
-                            if (fileid != null) {
-                                val retriveFile = uiScope.async {
-                                    retriveFile(driveService,fileid[fileid.size-1])
+                            listner?.showProgress(30)
+                            if (fileid.size==1) {
+                                createFile(driveService)
+                                listner?.showProgress(55)
+                            }
+                            val fileId = listFile(driveService)
+                            if (fileId != null) {
+                                val retrivefile = uiScope.async {
+                                    retriveFile(driveService,fileId[fileId.size-1])
+                                    listner?.showProgress(80)
                                 }.await()
-                                activity?.let { ExportBackup().restore(1, it) }
+                                val restoreFile= uiScope.async {
+                                    activity?.let { ExportBackup().restore(1, it) }
+                                    listner?.showProgress(100)
+                                }.await()
+
 
                             }
                         }
@@ -100,6 +109,18 @@ class RemoteBackup(activitys:HomeScreen,val listner:DriveUtil?) {
 
                 }else{
                     createFile(driveService)
+                    val fileId = listFile(driveService)
+                    if (fileId != null) {
+                        val retrivefile = uiScope.async {
+                            retriveFile(driveService,fileId[fileId.size-1])
+                        }.await()
+                        val restoreFile= uiScope.async {
+                            activity?.let { ExportBackup().restore(1, it) }
+                            listner?.showProgress(100)
+                        }.await()
+
+
+                    }
                 }
             }
 
@@ -112,10 +133,11 @@ class RemoteBackup(activitys:HomeScreen,val listner:DriveUtil?) {
 
     private fun createFile(driveService: Drive) {
         val forder = java.io.File((activity?.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString()))
+        activity?.let { ExportBackup().backup(it) }
         val listFile: Array<java.io.File>? = forder.listFiles()
         if (listFile!=null){
             if (listFile.isNotEmpty()){
-                if (!(listFile[listFile.size-1].name=="drive_db")){
+                if (listFile[listFile.size-1].name != "drive_db"){
                     val filePath = java.io.File(listFile[listFile.size-1].absolutePath)
                     val fileMetadata = File()
                     fileMetadata.name = filePath.name
@@ -138,7 +160,7 @@ class RemoteBackup(activitys:HomeScreen,val listner:DriveUtil?) {
 
     }
 
-    suspend fun retriveFile(driveService: Drive, fileid: String){
+    private fun retriveFile(driveService: Drive, fileid: String){
         val outputStream = ByteArrayOutputStream()
         driveService.files().get(fileid)
             .executeMediaAndDownloadTo(outputStream)
@@ -150,15 +172,15 @@ class RemoteBackup(activitys:HomeScreen,val listner:DriveUtil?) {
             outputStream.writeTo(fileOutputStream)
             listner?.showProgress(70)
         }catch (E:Exception){
-            Log.d("@@@",E.message)
+            Log.d("@@@",E.message!!)
         }finally {
             fileOutputStream.close()
         }
         Log.d("@@@@output",outputStream.toString())
     }
 
-    suspend fun listFile(driveService: Drive):ArrayList<String>?{
-        var listofId = ArrayList<String>()
+    private fun listFile(driveService: Drive):ArrayList<String>?{
+        val listofId = ArrayList<String>()
         val files = driveService.files().list()
             .setSpaces("appDataFolder")
             .setFields("nextPageToken, files(id, name)")
@@ -171,13 +193,13 @@ class RemoteBackup(activitys:HomeScreen,val listner:DriveUtil?) {
         return listofId
     }
 
-    suspend fun deleteFile(driveService: Drive,fileId:String){
+    private fun deleteFile(driveService: Drive, fileId:String){
         try {
             driveService.files().delete(fileId).execute()
             Log.d("@@@","deleted")
 
         }catch (e:Exception){
-            Log.d("@@@@@2",e.message)
+            Log.d("@@@@@2",e.message!!)
         }
     }
 

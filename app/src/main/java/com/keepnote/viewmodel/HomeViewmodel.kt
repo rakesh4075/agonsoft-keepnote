@@ -94,14 +94,16 @@ class HomeViewmodel(val database: NotesDao, application: Application):AndroidVie
     }
 
 
-    fun updateLockbyId(noteID: Long?){
+    fun updateLockbyId(noteID: Long?,isLocked:Int){
         uiScope.launch {
             val updateLockRequest =async {
-                noteID?.let { database.updateLockById(it,1) }
+                noteID?.let { database.updateLockById(it,isLocked) }
             }.await()
             val getAllNotesRequest = async {
-                Constants.showToast("Locked",getApplication())
                 getallNotes()
+                if (isLocked==0) Constants.showToast("UnLocked",getApplication())
+                else Constants.showToast("Locked",getApplication())
+
             }.await()
 
         }

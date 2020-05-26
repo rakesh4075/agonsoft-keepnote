@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/drawer_header"
-    android:background="@color/lightcoloraccent"
+    android:background="?attr/colorAccent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.keepnote.utils.CircleImageView
         app:civ_border_width="2dp"
-        app:civ_border_color="@color/white"
+        app:civ_border_color="?attr/nav_color"
         android:id="@+id/mem_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/note_logo"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:srcCompat="@drawable/noteavatar"
         android:layout_marginTop="@dimen/_15sdp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,20 +20,20 @@
         android:layout_height="@dimen/_60sdp"/>
     <TextView
         android:id="@+id/mem_name"
-        android:textColor="@android:color/white"
+        android:textColor="?attr/nav_color"
         android:fontFamily="@font/robotoslabregular"
         android:textSize="@dimen/_18ssp"
         android:text="Rakesh"
         android:layout_marginTop="@dimen/_10sdp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mem_image"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/mem_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
     <TextView
         android:id="@+id/mem_email"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textColor="@android:color/white"
+        app:layout_constraintStart_toStartOf="@id/mem_image"
+        android:textColor="?attr/nav_color"
         android:fontFamily="@font/robotoslabregular"
         android:textSize="@dimen/_12ssp"
         android:text="raksexplore@gmail.com"
@@ -41,7 +41,6 @@
         android:layout_marginBottom="@dimen/_10sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mem_name"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

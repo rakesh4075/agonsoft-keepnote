@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <application
         android:allowBackup="true"
@@ -14,7 +14,15 @@
         android:roundIcon="@drawable/note_logo"
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
-        <activity android:name=".view.exportbackup.ExportBackup"></activity>
+        <activity android:name=".view.UpgradePayment"></activity>
+        <activity
+            android:name=".view.settings.Settings"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightTheme" />
+        <activity
+            android:name=".view.exportbackup.ExportBackup"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightTheme" />
         <activity
             android:name=".view.noteview.NoteWebview"
             android:screenOrientation="portrait"
@@ -26,7 +34,7 @@
         <activity
             android:name=".view.Splashscreen"
             android:screenOrientation="portrait"
-            android:theme="@style/LightTheme">
+            android:theme="@style/DarkTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

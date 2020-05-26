@@ -25,7 +25,7 @@ class Constants {
             lists.add("#a0ef9a")
             lists.add("#ffaedf")
             lists.add("#d7afff")
-            lists.add("#ff9966")
+            lists.add("#000000")
             lists.add("#e0e0e0")
             lists.add("#ff8080")
             lists.add("#8C9EFF")

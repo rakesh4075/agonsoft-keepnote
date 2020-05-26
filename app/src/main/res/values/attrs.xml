@@ -10,4 +10,21 @@
         <attr name="civ_border_overlay" format="boolean" />
         <attr name="civ_circle_background_color" format="color" />
     </declare-styleable>
+
+
+    <attr name="toolbarbg" format="color"/>
+    <attr name="txttitle" format="color"/>
+    <attr name="txtcontent" format="color"/>
+    <attr name="txtinactiveclr" format="color"/>
+    <attr name="btnbg" format="color"/>
+    <attr name="btntxtcolor" format="color"/>
+    <attr name="alerttitlecolor" format="color"/>
+    <attr name="iconcolor" format="color"/>
+    <attr name="icontintcolor" format="color"/>
+    <attr name="titlesubcolor" format="color"/>
+    <attr name="bodybg" format="color"/>
+    <attr name="bottombarcolor" format="color"/>
+    <attr name="nav_color" format="color"/>
+
+
 </resources>

@@ -30,7 +30,7 @@ import com.keepnote.view.trash.TrashAdapter
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
 import com.raks.roomdatabase.NoteDatabase
-import kotlinx.android.synthetic.main.toolbar.view.*
+import kotlinx.coroutines.*
 
 class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
 
@@ -40,6 +40,7 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
     private lateinit var animshake: Animation
     lateinit var binding:ActivityPrivacyBinding
     private var patternFor=""
+    private var showtoolbarView = false
     private var temppasword=""
     private  var noteDBAdapter: TrashAdapter?=null
     private lateinit var viewmodel: HomeViewmodel
@@ -48,30 +49,69 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
     "What is your favorite actor?","What is your first pet name?")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,this))as Boolean){
+            setTheme(R.style.DarkTheme)
+          showtoolbarView = true
+        }
+        else
+            setTheme(R.style.LightTheme)
+
         binding = DataBindingUtil.setContentView(this,R.layout.activity_privacy)
         binding.toolbarPrivacy.toolbarSearch.visibility = View.VISIBLE
         binding.toolbarPrivacy.toolbar.title=""
-        binding.toolbarPrivacy.toolbartitle.text = "Privacy"
+        binding.toolbarPrivacy.toolbartitle.text = resources.getString(R.string.privacy_txt)
+        binding.toolbarPrivacy.toolbarSearch.visibility = View.GONE
+
+        if (showtoolbarView)  binding.toolbarPrivacy.vw1.visibility = View.GONE
         setSupportActionBar(binding.toolbarPrivacy.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
         animshake = AnimationUtils.loadAnimation(this,R.anim.shake)
 
         val lockpattern:String? = StoreSharedPrefData.INSTANCE.getPref("lockpattern",0,this).toString()
         if (lockpattern!=null){
-            if (lockpattern == "1"){
+            //init viewmodel
+            val application = requireNotNull(this).application
+            val dataSource = NoteDatabase.invoke(this).getNoteDao()
+            val homeViewmodelFactory = HomeViewmodelFactory(dataSource,application)
+            viewmodel = ViewModelProviders.of(this,homeViewmodelFactory).get(HomeViewmodel::class.java)
+            binding.viewmodel = viewmodel
+            binding.lifecycleOwner = this
 
-                //init viewmodel
-                val application = requireNotNull(this).application
-                val dataSource = NoteDatabase.invoke(this).getNoteDao()
-                val homeViewmodelFactory = HomeViewmodelFactory(dataSource,application)
-                viewmodel = ViewModelProviders.of(this,homeViewmodelFactory).get(HomeViewmodel::class.java)
-                binding.viewmodel = viewmodel
-                binding.lifecycleOwner = this
+            if (lockpattern == "1"){
                 binding.patternLl.visibility = View.GONE
                 binding.privacynotesLl.visibility= View.VISIBLE
-                getAllNoteDB()
+                binding.patternLockViewTest.addPatternLockListener(object :PatternLockViewListener{
+                    val savedPattern = StoreSharedPrefData.INSTANCE.getPref("securitypattern","",this@Privacy)
+                    override fun onComplete(pattern: MutableList<PatternLockView.Dot>?) {
+                        val confirmpattern = PatternLockUtils.patternToString(binding.patternLockView,pattern)
+                        if (savedPattern==confirmpattern){
+                            binding.passwordTestll.visibility = View.GONE
+                            getAllNoteDB()
+                        }else{
+                            binding.patternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG)
+                            Constants.showToast("Pattern wrong",this@Privacy)
+                        }
+                    }
 
+                    override fun onCleared() {
 
+                    }
+
+                    override fun onStarted() {
+
+                    }
+
+                    override fun onProgress(progressPattern: MutableList<PatternLockView.Dot>?) {
+
+                    }
+                })
+
+                binding.privacyResetcodeTest.setOnClickListener {
+                    binding.secquestionLl.visibility = View.VISIBLE
+                    binding.passwordTestll.visibility = View.GONE
+                }
             }
         }
 
@@ -80,20 +120,24 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
             override fun onComplete(pattern: MutableList<PatternLockView.Dot>?) {
                 if (patternFor.isEmpty()){
                     temppasword = PatternLockUtils.patternToString(binding.patternLockView,pattern)
-                    Log.d("@@@@@temp",temppasword)
-                    binding.privacyActionText.text = "Confirm your unlock pattern"
+                    binding.privacyActionText.text = getString(R.string.privacy_action_txt_confirm)
                     binding.patternLockView.clearPattern()
                     patternFor="confirmpattern"
                 }else if (patternFor=="confirmpattern"){
                     val confirmpattern = PatternLockUtils.patternToString(binding.patternLockView,pattern)
                     if (temppasword==confirmpattern){
+                        binding.patternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT)
                         StoreSharedPrefData.INSTANCE.savePrefValue("securitypattern",confirmpattern,this@Privacy)
-                        binding.toolbarPrivacy.toolbar.title="Set security question"
-                        binding.secquestionLl.visibility = View.VISIBLE
-                        binding.patternLl.visibility = View.GONE
+                        CoroutineScope(Dispatchers.Main).launch {
+                            delay(500)
+                            binding.toolbarPrivacy.toolbartitle.text=getString(R.string.privacy_title_setquestion)
+                            binding.secquestionLl.visibility = View.VISIBLE
+                            binding.patternLl.visibility = View.GONE
+                        }
+
                     }else{
                         Constants.showToast("password not match",this@Privacy)
-                        binding.privacyActionText.text ="Patterns do not match, try again!"
+                        binding.privacyActionText.text =getString(R.string.privacy_action_txt_tryagain)
                         binding.privacyActionText.setTextColor(ContextCompat.getColor(this@Privacy,R.color.failurecolor))
                         binding.privacyActionText.startAnimation(animshake)
                         binding.patternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG)
@@ -116,7 +160,7 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
             }
         })
 
-        val questionAdapter = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,securityQuestion)
+        val questionAdapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,securityQuestion)
         questionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.securitySpinner.adapter = questionAdapter
         binding.securitySpinner.onItemSelectedListener = object :AdapterView.OnItemSelectedListener{
@@ -135,12 +179,12 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
             if (selectedQuestionPosition.toString().isNotEmpty()){
                val selectedAnswer = binding.securityAnswer.text.toString()
                 if (selectedAnswer.isNotEmpty()){
-                    binding.toolbarPrivacy.toolbar.title="Privacy"
                     StoreSharedPrefData.INSTANCE.savePrefValue("securityquestion",selectedQuestionPosition,this)
                     StoreSharedPrefData.INSTANCE.savePrefValue("securityanswer",selectedAnswer,this)
                     StoreSharedPrefData.INSTANCE.savePrefValue("lockpattern",1,this)
                     binding.privacynotesLl.visibility= View.VISIBLE
                     binding.secquestionLl.visibility = View.GONE
+                    binding.toolbarPrivacy.toolbartitle.text = resources.getString(R.string.privacy_txt)
                     Constants.showToast("Set successfully!",this)
 
                 }else{
@@ -165,7 +209,7 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
             }
             if (lokedNotes!!.isEmpty()){
                 binding.errLayout.root.visibility  = View.VISIBLE
-                binding.errLayout.errmsg.text = "Your Notes privacy will be kept here"
+                binding.errLayout.errmsg.text = getString(R.string.privacy_no_notes_txt)
                 // mbinding.adView.visibility = View.GONE
                 noteDBAdapter =
                     TrashAdapter(lokedNotes!!, this)
@@ -174,6 +218,7 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
             }else{
                 noteDBAdapter =
                     TrashAdapter(lokedNotes!!, this)
+                binding.trashRecycler.visibility = View.VISIBLE
                 binding.trashRecycler.layoutManager = getLayoutManager(4)
                 binding.trashRecycler.adapter = noteDBAdapter
                 noteDBAdapter?.notifyDataSetChanged()
@@ -188,24 +233,20 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
     private fun getLayoutManager(i:Int): RecyclerView.LayoutManager{
         when(i){
             1->{
-                val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false)
-                return linearLayoutManager
+                return LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false)
             }
 
             2->{
-                val gridLayoutManager = GridLayoutManager(this,3)
-                return gridLayoutManager
+                return GridLayoutManager(this,3)
             }
 
 
             3->{
-                val stagLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                return stagLayoutManager
+                return StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             }
 
             else ->{
-                val stagLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                return stagLayoutManager
+                return StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             }
 
 

@@ -22,10 +22,26 @@
         android:id="@+id/nav_main"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/nav_menu"
+        app:itemTextColor="?attr/txttitle"
+        app:itemIconTint="?attr/icontintcolor"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/nav_bottomll"
+            android:background="?attr/colorAccent"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp">
+            <include
+                android:id="@+id/nav_bottom"
+                layout="@layout/nav_bottom"/>
+        </RelativeLayout>
+    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

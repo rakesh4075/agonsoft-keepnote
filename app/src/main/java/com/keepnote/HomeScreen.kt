@@ -37,7 +37,6 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.material.snackbar.Snackbar
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.services.drive.DriveScopes
 import com.google.firebase.firestore.FirebaseFirestore
@@ -45,22 +44,30 @@ import com.keepnote.databinding.HomescreenBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
+import com.keepnote.view.UpgradePayment
 import com.keepnote.view.exportbackup.DriveUtil
 import com.keepnote.view.exportbackup.ExportBackup
 import com.keepnote.view.exportbackup.RemoteBackup
 import com.keepnote.view.homescreen.Homefragment
 import com.keepnote.view.settings.Privacy
+import com.keepnote.view.settings.Settings
 import com.keepnote.view.trash.TrashFragment
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
 import com.raks.roomdatabase.NoteDatabase
+import kotlinx.android.synthetic.main.homescreen.view.*
+import kotlinx.android.synthetic.main.nav_bottom.view.*
 import kotlinx.android.synthetic.main.nav_header.view.*
 import kotlinx.coroutines.*
 import java.io.File
+import java.text.DateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
 
+    private var lastsyncTime: String?=null
     private lateinit var dialog: Dialog
     private var mmenu: Menu?=null
     private  var noteDBAdapter: NoteListAdapter?=null
@@ -77,6 +84,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
     private lateinit var trasCount:TextView
     private lateinit var privacyCount:TextView
     private var remoteBackup: RemoteBackup? = null
+    private var showtoolbarView = false
     private var isBackup = true
 
 
@@ -91,12 +99,26 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,this))as Boolean){
+            setTheme(R.style.DarkTheme)
+            showtoolbarView = true
+        }
+        else
+            setTheme(R.style.LightTheme)
+
+
         mbinding = DataBindingUtil.setContentView(this, R.layout.homescreen)
         toolbar = mbinding.mainContent.toolbarLl.toolbar
+
 
         initLayout()
         dialog= Dialog(this)
 
+
+
+        val x= StoreSharedPrefData.INSTANCE.getPref("synconlaunch",false,this)
+        Log.d("#########sync",x.toString())
         remoteBackup = RemoteBackup(this,object :DriveUtil{
             @RequiresApi(Build.VERSION_CODES.N)
             override fun showProgress(progress: Int) {
@@ -108,6 +130,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
                         showSyncDialog(progress,true)
 
                     }
+                    syncDateTime()
 
                 }
 
@@ -148,6 +171,16 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
                 }
 
+
+                R.id.myfav->{
+                    startActivity(Intent(this,UpgradePayment::class.java))
+
+                }
+
+                R.id.menu_settings->{
+                    startActivity(Intent(this,Settings::class.java))
+
+                }
                 R.id.logout->{
                     val menu = mbinding.navMain.menu
                     val loginMenu = menu.findItem(R.id.logout)
@@ -171,6 +204,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
                 }
                 R.id.syncnote->{
                     val showAlert = StoreSharedPrefData.INSTANCE.getPref("drivealert",false,this) as Boolean
+
                     if (!showAlert) showSyncAlert() else{
                         isBackup = true
                         remoteBackup?.connectToDrive(isBackup)
@@ -207,8 +241,14 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
     }
 
+    private fun syncDateTime() {
+        mbinding.navMain.nav_bottomll.visibility = View.VISIBLE
+        val currentDateTime= DateFormat.getDateTimeInstance().format(Date())
+        val syncDate = "Last sync: $currentDateTime"
+        StoreSharedPrefData.INSTANCE.savePrefValue("lastsynctime",syncDate,this@HomeScreen)
+        mbinding.navMain.nav_bottom.last_sync.text = syncDate
+    }
 
-    
 
     private fun showSyncAlert() {
         val builder: AlertDialog.Builder =
@@ -219,8 +259,13 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
             dialog.dismiss()
         }
         builder.setNegativeButton("Continue") { dialog, which ->
-            isBackup = true
-            remoteBackup?.connectToDrive(isBackup)
+            try {
+                isBackup = true
+                remoteBackup?.connectToDrive(isBackup)
+            }catch (e:java.lang.Exception){
+                Log.d("@@@@",e.printStackTrace().toString())
+            }
+
         }
         builder.show()
     }
@@ -229,6 +274,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
     private fun showSyncDialog(progress:Int,show:Boolean){
         dialog.setContentView(R.layout.sync_dialog)
         dialog.setCanceledOnTouchOutside(false)
+        dialog.setCancelable(false)
         val syncProgress = dialog.findViewById<ProgressBar>(R.id.syncprogress)
         val syncText = dialog.findViewById<TextView>(R.id.progress_txt)
         syncProgress.progress = progress
@@ -324,16 +370,27 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
         mbinding.mainContent.swiperefresh.setColorSchemeColors(ContextCompat.getColor(this@HomeScreen, R.color.accestcolor))
 
         toolbar.title=""
+        toolbar.setNavigationIcon(R.drawable.ic_nav_menu)
+        toolbar.overflowIcon = getDrawable(R.drawable.ic_menu_overflow)
         setSupportActionBar(toolbar)
         toggle = ActionBarDrawerToggle(this,mbinding.drawer,toolbar, R.string.opens, R.string.closes)
         mbinding.drawer.addDrawerListener(toggle)
-        toggle.isDrawerIndicatorEnabled = true
+        toggle.isDrawerIndicatorEnabled = false
+        toggle.setToolbarNavigationClickListener {
+            mbinding.drawer.openDrawer(GravityCompat.START)
+        }
         toggle.syncState()
+        if (showtoolbarView)  mbinding.mainContent.toolbarLl.vw1.visibility = View.GONE
 
         notesCount = MenuItemCompat.getActionView(mbinding.navMain.menu.findItem(R.id.notes)) as TextView
         trasCount = MenuItemCompat.getActionView(mbinding.navMain.menu.findItem(R.id.trash)) as TextView
         privacyCount = MenuItemCompat.getActionView(mbinding.navMain.menu.findItem(R.id.menu_privacy)) as TextView
+        lastsyncTime = StoreSharedPrefData.INSTANCE.getPref("lastsynctime","",this) as String
 
+        if (lastsyncTime!=null && lastsyncTime!=""){
+            mbinding.navMain.nav_bottomll.visibility = View.VISIBLE
+            mbinding.navMain.nav_bottom.last_sync.text = StoreSharedPrefData.INSTANCE.getPref("lastsynctime","",this@HomeScreen) as String
+        }
 
 //        fstore = FirebaseFirestore.getInstance()
 //        val allNotesquery = fstore.collection("notes").orderBy("title",Query.Direction.DESCENDING)
@@ -484,6 +541,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
         when(requestCode){
             GOOGLE_SIGN_IN ->{
                 if (resultCode == Activity.RESULT_OK){
+                    StoreSharedPrefData.INSTANCE.savePrefValue("drivefirstsync",true, this)
                     val account = GoogleSignIn.getLastSignedInAccount(this)
                     val credential = GoogleAccountCredential.usingOAuth2(this, mutableListOf(DriveScopes.DRIVE_FILE,DriveScopes.DRIVE_APPDATA))
                     credential.selectedAccount = account?.account
@@ -532,6 +590,8 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
                 mbinding.navMain.getHeaderView(0).mem_email.text = memEmail
                 Glide.with(this)
                     .load(memPhoto)
+                    .placeholder(R.drawable.noteavatar)
+                    .error(R.drawable.noteavatar)
                     .into(mbinding.navMain.getHeaderView(0).mem_image)
             }
             .addOnCanceledListener {
@@ -556,7 +616,8 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
             mbinding.navMain.getHeaderView(0).mem_email.text = StoreSharedPrefData.INSTANCE.getPref("memEmail","",this) as String
             Glide.with(this)
                 .load(StoreSharedPrefData.INSTANCE.getPref("memPhoto","",this) as String)
-                .error(R.drawable.note_logo)
+                .placeholder(R.drawable.noteavatar)
+                .error(R.drawable.noteavatar)
                 .into(mbinding.navMain.getHeaderView(0).mem_image)
         }else{
             loginMenu.title="Login"

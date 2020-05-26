@@ -24,8 +24,8 @@ interface NotesDao {
     suspend fun getLastNote():Notes?
 
 
-    @Query("UPDATE notes SET title = :title ,content=:content,notecolor =:notecolor,noteUpdateMills=:noteUpdateMills WHERE noteId=:noteId")
-    suspend fun updateNoteById(noteId:Long,title:String,content:String,notecolor:Int,noteUpdateMills:Long)
+    @Query("UPDATE notes SET isFavourite =:isFavourite, title = :title ,content=:content,notecolor =:notecolor,noteUpdateMills=:noteUpdateMills WHERE noteId=:noteId")
+    suspend fun updateNoteById(noteId:Long,isFavourite:Int,title:String,content:String,notecolor:Int,noteUpdateMills:Long)
 
 
     @Query("UPDATE notes SET isLocked=:isLocked WHERE noteId=:noteId")

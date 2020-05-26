@@ -274,7 +274,7 @@ class RRE_Toolbar:LinearLayout {
     }
 
     private fun getLayoutId(): Int {
-        return R.layout.are_toolbar
+        return R.layout.rre_toolbar
     }
 
     fun getInstance(): RRE_Toolbar? {

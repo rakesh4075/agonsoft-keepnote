@@ -49,6 +49,9 @@ class NoteListAdapter(var noteList: List<Notes>,listner: NotesListner):RecyclerV
                 else holder.title.text = title
             }
             holder.content.text = Html.fromHtml(noteList[position].content)
+            if (noteList[position].isFavourite==1)
+            holder.favItem.visibility = View.VISIBLE
+            holder.favItem.background = ContextCompat.getDrawable(holder.itemView.context,R.drawable.ic_favorite_checked)
 
             if (noteList[position].islocked==1)
                 blurText(position,holder.content)
@@ -56,6 +59,7 @@ class NoteListAdapter(var noteList: List<Notes>,listner: NotesListner):RecyclerV
             val colorCode = Constants.getRandomColor()
             holder.noteCard.setCardBackgroundColor(ContextCompat.getColor(holder.view.context,colorCode))
             holder.view.setOnClickListener {
+                if (noteList[position].islocked==1) return@setOnClickListener
                 val intent = Intent(holder.itemView.context,NoteWebview::class.java)
                 intent.putExtra("title",noteList[position].title)
                 intent.putExtra("content",noteList[position].content)
@@ -65,13 +69,14 @@ class NoteListAdapter(var noteList: List<Notes>,listner: NotesListner):RecyclerV
                 holder.itemView.context.startActivity(intent)
 
             }
+
             holder.viewmenu.setOnClickListener {
                 val popupMenu = PopupMenu(holder.itemView.context,it)
                 popupMenu.gravity = Gravity.END
 
                 if (noteList[position].islocked==1){
                     popupMenu.menu.add("UnLock").setOnMenuItemClickListener {
-
+                        notesListner?.takeActionForNotes("updatelockbyid",position = position,noteId = noteList[position].noteId)
                         true
                     }
                 }else{
@@ -113,6 +118,7 @@ class NoteListAdapter(var noteList: List<Notes>,listner: NotesListner):RecyclerV
         val view = itembinding.content
         val noteCard = itembinding.noteCard
         val viewmenu = itembinding.menuIcon
+        val favItem = itembinding.favToogle
     }
 
     interface NotesListner{

@@ -18,7 +18,7 @@
     <color name="subtxtcolor">#4b4b4b</color>
     <color name="blackgrey">#bfbfbf</color>
     <color name="palegreen">#98fb98</color>
-    <color name="failurecolor">#ff0000</color>
+    <color name="failurecolor">#FFF05A50</color>
     <color name="text_lt_clr">#a5a5a5</color>
     <color name="light_red">#FFF05A50</color>
 

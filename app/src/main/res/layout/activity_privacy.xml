@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable
             name="viewmodel"
             type="com.keepnote.viewmodel.HomeViewmodel" />
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="?attr/bodybg"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.keepnote.view.settings.Privacy">
     <include
@@ -28,7 +27,7 @@
         android:layout_height="0dp">
         <TextView
             android:id="@+id/privacy_tittle"
-            android:textColor="@color/black"
+            android:textColor="?attr/txttitle"
             android:textSize="18sp"
             android:fontFamily="@font/robotoslabregular"
             android:text="@string/privacy_title_text"
@@ -39,10 +38,10 @@
             android:layout_height="wrap_content"/>
         <TextView
             android:id="@+id/privacy_action_text"
-            android:textColor="@color/black"
+            android:textColor="?attr/txtcontent"
             android:textSize="14sp"
             android:fontFamily="@font/robotoslabregular"
-            android:text="Draw unlock pattern"
+            android:text="@string/pattern_action_txt_confirmstart"
             android:layout_margin="@dimen/_5sdp"
             app:layout_constraintTop_toBottomOf="@id/privacy_tittle"
             app:layout_constraintEnd_toEndOf="parent"
@@ -61,8 +60,8 @@
             app:dotSelectedSize="@dimen/_25sdp"
             app:dotAnimationDuration="150"
             app:normalStateColor="@color/blackgrey"
-            app:correctStateColor="@color/palegreen"
-            app:wrongStateColor="@color/failurecolor"
+            app:correctStateColor="#009688"
+            app:wrongStateColor="#FFF05A50"
             android:layout_width="0dp"
             android:layout_height="@dimen/_250sdp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -75,6 +74,53 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar_privacy"
         android:layout_width="match_parent"
         android:layout_height="0dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/password_testll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_marginTop="@dimen/_40sdp"
+                android:id="@+id/privacy_tittle_test"
+                android:textColor="?attr/txttitle"
+                android:textSize="18sp"
+                android:fontFamily="@font/robotoslabregular"
+                android:text="@string/privacy_test_title"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <com.andrognito.patternlockview.PatternLockView
+                android:visibility="visible"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:id="@+id/pattern_lock_view_test"
+                app:layout_constraintTop_toBottomOf="@id/privacy_tittle_test"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:dotNormalSize="@dimen/_10sdp"
+                app:dotSelectedSize="@dimen/_25sdp"
+                app:dotAnimationDuration="150"
+                app:normalStateColor="@color/blackgrey"
+                app:correctStateColor="#009688"
+                app:wrongStateColor="#FFF05A50"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_250sdp"/>
+            <TextView
+               android:layout_marginBottom="@dimen/_20sdp"
+                android:id="@+id/privacy_resetcode_test"
+                android:textColor="?attr/txttitle"
+                android:textSize="12sp"
+                android:fontFamily="@font/robotoslabregular"
+                android:text="@string/reset_code_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -83,6 +129,7 @@
             android:id="@+id/trash_recycler"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:visibility="gone"
             android:text="@string/hello_blank_fragment" />
         <include
             android:visibility="gone"
@@ -92,6 +139,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:id="@+id/err_layout"
             layout="@layout/error_layout"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -109,11 +157,11 @@
             android:layout_marginEnd="@dimen/_10sdp"
            android:layout_marginTop="@dimen/_20sdp"
             android:id="@+id/security_tittle"
-            android:textColor="@color/black"
+            android:textColor="?attr/txttitle"
             android:textSize="16sp"
             android:textAlignment="textStart"
             android:fontFamily="@font/robotoslabregular"
-            android:text="Forget the password can through the security question to reset"
+            android:text="@string/forget_pwd_title"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -144,12 +192,14 @@
                 android:spinnerMode="dropdown" />
             <ImageView
                 android:paddingEnd="@dimen/_5sdp"
+                android:paddingStart="@dimen/_2sdp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_drop_down" />
+                android:src="@drawable/ic_drop_down"
+                android:contentDescription="@string/empty" />
 
         </RelativeLayout>
         <RelativeLayout
@@ -182,11 +232,11 @@
 
         <Button
             android:id="@+id/submit_btn"
-            android:textColor="@color/black"
+            android:textColor="?attr/btntxtcolor"
             android:fontFamily="@font/robotoslabregular"
             android:text="Done"
             android:textAllCaps="false"
-            android:background="@drawable/box_outine"
+            android:background="@drawable/btn_normal"
             android:layout_margin="@dimen/_20sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

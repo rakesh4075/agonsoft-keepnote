@@ -21,6 +21,7 @@
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="note_hint">Note:</string>
+    <string name="privacy_txt">Privacy</string>
     <string name="privacy_title_text">Please keep your password in mind</string>
     <string name="lib_name">PatternLockView</string>
     <string name="message_pattern_dot_added">Dot added to pattern</string>
@@ -48,5 +49,14 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="logintxt">Login</string>
+    <string name="privacy_action_txt_confirm">Confirm your unlock pattern</string>
+    <string name="privacy_action_txt_tryagain">Patterns do not match, try again!</string>
+    <string name="privacy_no_notes_txt">Your Notes privacy will be kept here</string>
+    <string name="privacy_title_setquestion">Set security question</string>
+    <string name="forget_pwd_title">Forget the password can through the security question to reset</string>
+    <string name="empty"> </string>
+    <string name="pattern_action_txt_confirmstart">Draw unlock pattern</string>
+    <string name="reset_code_text">Reset passcode</string>
+    <string name="privacy_test_title">Draw unlock pattern</string>
 
 </resources>

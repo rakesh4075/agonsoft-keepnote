@@ -20,6 +20,8 @@ data class Notes(
 
     @ColumnInfo(name = "isDeleted") var isDeleted:Int =0,
 
+    @ColumnInfo(name = "isFavourite") var isFavourite:Int =0,
+
     @ColumnInfo(name = "noteCreatedMills") var notecreatedMills:Long = System.currentTimeMillis(),
 
     @ColumnInfo(name = "noteUpdateMills") var noteupdateMills: Long = 0

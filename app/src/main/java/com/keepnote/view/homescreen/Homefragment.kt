@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -25,12 +26,16 @@ import com.keepnote.utils.Constants
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
 import com.raks.roomdatabase.NoteDatabase
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * A simple [Fragment] subclass.
  */
 class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
 
+    private lateinit var nonDeletedNotes: java.util.ArrayList<Notes>
     private  var noteDBAdapter: NoteListAdapter?=null
     lateinit var mbinding:HomefragmentBinding
     lateinit var viewmodel: HomeViewmodel
@@ -54,7 +59,7 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
         viewmodel.getallNotes()
         viewmodel.allNotes.observe(this, Observer {notes->
             val notesize = notes.size
-            val nonDeletedNotes = ArrayList<Notes>()
+            nonDeletedNotes = ArrayList<Notes>()
             for (i in 0 until notesize){
                     if (notes[i].isDeleted==0)
                         nonDeletedNotes.add(notes[i])
@@ -115,15 +120,28 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
             val application = requireNotNull(this).activity?.application
             val dataSource = context?.let { NoteDatabase.invoke(it).getNoteDao() }
             if (application!=null){
-                val homeViewmodelFactory = dataSource?.let { HomeViewmodelFactory(it, application!!) }
+                val homeViewmodelFactory = dataSource?.let { HomeViewmodelFactory(it, application) }
                 viewmodel = ViewModelProviders.of(it,homeViewmodelFactory).get(HomeViewmodel::class.java)
                 mbinding.viewmodel = viewmodel
                 mbinding.lifecycleOwner = this
             }
-
+            if (context!=null)
+            mbinding.swiperefresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accestcolor))
             getAllNoteDB()
             viewmodel.initview(mbinding.root).observe(this,this)
             viewmodel.passedData.observe(this,this)
+
+            mbinding.swiperefresh.setOnRefreshListener {
+                GlobalScope.launch {
+                    delay(1000L)
+                    activity?.runOnUiThread {
+                        getAllNoteDB()
+                        mbinding.swiperefresh.isRefreshing =false
+                    }
+
+                }
+
+            }
         }
 
     }
@@ -140,7 +158,9 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
             }
             "updatelockbyid"->{
                 try {
-                    viewmodel.updateLockbyId(noteId)
+                    if (nonDeletedNotes[position].islocked==1)
+                    viewmodel.updateLockbyId(noteId,0)
+                    else viewmodel.updateLockbyId(noteId,1)
                 }catch (e:java.lang.Exception){
 
                 }

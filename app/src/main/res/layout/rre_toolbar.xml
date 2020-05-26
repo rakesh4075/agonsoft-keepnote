@@ -2,25 +2,20 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:colorPickerView="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="?attr/toolbarbg"
     android:layout_height="40dp">
 
     <HorizontalScrollView
+        android:background="?attr/toolbarbg"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@android:color/white">
+            android:background="?attr/toolbarbg">
 
-            <ImageView
-                android:id="@+id/rteDelete"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:padding="5dp"
-                android:src="@drawable/ic_delete"
-                android:visibility="visible"
-                />
+
 
             <ImageView
                 android:id="@+id/rteFontsize"
@@ -28,7 +23,7 @@
                 android:layout_height="40dp"
                 android:padding="5dp"
                 android:src="@drawable/ic_format_size"
-                android:visibility="visible"
+                android:visibility="gone"
                 />
 
             <ImageView
@@ -207,10 +202,20 @@
                 android:layout_height="40dp"
                 android:padding="5dp"
                 android:src="@drawable/at"
-                android:visibility="gone" />
+                android:visibility="invisible" />
+            <ImageView
+                android:layout_gravity="end"
+                android:id="@+id/rteDelete"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_delete"
+                android:visibility="visible"
+                />
         </LinearLayout>
     </HorizontalScrollView>
     <LinearLayout
+        android:background="?attr/toolbarbg"
         android:id="@+id/rteEmojiPanel"
         android:layout_width="match_parent"
         android:layout_height="0px"

@@ -24,10 +24,25 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/lightprimary</item>
         <item name="colorPrimaryDark">@color/lightprimarydark</item>
-        <item name="colorAccent">@color/lightcoloraccent</item>
-<!--        <item name="android:itemBackground">@color/white</item>-->
-<!--        <item name="android:textColor">@color/black_de</item>-->
-        <item name="android:windowBackground">@color/lightwindoebackground</item>
+
+        <item name="toolbarbg">#ffffff</item>
+        <item name="txttitle">#000000</item>
+        <item name="txtcontent">#000000</item>
+        <item name="btnbg">#FFF05A50</item>
+        <item name="btntxtcolor">#ffffff</item>
+        <item name="alerttitlecolor">#FFF05A50</item>
+        <item name="iconcolor">#4b4b4b</item>
+        <item name="icontintcolor">#4b4b4b</item>
+        <item name="titlesubcolor">#4b4b4b</item>
+        <item name="bodybg">#FFF0EEE8</item>
+        <item name="txtinactiveclr">#4b4b4b</item>
+        <item name="colorAccent">#FFF05A50</item>
+        <item name="android:windowBackground">#FFF0EEE8</item>
+        <item name="android:textColorSecondary">#4b4b4b</item>
+        <item name="android:statusBarColor">#FF524E4A</item>
+        <item name="android:navigationBarColor">#ffffff</item>
+        <item name="bottombarcolor">#ffffff</item>
+        <item name="nav_color">#ffffff</item>
     </style>
 
 
@@ -36,12 +51,24 @@
     <style name="DarkTheme" parent="Base.AppTheme.Dark"/>
 
     <style name="Base.AppTheme.Dark" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:itemBackground">@color/white</item>
-        <item name="android:textColor">@color/black</item>
+       <item name="toolbarbg">#263238</item>
+        <item name="txttitle">#ffffff</item>
+        <item name="txtcontent">#ffffff</item>
+        <item name="btnbg">#009688</item>
+        <item name="btntxtcolor">#ffffff</item>
+        <item name="alerttitlecolor">#009688</item>
+        <item name="iconcolor">#ffffff</item>
+        <item name="icontintcolor">#ffffff</item>
+        <item name="titlesubcolor">#4b4b4b</item>
+        <item name="bodybg">#000000</item>
+        <item name="txtinactiveclr">#4b4b4b</item>
+        <item name="colorAccent">#009688</item>
+        <item name="android:windowBackground">#000000</item>
+        <item name="android:textColorSecondary">#ffffff</item>
+        <item name="android:statusBarColor">#263238</item>
+        <item name="android:navigationBarColor">#263238</item>
+        <item name="bottombarcolor">#263238</item>
+        <item name="nav_color">#ffffff</item>
     </style>
 
 
@@ -101,6 +128,15 @@
         <item name="android:windowNoTitle">true</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+    </style>
+
+
+    <style name="raksSwitch" parent="Theme.AppCompat.Light">
+        <!-- active thumb & track color (30% transparency) -->
+        <item name="colorControlActivated">?attr/colorAccent</item>
+
+        <!-- inactive thumb color -->
+        <item name="colorSwitchThumbNormal">?attr/toolbarbg</item>
 
     </style>
 </resources>
