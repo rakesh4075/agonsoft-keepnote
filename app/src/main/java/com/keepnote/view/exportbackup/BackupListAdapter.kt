@@ -3,12 +3,14 @@ package com.keepnote.view.exportbackup
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.keepnote.HomeScreen
 import com.keepnote.R
 import com.keepnote.databinding.BackupViewBinding
+import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.roomdatabasebackupandrestore.Restore
 import com.keepnote.utils.Constants
 import com.raks.roomdatabase.NoteDatabase
@@ -19,7 +21,8 @@ class BackupListAdapter(val backupList: ArrayList<FileInfo>):RecyclerView.Adapte
         val fileName = binding.fileName
         val fileDate = binding.lastmodifieddate
         val fileSize = binding.filesizeTxt
-    }
+        val vw1 = binding.vw1
+     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val backupViewLayoutBinding: BackupViewBinding = DataBindingUtil.inflate(
@@ -34,11 +37,13 @@ class BackupListAdapter(val backupList: ArrayList<FileInfo>):RecyclerView.Adapte
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val lastDateTime = backupList[position].fileLastModifiedDate.split(" ")
-        Log.d("@@@@@@@@@splie",lastDateTime.toString())
+
         holder.fileName.text = backupList[position].fileName
         holder.fileDate.text = "${lastDateTime[2]} ${lastDateTime[1]} ${lastDateTime[3].split(":")[0]}:${lastDateTime[3].split(":")[1]}"
         holder.fileSize.text = backupList[position].fileSize+" kb"
 
+        if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,holder.itemView.context))as Boolean) holder.vw1.visibility = View.GONE
+        if (position==itemCount-1) holder.vw1.visibility = View.GONE
         holder.itemView.setOnClickListener {
             Restore.Init()
                     .database(NoteDatabase.invoke(holder.itemView.context))

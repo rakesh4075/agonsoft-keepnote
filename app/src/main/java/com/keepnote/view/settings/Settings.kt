@@ -3,6 +3,8 @@ package com.keepnote.view.settings
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -44,7 +46,12 @@ class Settings : AppCompatActivity() {
 
         settingAdapter = SettingsRecyclerAdapter(object :NoteListAdapter.NotesListner{
             override fun takeActionForNotes(actionFor: String, noteId: Long, position: Int) {
-
+                when(actionFor){
+                    "notifydata"->{
+                        Log.d("@@@@","hiiiiiiiiii")
+                        settingAdapter.notifyDataSetChanged()
+                    }
+                }
             }
         })
         mbinding.settingRecyler.layoutManager = layoutManager
@@ -55,8 +62,9 @@ class Settings : AppCompatActivity() {
         super.onBackPressed()
         finish()
         startActivity(Intent(this,HomeScreen::class.java))
-
-
-
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        onBackPressed()
+        return true
     }
 }

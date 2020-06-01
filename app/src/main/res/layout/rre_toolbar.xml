@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:colorPickerView="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:background="?attr/toolbarbg"
     android:layout_height="40dp">
@@ -22,7 +22,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:src="@drawable/ic_format_size"
+                app:srcCompat="@drawable/ic_format_size"
                 android:visibility="gone"
                 />
 
@@ -31,7 +31,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:src="@drawable/fontface"
+                app:srcCompat="@drawable/fontface"
                 android:visibility="gone"
                 />
 
@@ -40,28 +40,28 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:src="@drawable/ic_bold" />
+                app:srcCompat="@drawable/ic_bold" />
 
             <ImageView
                 android:id="@+id/rteItalic"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:src="@drawable/ic_italic" />
+                app:srcCompat="@drawable/ic_italic" />
 
             <ImageView
                 android:id="@+id/rteUnderline"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:src="@drawable/ic_underlined" />
+                app:srcCompat="@drawable/ic_underlined" />
 
             <ImageView
                 android:id="@+id/rteStrikethrough"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:src="@drawable/ic_strikethrough" />
+                app:srcCompat="@drawable/ic_strikethrough" />
 
             <ImageView
                 android:id="@+id/rteHr"
@@ -69,7 +69,7 @@
                 android:layout_height="40dp"
                 android:padding="5dp"
                 android:visibility="gone"
-                android:src="@drawable/hr" />
+                app:srcCompat="@drawable/hr" />
 
 
             <ImageView
@@ -78,7 +78,7 @@
                 android:visibility="gone"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:src="@drawable/subscript" />
+                app:srcCompat="@drawable/subscript" />
 
             <ImageView
                 android:id="@+id/rteSuperscript"
@@ -86,7 +86,7 @@
                 android:layout_height="40dp"
                 android:visibility="gone"
                 android:padding="5dp"
-                android:src="@drawable/superscript" />
+                app:srcCompat="@drawable/superscript" />
 
             <ImageView
                 android:id="@+id/rteQuote"
@@ -94,7 +94,7 @@
                 android:layout_height="40dp"
                 android:visibility="gone"
                 android:padding="5dp"
-                android:src="@drawable/quote" />
+                app:srcCompat="@drawable/quote" />
 
 
             <ImageView
@@ -102,14 +102,14 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:src="@drawable/ic_text_format" />
+                app:srcCompat="@drawable/ic_text_format" />
 
             <ImageView
                 android:id="@+id/rteBackground"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:src="@drawable/ic_brush_black"
+                app:srcCompat="@drawable/ic_brush_black"
                 />
 
             <ImageView
@@ -118,7 +118,7 @@
                 android:layout_height="40dp"
                 android:padding="5dp"
                 android:paddingEnd="8dp"
-                android:src="@drawable/ic_insert_link"
+                app:srcCompat="@drawable/ic_insert_link"
                 />
 
             <ImageView
@@ -127,7 +127,7 @@
                 android:layout_height="40dp"
                 android:padding="5dp"
                 android:visibility="gone"
-                android:src="@drawable/listnumber" />
+                app:srcCompat="@drawable/listnumber" />
 
             <ImageView
                 android:id="@+id/rteListBullet"
@@ -135,14 +135,14 @@
                 android:layout_height="40dp"
                 android:padding="5dp"
                 android:visibility="gone"
-                android:src="@drawable/listbullet" />
+                app:srcCompat="@drawable/listbullet" />
 
             <ImageView
                 android:id="@+id/rteIndentRight"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:src="@drawable/indentright"
+                app:srcCompat="@drawable/indentright"
                 android:visibility="gone"
                  />
 
@@ -151,7 +151,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:src="@drawable/indentleft"
+                app:srcCompat="@drawable/indentleft"
                 android:visibility="gone"
                 />
 
@@ -161,7 +161,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:src="@drawable/alignleft" />
+                app:srcCompat="@drawable/alignleft" />
 
             <ImageView
                 android:id="@+id/rteAlignCenter"
@@ -169,7 +169,7 @@
                 android:layout_height="40dp"
                 android:padding="5dp"
                 android:visibility="gone"
-                android:src="@drawable/aligncenter" />
+                app:srcCompat="@drawable/aligncenter" />
 
             <ImageView
                 android:visibility="gone"
@@ -177,7 +177,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:src="@drawable/alignright" />
+                app:srcCompat="@drawable/alignright" />
 
             <ImageView
                 android:id="@+id/rteInsertImage"
@@ -185,7 +185,7 @@
                 android:layout_height="40dp"
                 android:padding="5dp"
                 android:visibility="gone"
-                android:src="@drawable/image" />
+                app:srcCompat="@drawable/image" />
 
             <ImageView
                 android:id="@+id/rteInsertVideo"
@@ -193,7 +193,7 @@
                 android:layout_height="40dp"
                 android:padding="5dp"
                 android:visibility="gone"
-                android:src="@drawable/video"
+                app:srcCompat="@drawable/video"
                 />
 
             <ImageView
@@ -201,7 +201,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:src="@drawable/at"
+                app:srcCompat="@drawable/at"
                 android:visibility="invisible" />
             <ImageView
                 android:layout_gravity="end"
@@ -209,7 +209,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:src="@drawable/ic_delete"
+                app:srcCompat="@drawable/ic_delete"
                 android:visibility="visible"
                 />
         </LinearLayout>

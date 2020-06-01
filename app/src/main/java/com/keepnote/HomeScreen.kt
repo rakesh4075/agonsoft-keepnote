@@ -117,8 +117,8 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
 
 
-        val x= StoreSharedPrefData.INSTANCE.getPref("synconlaunch",false,this)
-        Log.d("#########sync",x.toString())
+
+
         remoteBackup = RemoteBackup(this,object :DriveUtil{
             @RequiresApi(Build.VERSION_CODES.N)
             override fun showProgress(progress: Int) {
@@ -137,6 +137,12 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
                 }
 
         })
+        if(StoreSharedPrefData.INSTANCE.getPref("appstart",false,this) as Boolean){
+            StoreSharedPrefData.INSTANCE.savePrefValue("appstart",false,this)
+            if (StoreSharedPrefData.INSTANCE.getPref("synconlaunch",false,this) as Boolean){
+                startSyncNote()
+            }
+        }
         if (StoreSharedPrefData.INSTANCE.getPref("firsttimepermmision",true,this) as Boolean){
             Constants.verifyPermission(this)
             StoreSharedPrefData.INSTANCE.savePrefValue("firsttimepermmision",false,this)
@@ -203,18 +209,12 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
                 }
                 R.id.syncnote->{
-                    val showAlert = StoreSharedPrefData.INSTANCE.getPref("drivealert",false,this) as Boolean
-
-                    if (!showAlert) showSyncAlert() else{
-                        isBackup = true
-                        remoteBackup?.connectToDrive(isBackup)
-                    }
-
+                    startSyncNote()
                 }
 
             }
 
-            GlobalScope.launch {
+            CoroutineScope(Dispatchers.Main).launch{
                 delay(600)
                 mbinding.drawer.closeDrawer(GravityCompat.START)
             }
@@ -239,6 +239,15 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
 
 
+    }
+
+    private fun startSyncNote() {
+        val showAlert = StoreSharedPrefData.INSTANCE.getPref("drivealert",false,this) as Boolean
+
+        if (!showAlert) showSyncAlert() else{
+            isBackup = true
+            remoteBackup?.connectToDrive(isBackup)
+        }
     }
 
     private fun syncDateTime() {

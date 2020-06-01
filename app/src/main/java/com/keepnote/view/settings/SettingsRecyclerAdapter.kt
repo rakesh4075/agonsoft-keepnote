@@ -1,16 +1,22 @@
 package com.keepnote.view.settings
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import androidx.appcompat.widget.PopupMenu
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.keepnote.NoteListAdapter
 import com.keepnote.R
 import com.keepnote.databinding.SettingsItemBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
+
 
 class SettingsRecyclerAdapter(val listerner:NoteListAdapter.NotesListner) :RecyclerView.Adapter<SettingsRecyclerAdapter.ViewHolder>() {
     private var titleList = arrayOf("Revert","Font size","Notes sort order","Online Sync","Backup","Night mode")
@@ -42,15 +48,47 @@ class SettingsRecyclerAdapter(val listerner:NoteListAdapter.NotesListner) :Recyc
         holder.title.text = titleList[position]
         holder.content.text = contentList[position]
         holder.settingImage.setBackgroundResource(settingsIcon[position])
+
+        if (position==1){
+            holder.settingValue.visibility = View.VISIBLE
+            holder.settingValue.text = getSettingsValue(holder.itemView.context,1)
+        }
+        else if (position==2){
+            holder.settingValue.visibility = View.VISIBLE
+            holder.settingValue.text = getSettingsValue(holder.itemView.context,2)
+        }
+
         if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,context))as Boolean){
             if (position==itemCount-1)
             holder.toggle.isChecked = true
+        }
+        if ((StoreSharedPrefData.INSTANCE.getPref("synconlaunch",false,context))as Boolean){
+            if (position==itemCount-3)
+                holder.toggle.isChecked = true
         }
         if (position>=3 || position==0){
             if (position==0)holder.toggle.visibility = View.GONE
             holder.settingValue.visibility=View.GONE
         }else{
             holder.toggle.visibility = View.GONE
+        }
+
+        holder.itemView.setOnClickListener {
+            when(position){
+
+                0->{
+
+                }
+                1->{
+                    createPopupmenu(holder,1)
+
+                }
+                2->{
+                    createPopupmenu(holder,2)
+
+                }
+            }
+
         }
 
         holder.toggle.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -76,11 +114,99 @@ class SettingsRecyclerAdapter(val listerner:NoteListAdapter.NotesListner) :Recyc
                     }
                 }
                 itemCount-3->{
-                    StoreSharedPrefData.INSTANCE.savePrefValue("synconlaunch",true,context)
+                    if (isChecked){
+                        StoreSharedPrefData.INSTANCE.savePrefValue("synconlaunch",true,context)
+                    }else
+                        StoreSharedPrefData.INSTANCE.savePrefValue("synconlaunch",false,context)
+
                 }
             }
 
 
         }
+
+
+
     }
+
+    private fun getSettingsValue(context: Context,For: Int): String {
+        val value =  if (For==1) StoreSharedPrefData.INSTANCE.getPref("notefontsize",1,context) else StoreSharedPrefData.INSTANCE.getPref("notesortorder",1,context)
+        if (For==1){
+            when(value){
+                1-> return "Default"
+                2-> return "Medium"
+                3-> return "Large"
+            }
+        }else{
+            when(value){
+                1-> return "Alphabetical"
+                2-> return "Color"
+                3-> return "Created time"
+                4-> return "Modified time"
+            }
+        }
+        return ""
+    }
+
+    private fun createPopupmenu(holder: ViewHolder,For:Int) {
+        val mcontext = holder.itemView.context
+        val popupMenu = PopupMenu(holder.itemView.context,holder.itemView)
+        popupMenu.gravity = Gravity.END
+
+
+        when(For){
+            1->{
+                popupMenu.menu.add("Default").setOnMenuItemClickListener {
+                    StoreSharedPrefData.INSTANCE.savePrefValue("notefontsize",1,mcontext)
+                    if (holder.adapterPosition==1) holder.settingValue.text="Default"
+                    true
+                }
+                popupMenu.menu.add("Medium").setOnMenuItemClickListener {
+                    StoreSharedPrefData.INSTANCE.savePrefValue("notefontsize",2,mcontext)
+                    if (holder.adapterPosition==1) holder.settingValue.text="Medium"
+                    true
+                }
+                popupMenu.menu.add("Large").setOnMenuItemClickListener {
+                    StoreSharedPrefData.INSTANCE.savePrefValue("notefontsize",3,mcontext)
+                    if (holder.adapterPosition==1) holder.settingValue.text="Large"
+                    true
+                }
+
+
+            }
+            2->{
+                popupMenu.menu.add("Alphabetical").setOnMenuItemClickListener {
+                    StoreSharedPrefData.INSTANCE.savePrefValue("notesortorder",1,mcontext)
+                   if (holder.adapterPosition==2) holder.settingValue.text="Alphabetical"
+                    true
+                }
+                popupMenu.menu.add("Color").setOnMenuItemClickListener {
+                    StoreSharedPrefData.INSTANCE.savePrefValue("notesortorder",2,mcontext)
+                    if (holder.adapterPosition==2) holder.settingValue.text="Color"
+                    true
+                }
+                popupMenu.menu.add("Created time").setOnMenuItemClickListener {
+                    StoreSharedPrefData.INSTANCE.savePrefValue("notesortorder",3,mcontext)
+                    if (holder.adapterPosition==2) holder.settingValue.text="Created time"
+                    true
+                }
+                popupMenu.menu.add("Modified time").setOnMenuItemClickListener {
+                    StoreSharedPrefData.INSTANCE.savePrefValue("notesortorder",4,mcontext)
+                    if (holder.adapterPosition==2) holder.settingValue.text="Modified time"
+                    true
+                }
+            }
+        }
+
+        popupMenu.show()
+
+
+
+
+
+    }
+
+
+
+
 }

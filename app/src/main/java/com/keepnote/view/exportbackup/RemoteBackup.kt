@@ -37,11 +37,12 @@ class RemoteBackup(activitys:HomeScreen, private val listner:DriveUtil?) {
 
 
     fun connectToDrive(backup: Boolean) {
+        try {
             val account = GoogleSignIn.getLastSignedInAccount(activity)
             if (account == null) {
                 signIn()
             }else if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(activity),
-                Scope(DriveScopes.DRIVE_FILE), Scope(DriveScopes.DRIVE_APPDATA))){
+                    Scope(DriveScopes.DRIVE_FILE), Scope(DriveScopes.DRIVE_APPDATA))){
                 signIn()
             }else {
                 //Initialize the drive api
@@ -53,6 +54,10 @@ class RemoteBackup(activitys:HomeScreen, private val listner:DriveUtil?) {
                 }
 
             }
+        }catch (e:Exception){
+            Log.d("@@@@@",e.message)
+        }
+
         }
 
     private fun startDriveRestore() {

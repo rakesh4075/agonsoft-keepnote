@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.keepnote.HomeScreen
 import com.keepnote.R
 import com.keepnote.databinding.ActivityBackupBinding
+import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.roomdatabasebackupandrestore.Backup
 import com.keepnote.roomdatabasebackupandrestore.Restore
 import com.keepnote.tedpermission.TedPermission
@@ -36,17 +37,27 @@ class ExportBackup : AppCompatActivity() {
     private var backupDBPath: String=""
     lateinit var mbinding:ActivityBackupBinding
     private lateinit var backupAdapter:BackupListAdapter
+    private var showtoolbarView = false
     // folder on sd to backup data
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,this))as Boolean){
+            setTheme(R.style.DarkTheme)
+            showtoolbarView = true
+        }
+        else
+            setTheme(R.style.LightTheme)
+
        mbinding = DataBindingUtil.setContentView(this,R.layout.activity_backup)
 
         mbinding.toolbar.toolbar.title=""
         mbinding.toolbar.toolbartitle.text="Exports & Backup"
-        mbinding.toolbar.toolbarSearch.visibility = View.VISIBLE
+        if (showtoolbarView)  mbinding.toolbar.vw1.visibility = View.GONE
         setSupportActionBar(mbinding.toolbar.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
         mbinding.errLayout.errmsg.text="Your backup files will be displayed here"
 
         populateDB()
@@ -99,6 +110,7 @@ class ExportBackup : AppCompatActivity() {
                 val fileName = file.name
                 val fileModifedDate = Date(file.lastModified()).toString()
                 val fileSize = Integer.parseInt(((file.length()/1024).toString())).toString()
+                if (fileName!="drive_db")
                 listFileInfo?.add(FileInfo(fileName,fileModifedDate,fileSize))
             }
         }

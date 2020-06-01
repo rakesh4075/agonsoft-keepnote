@@ -2,6 +2,7 @@ package com.keepnote.raksEditor
 
 import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.text.Editable
 import android.text.Html
 import android.text.TextWatcher
@@ -135,10 +136,14 @@ class RREEditText: AppCompatEditText {
     fun getHtml(): String? {
         val html = StringBuffer()
         html.append("<html><body>")
-        val editTextHtml = Html.toHtml(
-            editableText,
-            Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL
-        )
+        val editTextHtml = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.toHtml(
+                editableText,
+                Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL
+            )
+        } else {
+            Html.toHtml(editableText)
+        }
         html.append(editTextHtml)
         html.append("</body></html>")
         val htmlContent = html.toString()
