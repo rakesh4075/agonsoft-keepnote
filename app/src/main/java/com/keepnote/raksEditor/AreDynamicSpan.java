@@ -5,5 +5,5 @@ package com.keepnote.raksEditor;
  */
 
 public interface AreDynamicSpan {
-    public int getDynamicFeature();
+    int getDynamicFeature();
 }

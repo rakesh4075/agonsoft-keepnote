@@ -1,10 +1,14 @@
 package com.keepnote.utils
 
 import android.content.Context
+import android.os.Environment
+import android.util.Log
 import android.widget.Toast
 import com.keepnote.R
+import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.tedpermission.PermissionListener
 import com.keepnote.tedpermission.TedPermission
+import java.io.File
 import java.util.*
 import java.util.jar.Manifest
 import kotlin.collections.ArrayList
@@ -18,6 +22,7 @@ class Constants {
         fun showToast(msg:String,context: Context){
             Toast.makeText(context,msg,Toast.LENGTH_LONG).show()
         }
+        var adUnitId = "ca-app-pub-3940256099942544~3347511713"
 
         fun colorLists():ArrayList<String>{
             val lists = ArrayList<String>()
@@ -81,6 +86,24 @@ class Constants {
                 .setPermissions(android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.GET_ACCOUNTS)
                 .setGotoSettingButton(true)
                 .check()
+        }
+
+        fun getSortOrder(context: Context):Int{
+            val value = StoreSharedPrefData.INSTANCE.getPref("notesortorder",1,context) as Int
+            Log.d("@@@value",value.toString())
+            return value
+        }
+
+        // create folder if it not exist
+         fun createFolder(context: Context):File {
+            val sd = File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString()+"/KeepNotePdf")
+            if (!sd.exists()) {
+                sd.mkdir()
+                Log.d("@@@@","folder created")
+            } else {
+                Log.d("@@@@","folder exists")
+            }
+            return sd
         }
 
 

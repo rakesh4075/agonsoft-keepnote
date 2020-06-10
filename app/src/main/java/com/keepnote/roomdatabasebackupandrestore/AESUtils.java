@@ -4,16 +4,16 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-public class AESUtils {
+class AESUtils {
 
-    public static String encrypt(String cleartext, String key) throws Exception {
+    static String encrypt(String cleartext, String key) throws Exception {
         byte[] keyValue = normalizeKey(key);
         byte[] rawKey = getRawKey(keyValue);
         byte[] result = encrypt(rawKey, cleartext.getBytes());
         return toHex(result);
     }
 
-    public static String decrypt(String encrypted, String key) throws Exception {
+    static String decrypt(String encrypted, String key) throws Exception {
         byte[] keyValue = normalizeKey(key);
         byte[] enc = toByte(encrypted);
         byte[] result = decrypt(enc,keyValue);
@@ -42,7 +42,7 @@ public class AESUtils {
         return decrypted;
     }
 
-    public static byte[] toByte(String hexString) {
+    private static byte[] toByte(String hexString) {
         int len = hexString.length() / 2;
         byte[] result = new byte[len];
         for (int i = 0; i < len; i++)
@@ -50,7 +50,7 @@ public class AESUtils {
         return result;
     }
 
-    public static String toHex(byte[] buf) {
+    private static String toHex(byte[] buf) {
         if (buf == null)
             return "";
         StringBuffer result = new StringBuffer(2 * buf.length);

@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.keepnote.KeepNoteApplication
 import com.keepnote.notesDB.Notes
 import com.keepnote.notesDB.NotesDao
 import com.keepnote.utils.Constants
@@ -110,8 +111,23 @@ class HomeViewmodel(val database: NotesDao, application: Application):AndroidVie
     }
 
     private suspend fun getallnote(): List<Notes>? {
-        return withContext(Dispatchers.IO){
-            return@withContext database.getAllNotes()
+        val sortValue = Constants.getSortOrder(getApplication())
+        Log.d("@@@@@",sortValue.toString())
+        return withContext(Dispatchers.Main){
+            when(sortValue){
+                1-> return@withContext database.getAllNotesbyalphabet()
+
+                3-> {
+                    return@withContext  database.getAllNotesbycreatedtime()
+                }
+
+                4->{
+                    return@withContext  database.getAllNotesbyupdatemills()
+                }
+
+                else->return@withContext database.getAllNotes()
+            }
+
         }
     }
 

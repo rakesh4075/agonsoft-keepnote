@@ -1,6 +1,7 @@
 package com.keepnote.notesDB
 
 import androidx.room.*
+import com.google.firebase.firestore.core.OrderBy
 
 @Dao
 interface NotesDao {
@@ -8,8 +9,17 @@ interface NotesDao {
     @Insert
     suspend fun insertNote(note:Notes)
 
-    @Query("SELECT * FROM notes ORDER BY noteId DESC")
+    @Query("SELECT * FROM notes ORDER BY noteId ASC")
     suspend fun getAllNotes():List<Notes>?
+
+    @Query("SELECT * FROM notes ORDER BY noteCreatedMills ASC")
+    suspend fun getAllNotesbycreatedtime():List<Notes>?
+
+    @Query("SELECT * FROM notes ORDER BY noteUpdateMills Desc")
+    suspend fun getAllNotesbyupdatemills():List<Notes>?
+
+    @Query("SELECT * FROM notes ORDER BY content ASC")
+    suspend fun getAllNotesbyalphabet():List<Notes>?
 
     @Query("SELECT * FROM notes WHERE noteId = :key")
     suspend fun getNote(key:Long):Notes?

@@ -14,6 +14,7 @@
                 android:id="@+id/myfav"
                 android:title="@string/my_favourites_txt"/>
             <item
+                android:visible="false"
                 android:icon="@drawable/ic_sync_black"
                 android:id="@+id/syncnote"
                 android:title="@string/sync_note"/>
@@ -42,6 +43,7 @@
                 android:id="@+id/menu_settings"
                 android:title="@string/settings"/>
             <item
+                android:visible="false"
                 app:showAsAction="never"
                 android:icon="@drawable/ic_logout_key"
                 android:id="@+id/logout"

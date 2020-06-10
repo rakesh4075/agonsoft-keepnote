@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.appcompat.widget.PopupMenu
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.keepnote.NoteListAdapter
@@ -22,14 +23,22 @@ class SettingsRecyclerAdapter(val listerner:NoteListAdapter.NotesListner) :Recyc
     private var titleList = arrayOf("Revert","Font size","Notes sort order","Online Sync","Backup","Night mode")
     private var settingsIcon = arrayOf(R.drawable.ic_undo,R.drawable.ic_format_size,R.drawable.ic_filter,R.drawable.ic_sync_black,R.drawable.ic_backup,R.drawable.ic_darkness)
     private var contentList = arrayOf("Revert to default settings","Set the default notes font size","Set the default notes sort order","Sync on launch","Auto backup","Set dark or light background")
+
+
     class ViewHolder(binding: SettingsItemBinding):RecyclerView.ViewHolder(binding.root) {
+        private  var layout:ConstraintLayout = binding.rootview
+        val params = ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
         val title = binding.title
         val settingImage= binding.settingsIcon
         val settingValue = binding.settingValue
         val content = binding.content
         val toggle = binding.settingToogle
+        val view = binding.rootview
 
-
+        fun hideLayout(){
+            params.height=0
+            layout.layoutParams = params
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -124,8 +133,9 @@ class SettingsRecyclerAdapter(val listerner:NoteListAdapter.NotesListner) :Recyc
 
 
         }
-
-
+        if (position==3) {
+            holder.hideLayout()
+        }
 
     }
 

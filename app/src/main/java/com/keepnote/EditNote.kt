@@ -1,51 +1,40 @@
 package com.keepnote
 
-import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.style.ImageSpan
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.google.firebase.firestore.FirebaseFirestore
 import com.keepnote.colorpicker.ColorPicker
 import com.keepnote.databinding.ActivityEditNoteBinding
+import com.keepnote.databinding.HomescreenBindingImpl
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.notesDB.NoteViewmodel
 import com.keepnote.notesDB.NoteViewmodelFactory
 import com.keepnote.notesDB.Notes
-import com.keepnote.notesDB.NotesDao
 import com.keepnote.utils.Constants
 import com.raks.roomdatabase.NoteDatabase
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
-import kotlin.math.log
 
 
 class EditNote : AppCompatActivity() {
@@ -59,13 +48,14 @@ class EditNote : AppCompatActivity() {
     private var colorcode:Int?=null
     private var fromPage:Int?=0
     lateinit var binding:ActivityEditNoteBinding
-    lateinit var fstore:FirebaseFirestore
+    private lateinit var fstore:FirebaseFirestore
     private var noteId:Long?=null
-    private var tempContent=""
     private var isFavourite=0
     private var note:Notes?=null
     private var addImageRecyclerview: AddImageRecyclerview?=null
     private var imageUri:ArrayList<Bitmap?>?=null
+    private lateinit var mInterstitialAd: InterstitialAd
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -135,7 +125,11 @@ class EditNote : AppCompatActivity() {
                     if (note!=null) {
                         binding.favToogle.isChecked = note?.isFavourite==1
                         binding.editNoteTitle.setText(note?.title)
-                        binding.noteContenteditll.editNoteContent.setText(Html.fromHtml(note?.content))
+                        binding.noteContenteditll.editNoteContent.setText(note?.content?.let { it1 ->
+                            HtmlCompat.fromHtml(
+                                it1,HtmlCompat.FROM_HTML_MODE_COMPACT)
+                        })
+                       // binding.noteContenteditll.editNoteContent.setText(Html.fromHtml(note?.content))
                         colorcode = note?.notecolor
                         if ((colorcode.toString().subSequence(0, 1) as String) == "-") {
                             binding.noteContenteditll.editNoteContent.backgroundTintList = ColorStateList.valueOf(colorcode!!)
@@ -148,9 +142,6 @@ class EditNote : AppCompatActivity() {
                 })
 
             }
-        }else{
-//            binding.noteContenteditll.editNoteContent.setBackgroundColor(ContextCompat.getColor(this,R.color.blackgrey))
-//            binding.noteContenteditll.txtContentll.setBackgroundColor(ContextCompat.getColor(this,R.color.blackgrey))
         }
 
         notecolor = Constants.getRandomColor()
@@ -161,6 +152,10 @@ class EditNote : AppCompatActivity() {
     private fun init(){
         binding.noteContenteditll.raksToolbar.setEditText(binding.noteContenteditll.editNoteContent)
         binding.noteContenteditll.editNoteContent.setToolbar(binding.noteContenteditll.raksToolbar)
+
+
+
+
     }
 
     private fun updateNote(title:String,content:String,isFavourite:Int) {
@@ -198,8 +193,12 @@ class EditNote : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         saveNote()
-        startActivity(Intent(this, HomeScreen::class.java))
+        val intent = Intent(this,HomeScreen::class.java)
+        if (fromPage!=0)
+        intent.putExtra("frompage","editnotesavenote")
+        startActivity(intent)
         finish()
+
 
     }
 
@@ -210,7 +209,7 @@ class EditNote : AppCompatActivity() {
 
             }
             R.id.savenote ->{
-              saveNote()
+              onBackPressed()
             }
 
             R.id.addfav ->{
@@ -230,7 +229,7 @@ class EditNote : AppCompatActivity() {
 
 
         if (content!=null){
-            if (title.isEmpty() && content.equals("<html><body></body></html>")){
+            if (title.isEmpty() && content == "<html><body></body></html>"){
                 Constants.showToast("Required field is empty",this)
             }else{
 
@@ -239,10 +238,9 @@ class EditNote : AppCompatActivity() {
                 } else {
                     try {
                         viewmodel.insertNote(Notes(0,title, content,notecolor,isFavourite = isFavourite))
-                            finish()
 
                     }catch (e:Exception){
-
+                        Log.d("@@@@",e.message.toString())
                     }
 
                 }
@@ -336,40 +334,16 @@ class EditNote : AppCompatActivity() {
     }
 
 
-    fun verifyStoragePermissions(activity: Activity?) {
-        val REQUEST_EXTERNAL_STORAGE = 1
-        val PERMISSIONS_STORAGE =
-            arrayOf( //Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            )
-        val permission = ActivityCompat.checkSelfPermission(
-            activity!!,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                activity,
-                PERMISSIONS_STORAGE,
-                REQUEST_EXTERNAL_STORAGE
-            )
-        }
-    }
+
+
+
     private fun showImageInImageview(bitmap: Bitmap?) {
         imageUri?.add(bitmap)
         binding.noteContenteditll.imagerecyclerview.visibility = View.VISIBLE
         addImageRecyclerview?.notifyDataSetChanged()
     }
 
-    fun buildImage(context: Context,uri: Uri?):ImageView{
-        val image = ImageView(context)
-        if (uri!=null)
-        Glide.with(this).load(uri).into(image)
-        val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams((displayWidth*.95).toInt(),LinearLayout.LayoutParams.WRAP_CONTENT)
-        params.setMargins(3,3,3,3)
-        params.gravity = Gravity.CENTER_HORIZONTAL
-        image.layoutParams =params
-        return image
-    }
+
 
 
 }

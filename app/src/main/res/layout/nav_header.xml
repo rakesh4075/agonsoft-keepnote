@@ -12,7 +12,7 @@
         app:civ_border_color="?attr/nav_color"
         android:id="@+id/mem_image"
         android:layout_marginStart="@dimen/_10sdp"
-        app:srcCompat="@drawable/noteavatar"
+        app:srcCompat="@drawable/note_logo"
         android:layout_marginTop="@dimen/_15sdp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

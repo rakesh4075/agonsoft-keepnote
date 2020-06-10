@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class Restore {
-    private static String STRING_FOR_NULL_VALUE = "!!!string_for_null_value!!!";
+     static String STRING_FOR_NULL_VALUE = "!!!string_for_null_value!!!";
 
     public static class Init{
         private RoomDatabase database;

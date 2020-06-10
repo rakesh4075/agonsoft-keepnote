@@ -33,7 +33,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -86,6 +88,8 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
     private var remoteBackup: RemoteBackup? = null
     private var showtoolbarView = false
     private var isBackup = true
+    private var fromPage:String? = ""
+    private lateinit var mInterstitialAd: InterstitialAd
 
 
     companion object{
@@ -110,9 +114,61 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
         mbinding = DataBindingUtil.setContentView(this, R.layout.homescreen)
         toolbar = mbinding.mainContent.toolbarLl.toolbar
+        fromPage = intent.getStringExtra("frompage")
+        if (fromPage!=null)
+        Log.d("@@@@@@2",fromPage)
+        mInterstitialAd = InterstitialAd(this)
+        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        mInterstitialAd.loadAd(AdRequest.Builder().build())
+        mInterstitialAd.adListener = object: AdListener() {
+            override fun onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Log.d("@@@@@@","onAdLoaded")
+                if (fromPage!=null){
 
+                    when(fromPage){
+                        "editnotesavenote"->{
+                            if (mInterstitialAd.isLoaded) {
+                                Log.d("@@@@@","loaded")
+                                mInterstitialAd.show()
+                            } else {
+                                Log.d("@@@@", "The interstitial wasn't loaded yet.")
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onAdFailedToLoad(errorCode: Int) {
+                // Code to be executed when an ad request fails.
+                Log.d("@@@@@@","onAdFailedToLoad")
+            }
+
+            override fun onAdOpened() {
+                // Code to be executed when the ad is displayed.
+                Log.d("@@@@@@","onAdOpened")
+            }
+
+            override fun onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+                Log.d("@@@@@@","onAdClicked")
+            }
+
+            override fun onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+                Log.d("@@@@@@","onAdLeftApplication")
+            }
+
+            override fun onAdClosed() {
+                // Code to be executed when the interstitial ad is closed.
+                Log.d("@@@@@@","onAdClosed")
+            }
+
+        }
 
         initLayout()
+
+
         dialog= Dialog(this)
 
 
@@ -296,44 +352,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
     }
 
-    private fun converthtmlTopdf() {
-        val folderSD: String? =
-            Environment.getExternalStorageDirectory().toString() + "/KeepNotePdf"
-        val sd = File(folderSD)
 
-        if (!sd.exists()) {
-            sd.mkdir()
-            Log.d("@@@@@","folder created")
-        } else {
-            val html = "<body>\n" +
-                    "\n" +
-                    "<h2>Using a Full URL File Path</h2>\n" +
-                    "<img src=\"https://www.w3schools.com/images/picture.jpg\" alt=\"Mountain\" style=\"width:300px\">\n" +
-                    "\n" +
-                    "</body>"
-            val converter = Html2Pdf.Companion.Builder()
-                .context(this)
-                .html(html)
-                .file(File(sd,"raks.pdf"))
-                .build()
-
-            converter.convertToPdf(object:
-                Html2Pdf.OnCompleteConversion {
-                override fun onSuccess(msg: String) {
-                    Constants.showToast(msg,this@HomeScreen)
-                }
-
-                override fun onFailed(msg: String) {
-                    Constants.showToast(msg,this@HomeScreen)
-                }
-            })
-        }
-
-
-
-
-
-    }
 
 
 
@@ -416,6 +435,9 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
         mbinding.viewmodel = viewmodel
         mbinding.lifecycleOwner = this
         getAllNoteDB()
+
+
+
         //noteAdapter = NotesAdapterFirestore(allNotes)
 
 

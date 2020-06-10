@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.keepnote.HomeScreen
+import com.keepnote.Html2Pdf
 import com.keepnote.R
 import com.keepnote.databinding.ActivityBackupBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
@@ -68,8 +69,14 @@ class ExportBackup : AppCompatActivity() {
             backup(this) }
 
 
+//        mbinding.exporttxt.setOnClickListener {
+//            restore(0,this)}
+
         mbinding.exporttxt.setOnClickListener {
-            restore(0,this)}
+            if (TedPermission.isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                converthtmlTopdf()
+            }else Constants.verifyPermission(this)
+        }
 
         mbinding.delete.setOnClickListener {
             val builder: AlertDialog.Builder =
@@ -132,31 +139,37 @@ class ExportBackup : AppCompatActivity() {
     }
 
      fun restore(restoreFor:Int,activity: Activity) {
-         var backupFilePath = ""
-         if (restoreFor==0){
-             backupFilePath = "/storage/emulated/0/Android/data/com.keepnote/files/Documents/note_2020_05_01__15_32_31"
-         } else backupFilePath = "/storage/emulated/0/Android/data/com.keepnote/files/Documents/drive_db"
+         if (TedPermission.isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+             var backupFilePath = ""
+             if (restoreFor == 0) {
+                 backupFilePath =
+                     "/storage/emulated/0/Android/data/com.keepnote/files/Documents/note_2020_05_01__15_32_31"
+             } else backupFilePath =
+                 "/storage/emulated/0/Android/data/com.keepnote/files/Documents/drive_db"
 
-        Restore.Init()
-            .database(NoteDatabase.invoke(this))
+             Restore.Init()
+                 .database(NoteDatabase.invoke(this))
 //            .backupFilePath("/storage/emulated/0/Android/data/com.keepnote/files/Documents/file.db")
-            .backupFilePath(backupFilePath)
-            .secretKey("123")
-            .onWorkFinishListener {
-                    success, message -> Constants.showToast("$message",activity)
-                if (restoreFor==0){
-                    startActivity(Intent(activity,HomeScreen::class.java))
-                    finish()
-                }else{
+                 .backupFilePath(backupFilePath)
+                 .secretKey("123")
+                 .onWorkFinishListener { success, message ->
+                     Constants.showToast("$message", activity)
+                     if (restoreFor == 0) {
+                         startActivity(Intent(activity, HomeScreen::class.java))
+                         finish()
+                     } else {
 
-                        Log.d("@@@@","frgament")
-                        (activity as HomeScreen).initFragment(1)
+                         Log.d("@@@@", "frgament")
+                         (activity as HomeScreen).initFragment(1)
 
 
-                }
+                     }
 
-            }
-            .execute()
+                 }
+                 .execute()
+         }else{
+             Constants.verifyPermission(this)
+         }
 
     }
 
@@ -179,6 +192,8 @@ class ExportBackup : AppCompatActivity() {
                     Constants.showToast("$message", context)
                 }
                 .execute()
+        }else{
+            Constants.verifyPermission(this)
         }
     }
 
@@ -189,6 +204,48 @@ class ExportBackup : AppCompatActivity() {
     }
 
 
+
+    private fun converthtmlTopdf() {
+        var sd:File?=null
+        val folderSD: String? = Constants.createFolder(this).absolutePath
+        folderSD?.let {
+            sd = File(folderSD)
+        }
+
+
+        if (!sd!!.exists()) {
+            sd?.mkdir()
+            Log.d("@@@@@","folder created")
+        } else {
+            val html = "<body>\n" +
+                    "\n" +
+                    "<h2>Using a Full URL File Path</h2>\n" +
+                    "<img src=\"https://www.w3schools.com/images/picture.jpg\" alt=\"Mountain\" style=\"width:300px\">\n" +
+                    "\n" +
+                    "</body>"
+            val converter = Html2Pdf.Companion.Builder()
+                .context(this)
+                .html(html)
+                .file(File(sd,"raks.pdf"))
+                .build()
+
+            converter.convertToPdf(object:
+                Html2Pdf.OnCompleteConversion {
+                override fun onSuccess(msg: String) {
+                    Constants.showToast(msg,this@ExportBackup)
+                }
+
+                override fun onFailed(msg: String) {
+                    Constants.showToast(msg,this@ExportBackup)
+                }
+            })
+        }
+
+
+
+
+
+    }
 
 
 
