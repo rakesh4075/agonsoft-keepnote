@@ -31,7 +31,7 @@ class RRE_ToolItem_Bold(var context: Context) : RRE_ToolItem_Abstract() {
             val size = Util.getPixelByDp(context, 40)
             val params = LinearLayout.LayoutParams(size, size)
             imageView.layoutParams = params
-            imageView.setImageResource(R.drawable.bold)
+            imageView.setImageResource(R.drawable.ic_bold)
             imageView.bringToFront()
             mToolItemView = imageView
         }

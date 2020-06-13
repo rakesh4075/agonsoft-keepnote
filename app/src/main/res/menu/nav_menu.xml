@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:title="General">
-        <menu>
+
             <item
                 app:actionViewClass="android.widget.TextView"
                 android:icon="@drawable/ic_event_note"
                 android:id="@+id/notes"
                 android:title="@string/Notes"/>
             <item
+                app:actionViewClass="android.widget.TextView"
                 android:icon="@drawable/ic_favorite"
                 android:id="@+id/myfav"
                 android:title="@string/my_favourites_txt"/>
@@ -18,12 +17,8 @@
                 android:icon="@drawable/ic_sync_black"
                 android:id="@+id/syncnote"
                 android:title="@string/sync_note"/>
-        </menu>
-    </item>
 
-    <item
-        android:title="Support">
-        <menu>
+
             <item
                 app:actionViewClass="android.widget.TextView"
                 android:icon="@drawable/ic_lock"
@@ -43,14 +38,18 @@
                 android:id="@+id/menu_settings"
                 android:title="@string/settings"/>
             <item
+                android:icon="@drawable/ic_feedback"
+                android:id="@+id/menu_feedback"
+                android:title="@string/feedback"/>
+
+            <item
                 android:visible="false"
                 app:showAsAction="never"
                 android:icon="@drawable/ic_logout_key"
                 android:id="@+id/logout"
                 android:title="@string/logintxt"/>
 
-        </menu>
-    </item>
+
    <!-- <item
 
         android:title="@string/logouttxt">

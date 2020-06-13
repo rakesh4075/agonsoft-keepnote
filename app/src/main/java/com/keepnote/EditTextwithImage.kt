@@ -13,7 +13,7 @@ class EditTextwithImage(context: Context): AppCompatEditText(context) {
 
 
     override fun setText(text: CharSequence?, type: BufferType?) {
-        val s = getTextWithImages(context, text);
+        val s = getTextWithImages(context, text)
         super.setText(text, type)
 
     }

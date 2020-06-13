@@ -22,7 +22,7 @@ class Splashscreen : AppCompatActivity() {
 
         setContentView(R.layout.activity_splashscreen)
         GlobalScope.launch {
-            delay(1000)
+            delay(150)
             startActivity(Intent(this@Splashscreen, HomeScreen::class.java))
             finish()
         }

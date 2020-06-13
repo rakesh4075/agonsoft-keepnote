@@ -41,9 +41,7 @@ class RREEditText: AppCompatEditText {
         setupListener()
     }
 
-    constructor(context: Context, attr: AttributeSet, defStyle:Int):super(context,attr){
-
-    }
+    constructor(context: Context, attr: AttributeSet, defStyle:Int):super(context,attr)
 
     private fun init() {
         isFocusableInTouchMode = true
@@ -54,7 +52,7 @@ class RREEditText: AppCompatEditText {
 //        var padding = 8
 //        padding = Util.getPixelByDp(mContext, padding)
 //        setPadding(padding, padding, padding, padding)
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, Constants.DEFAULT_FONT_SIZE);
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, Constants.DEFAULT_FONT_SIZE)
 
     }
 

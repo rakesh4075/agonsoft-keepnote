@@ -37,7 +37,7 @@ class NoteDetails : AppCompatActivity() {
 
         if (title!=null && content!=null && colorcode!=null){
             binding.noteDetailsTitle.text = title
-            binding.noteContentll.noteDetailsContent.setText(Html.fromHtml(content!!))
+            binding.noteContentll.noteDetailsContent.text = Html.fromHtml(content!!)
             if ((colorcode.toString().subSequence(0,1) as String) == "-"){
                 binding.noteContentll.noteDetailsContent.setBackgroundColor(colorcode!!)
                 binding.noteContentll.txtContentll.setBackgroundColor(colorcode!!)

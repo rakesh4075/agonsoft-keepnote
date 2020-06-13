@@ -90,7 +90,7 @@ class RRE_FontColor
     }
 
     override fun changeSpanInsideStyle(editable: Editable?, start: Int, end: Int, existingSpan: AreForegroundColorSpan?) {
-        val currentColor: Int? = existingSpan?.getForegroundColor()
+        val currentColor: Int? = existingSpan?.foregroundColor
         if (currentColor != mColor) {
             Util.log("color changed before: $currentColor, new == $mColor")
             applyNewStyle(editable, start, end, mColor)

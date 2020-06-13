@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class Backup {
@@ -110,10 +111,10 @@ public class Backup {
                     byte[] data;
                     if(secretKey!=null) {
                         String encryptedJsonTextDB = AESUtils.encrypt(jsonTextDB, secretKey);
-                        data = encryptedJsonTextDB.getBytes("UTF8");
+                        data = encryptedJsonTextDB.getBytes(StandardCharsets.UTF_8);
                     }
                     else{
-                        data = jsonTextDB.getBytes("UTF8");
+                        data = jsonTextDB.getBytes(StandardCharsets.UTF_8);
                     }
                     File root = new File(path);
                     if (!root.exists()) {

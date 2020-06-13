@@ -1,9 +1,15 @@
+
 package com.keepnote.utils
 
+import android.app.ProgressDialog
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
+import com.keepnote.KeepNoteApplication
 import com.keepnote.R
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.tedpermission.PermissionListener
@@ -83,7 +89,7 @@ class Constants {
                 .setDeniedMessage(
                     "If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setGotoSettingButtonText("Settings")
-                .setPermissions(android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.GET_ACCOUNTS)
+                .setPermissions(android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .setGotoSettingButton(true)
                 .check()
         }
@@ -93,10 +99,50 @@ class Constants {
             Log.d("@@@value",value.toString())
             return value
         }
+        fun setupProgressDialog(context: Context): ProgressDialog {
+            val mProgress = ProgressDialog(context, R.style.AppProgressDialogTheme)
+            mProgress.setCancelable(false)
+            mProgress.setTitle(context.getString(R.string.please_wait))
+            mProgress.setMessage(context.getString(R.string.loading_dots))
+            mProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+            mProgress.setCanceledOnTouchOutside(false)
+            return mProgress
+        }
+
+         fun isInternetAvailable(context: Context): Boolean {
+            var result = false
+            val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val networkCapabilities = connectivityManager.activeNetwork ?: return false
+                val actNw =
+                    connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+                result = when {
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                    else -> false
+                }
+            } else {
+                connectivityManager.run {
+                    connectivityManager.activeNetworkInfo?.run {
+                        result = when (type) {
+                            ConnectivityManager.TYPE_WIFI -> true
+                            ConnectivityManager.TYPE_MOBILE -> true
+                            ConnectivityManager.TYPE_ETHERNET -> true
+                            else -> false
+                        }
+
+                    }
+                }
+            }
+
+            return result
+        }
 
         // create folder if it not exist
          fun createFolder(context: Context):File {
-            val sd = File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString()+"/KeepNotePdf")
+            val sd = File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString())
             if (!sd.exists()) {
                 sd.mkdir()
                 Log.d("@@@@","folder created")

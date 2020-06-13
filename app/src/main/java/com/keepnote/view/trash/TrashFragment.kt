@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.keepnote.HomeScreen
 import com.keepnote.NoteListAdapter
 
 import com.keepnote.R
@@ -57,6 +58,7 @@ class TrashFragment : Fragment(),NoteListAdapter.NotesListner {
         delete?.visibility = View.VISIBLE
         delete?.setImageResource(R.drawable.ic_delete)
 
+
         delete?.setOnClickListener {
             if (deletedNotes!=null){
                 if (deletedNotes!!.isEmpty()){
@@ -85,35 +87,42 @@ class TrashFragment : Fragment(),NoteListAdapter.NotesListner {
     }
 
     private fun getAllNoteDB() {
-        viewmodel.getallNotes()
-        viewmodel.allNotes.observe(this, Observer {notes->
-            Log.d("@@@@@",notes.toString())
-            notesize = notes.size
-            deletedNotes = ArrayList()
-            for (i in 0 until notesize){
-                if (notes[i].isDeleted==1)
-                    deletedNotes!!.add(notes[i])
-            }
-            if (deletedNotes!!.isEmpty()){
-                mbinding.errLayout.root.visibility  = View.VISIBLE
-                mbinding.errLayout.errmsg.text = "Your Notes in Trash will be deleted after 7 days"
-                // mbinding.adView.visibility = View.GONE
-                noteDBAdapter =
-                    TrashAdapter(deletedNotes!!, this)
-                mbinding.trashRecycler.adapter = noteDBAdapter
-                noteDBAdapter?.notifyDataSetChanged()
-            }else{
-                noteDBAdapter =
-                    TrashAdapter(deletedNotes!!, this)
-                mbinding.trashRecycler.layoutManager = getLayoutManager(4)
-                mbinding.trashRecycler.adapter = noteDBAdapter
-                noteDBAdapter?.notifyDataSetChanged()
+        try {
+            viewmodel.getallNotes()
+            viewmodel.allNotes.observe(this, Observer {notes->
+                Log.d("@@@@@",notes.toString())
+                notesize = notes.size
+                deletedNotes = ArrayList()
+                for (i in 0 until notesize){
+                    if (notes[i].isDeleted==1)
+                        deletedNotes?.add(notes[i])
+                }
+                if (deletedNotes!=null){
+                    if (deletedNotes!!.isEmpty()){
+                        mbinding.errLayout.root.visibility  = View.VISIBLE
+                        mbinding.errLayout.errmsg.text = "Your Notes in Trash will be deleted after 7 days"
+                        // mbinding.adView.visibility = View.GONE
+                        noteDBAdapter =
+                            TrashAdapter(deletedNotes!!, this)
+                        mbinding.trashRecycler.adapter = noteDBAdapter
+                        (activity as HomeScreen).getAllNoteDBCount()
+                        noteDBAdapter?.notifyDataSetChanged()
+                    }else{
+                        noteDBAdapter =
+                            TrashAdapter(deletedNotes!!, this)
+                        mbinding.trashRecycler.layoutManager = getLayoutManager(4)
+                        mbinding.trashRecycler.adapter = noteDBAdapter
+                        (activity as HomeScreen).getAllNoteDBCount()
+                        noteDBAdapter?.notifyDataSetChanged()
 
-            }
+                    }
+                }
 
+            })
+        }catch (e:Exception){
 
+        }
 
-        })
     }
     private fun getLayoutManager(i:Int): RecyclerView.LayoutManager{
         when(i){

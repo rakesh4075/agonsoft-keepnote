@@ -60,9 +60,7 @@ class RRE_Toolbar:LinearLayout {
         init()
     }
 
-    constructor(context: Context,attr: AttributeSet,defStyle:Int):super(context,attr){
-
-    }
+    constructor(context: Context,attr: AttributeSet,defStyle:Int):super(context,attr)
 
 
     /**

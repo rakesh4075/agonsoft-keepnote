@@ -103,6 +103,9 @@ class EditNote : AppCompatActivity() {
         displayWidth = displayMetrics.widthPixels
 
 
+
+
+
         binding.favToogle.isChecked = false
         binding.favToogle.background = ContextCompat.getDrawable(this,R.drawable.ic_favorite)
         binding.favToogle.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -172,6 +175,10 @@ class EditNote : AppCompatActivity() {
                 binding.noteContenteditll.txtContentll.backgroundTintList = ColorStateList.valueOf(color)
                 notecolor = color
                 colorcode = color
+                if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,this@EditNote))as Boolean)
+                binding.noteContenteditll.editNoteContent.setTextColor(ContextCompat.getColor(this@EditNote,R.color.black))
+                if (notecolor==-16777216)binding.noteContenteditll.editNoteContent.setTextColor(ContextCompat.getColor(this@EditNote,R.color.white))
+
             }
 
             override fun onCancel() {

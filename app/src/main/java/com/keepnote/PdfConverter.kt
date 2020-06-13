@@ -33,9 +33,9 @@ internal class PdfConverter private constructor() : Runnable {
         }
 
     private val defaultPrintAttrs: PrintAttributes?
-        get() = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) null else PrintAttributes.Builder()
+        get() = PrintAttributes.Builder()
             .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
-            .setResolution(PrintAttributes.Resolution("RESOLUTION_ID", "RESOLUTION_ID", 600, 600))
+            .setResolution(PrintAttributes.Resolution("RESOLUTION_ID", "RESOLUTION_ID", 800, 800))
             .setMinMargins(PrintAttributes.Margins.NO_MARGINS)
             .build()
 

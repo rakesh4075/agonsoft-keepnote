@@ -56,7 +56,7 @@ class NoteWebview : AppCompatActivity() {
 
             }
         }
-        if (!(webUrl.isNullOrEmpty())) mBinding.notewebView.loadDataWithBaseURL(null,webUrl,"text/html", "utf-8", null);
+        if (!(webUrl.isNullOrEmpty())) mBinding.notewebView.loadDataWithBaseURL(null,webUrl,"text/html", "utf-8", null)
         notecolor?.let {colorcode->
             if ((colorcode.toString().subSequence(0,1) as String) == "-"){
                 mBinding.notewebView.setBackgroundColor(colorcode)
@@ -116,7 +116,7 @@ class NoteWebview : AppCompatActivity() {
 
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
-                    view?.getContext()?.startActivity(
+                    view?.context?.startActivity(
                         Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     )
                     return true
@@ -170,9 +170,7 @@ class NoteWebview : AppCompatActivity() {
 
 
     }
-    internal class MyWebChromeClient : WebChromeClient() {
-
-    }
+    internal class MyWebChromeClient : WebChromeClient()
 
     override fun onBackPressed() {
         super.onBackPressed()

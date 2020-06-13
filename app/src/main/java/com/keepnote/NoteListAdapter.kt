@@ -2,7 +2,6 @@ package com.keepnote
 
 import android.content.Intent
 import android.graphics.BlurMaskFilter
-import android.os.Build
 import android.text.Html
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -44,7 +43,7 @@ class NoteListAdapter(var noteList: List<Notes>,listner: NotesListner):RecyclerV
         if (!(noteList[position].isDeleted==1)){
             noteList[position].title?.let {title->
                 if (title.isEmpty()){
-                    holder.title.text="<Untitled>"
+                    holder.title.text=holder.itemView.context.getString(R.string.title_empty_text)
                 } else if (title.length>=20) holder.title.text = "${title.subSequence(0,20)}..."
                 else holder.title.text = title
             }

@@ -17,23 +17,23 @@
 
 
 
-            <ImageView
+           <!-- <ImageView
                 android:id="@+id/rteFontsize"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
                 app:srcCompat="@drawable/ic_format_size"
                 android:visibility="gone"
-                />
+                />-->
 
-            <ImageView
+        <!--    <ImageView
                 android:id="@+id/rteFontface"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
                 app:srcCompat="@drawable/fontface"
                 android:visibility="gone"
-                />
+                />-->
 
             <ImageView
                 android:id="@+id/rteBold"
@@ -63,24 +63,24 @@
                 android:padding="5dp"
                 app:srcCompat="@drawable/ic_strikethrough" />
 
-            <ImageView
+       <!--     <ImageView
                 android:id="@+id/rteHr"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
                 android:visibility="gone"
-                app:srcCompat="@drawable/hr" />
+                app:srcCompat="@drawable/hr" />-->
 
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/rteSubscript"
                 android:layout_width="40dp"
                 android:visibility="gone"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                app:srcCompat="@drawable/subscript" />
+                app:srcCompat="@drawable/subscript" />-->
 
-            <ImageView
+           <!-- <ImageView
                 android:id="@+id/rteSuperscript"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -94,7 +94,7 @@
                 android:layout_height="40dp"
                 android:visibility="gone"
                 android:padding="5dp"
-                app:srcCompat="@drawable/quote" />
+                app:srcCompat="@drawable/quote" />-->
 
 
             <ImageView
@@ -121,7 +121,7 @@
                 app:srcCompat="@drawable/ic_insert_link"
                 />
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/rteListNumber"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -211,7 +211,7 @@
                 android:padding="5dp"
                 app:srcCompat="@drawable/ic_delete"
                 android:visibility="visible"
-                />
+                />-->
         </LinearLayout>
     </HorizontalScrollView>
     <LinearLayout

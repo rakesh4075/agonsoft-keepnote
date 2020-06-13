@@ -22,24 +22,24 @@ class AESUtils {
 
     private static byte[] getRawKey(byte[] keyValue) throws Exception {
         SecretKey key = new SecretKeySpec(keyValue, "AES");
-        byte[] raw = key.getEncoded();
-        return raw;
+        return key.getEncoded();
+
     }
 
     private static byte[] encrypt(byte[] raw, byte[] clear) throws Exception {
         SecretKey skeySpec = new SecretKeySpec(raw, "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
-        byte[] encrypted = cipher.doFinal(clear);
-        return encrypted;
+        return cipher.doFinal(clear);
+
     }
 
     private static byte[] decrypt(byte[] encrypted, byte[] keyValue) throws Exception {
         SecretKey skeySpec = new SecretKeySpec(keyValue, "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, skeySpec);
-        byte[] decrypted = cipher.doFinal(encrypted);
-        return decrypted;
+        return cipher.doFinal(encrypted);
+
     }
 
     private static byte[] toByte(String hexString) {

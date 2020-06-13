@@ -5,9 +5,9 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.Gravity
 import android.view.Menu
@@ -22,8 +22,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.core.view.MenuItemCompat
 import androidx.databinding.DataBindingUtil
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
@@ -46,10 +46,10 @@ import com.keepnote.databinding.HomescreenBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
-import com.keepnote.view.UpgradePayment
 import com.keepnote.view.exportbackup.DriveUtil
 import com.keepnote.view.exportbackup.ExportBackup
 import com.keepnote.view.exportbackup.RemoteBackup
+import com.keepnote.view.favourite.FavouriteFragment
 import com.keepnote.view.homescreen.Homefragment
 import com.keepnote.view.settings.Privacy
 import com.keepnote.view.settings.Settings
@@ -61,7 +61,6 @@ import kotlinx.android.synthetic.main.homescreen.view.*
 import kotlinx.android.synthetic.main.nav_bottom.view.*
 import kotlinx.android.synthetic.main.nav_header.view.*
 import kotlinx.coroutines.*
-import java.io.File
 import java.text.DateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -69,9 +68,9 @@ import kotlin.collections.ArrayList
 class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
 
+    private var clickedNavItem: Int?=null
     private var lastsyncTime: String?=null
     private lateinit var dialog: Dialog
-    private var mmenu: Menu?=null
     private  var noteDBAdapter: NoteListAdapter?=null
     private lateinit var toolbar: Toolbar
     private lateinit var mbinding:HomescreenBinding
@@ -85,6 +84,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
     private lateinit var notesCount:TextView
     private lateinit var trasCount:TextView
     private lateinit var privacyCount:TextView
+    private lateinit var favouritecount:TextView
     private var remoteBackup: RemoteBackup? = null
     private var showtoolbarView = false
     private var isBackup = true
@@ -116,7 +116,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
         toolbar = mbinding.mainContent.toolbarLl.toolbar
         fromPage = intent.getStringExtra("frompage")
         if (fromPage!=null)
-        Log.d("@@@@@@2",fromPage)
+            Log.d("@@@@@@2",fromPage)
         mInterstitialAd = InterstitialAd(this)
         mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
         mInterstitialAd.loadAd(AdRequest.Builder().build())
@@ -166,6 +166,33 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
         }
 
+        mbinding.drawer.addDrawerListener(object :DrawerLayout.DrawerListener{
+            override fun onDrawerStateChanged(newState: Int) {
+
+            }
+
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                getAllNoteDBCount()
+                if (clickedNavItem!=null){
+                    when(clickedNavItem){
+                        R.id.notes->{  initFragment(1) }
+                        R.id.trash ->{  initFragment(2) }
+                        R.id.myfav ->{ initFragment(3) }
+                        R.id.menu_privacy->{startActivity(Intent(this@HomeScreen,Privacy::class.java))}
+                        R.id.menu_settings->{ startActivity(Intent(this@HomeScreen,Settings::class.java))}
+                    }
+                }
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+
+            }
+        })
+
         initLayout()
 
 
@@ -181,7 +208,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
                 CoroutineScope(Dispatchers.Main).launch {
                     Log.d("@@@@progress",progress.toString())
                     if (progress==100)
-                    showSyncDialog(progress,false)
+                        showSyncDialog(progress,false)
                     else{
                         showSyncDialog(progress,true)
 
@@ -190,7 +217,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
                 }
 
-                }
+            }
 
         })
         if(StoreSharedPrefData.INSTANCE.getPref("appstart",false,this) as Boolean){
@@ -216,8 +243,8 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
             when(item.itemId){
                 R.id.menu_privacy ->{
-                   startActivity(Intent(this,Privacy::class.java))
-                    mbinding.drawer.closeDrawer(GravityCompat.START)
+                    clickedNavItem = R.id.menu_privacy
+
                 }
 
                 R.id.backup->{
@@ -226,23 +253,35 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
                 }
 
                 R.id.notes->{
-                    initFragment(1)
+                    clickedNavItem = R.id.notes
                 }
                 R.id.trash->{
-                    initFragment(2)
+                    clickedNavItem = R.id.trash
 
                 }
 
 
                 R.id.myfav->{
-                    startActivity(Intent(this,UpgradePayment::class.java))
+                    clickedNavItem = R.id.myfav
 
                 }
 
                 R.id.menu_settings->{
-                    startActivity(Intent(this,Settings::class.java))
+                    clickedNavItem = R.id.menu_settings
+
 
                 }
+
+                R.id.menu_feedback->{
+                    val emailList = arrayOf("raksexplore@gmail.com")
+                    val intent = Intent(Intent.ACTION_SENDTO).apply {
+                        data = Uri.parse("mailto:") // only email apps should handle this
+                        putExtra(Intent.EXTRA_EMAIL,emailList)
+                    }
+                    if (intent.resolveActivity(packageManager) != null) {
+                        startActivity(intent) }
+                }
+
                 R.id.logout->{
                     val menu = mbinding.navMain.menu
                     val loginMenu = menu.findItem(R.id.logout)
@@ -270,10 +309,9 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
             }
 
-            CoroutineScope(Dispatchers.Main).launch{
-                delay(600)
-                mbinding.drawer.closeDrawer(GravityCompat.START)
-            }
+
+            mbinding.drawer.closeDrawer(GravityCompat.START)
+
 
 
 
@@ -356,7 +394,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
 
 
-     fun initFragment(For:Int){
+    fun initFragment(For:Int){
         var fragment: Fragment? = null
         var fragmentClass: Class<*>?=null
         when(For){
@@ -368,13 +406,17 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
                 mbinding.mainContent.toolbarLl.toolbartitle.text = "Trash"
                 fragmentClass = TrashFragment::class.java
             }
+            3-> {
+                mbinding.mainContent.toolbarLl.toolbartitle.text = "Favourite"
+                fragmentClass = FavouriteFragment::class.java
+            }
             else -> fragmentClass = Homefragment::class.java
         }
 
         try {
             fragment = fragmentClass.newInstance() as Fragment
         } catch (e:Exception) {
-            e.printStackTrace();
+            e.printStackTrace()
         }
 
         val fragmentManager: FragmentManager = supportFragmentManager
@@ -383,15 +425,8 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
             .commit() }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-    }
 
 
-    private fun viewPdf(s: String, s1: String) {
-
-    }
 
 
     private fun initLayout() {
@@ -410,9 +445,6 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
         toggle.syncState()
         if (showtoolbarView)  mbinding.mainContent.toolbarLl.vw1.visibility = View.GONE
 
-        notesCount = MenuItemCompat.getActionView(mbinding.navMain.menu.findItem(R.id.notes)) as TextView
-        trasCount = MenuItemCompat.getActionView(mbinding.navMain.menu.findItem(R.id.trash)) as TextView
-        privacyCount = MenuItemCompat.getActionView(mbinding.navMain.menu.findItem(R.id.menu_privacy)) as TextView
         lastsyncTime = StoreSharedPrefData.INSTANCE.getPref("lastsynctime","",this) as String
 
         if (lastsyncTime!=null && lastsyncTime!=""){
@@ -434,7 +466,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
         viewmodel = ViewModelProviders.of(this,homeViewmodelFactory).get(HomeViewmodel::class.java)
         mbinding.viewmodel = viewmodel
         mbinding.lifecycleOwner = this
-        getAllNoteDB()
+        getAllNoteDBCount()
 
 
 
@@ -450,47 +482,87 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
         MobileAds.initialize(this)
         val adRequest = AdRequest.Builder().build()
-        mbinding.mainContent.adView.loadAd(adRequest)
+        val show = StoreSharedPrefData.INSTANCE.getPref("viewas",0,this) as Int
+        if (show==1){
+            mbinding.mainContent.adView.visibility = View.VISIBLE
+            mbinding.mainContent.adView.loadAd(adRequest)
+        }
+
     }
 
-    private fun getAllNoteDB() {
-        //Gravity property aligns the text
-        notesCount.gravity = Gravity.CENTER_VERTICAL;
-        notesCount.setTypeface(null, Typeface.BOLD);
-        notesCount.setTextColor(ContextCompat.getColor(this,R.color.lightcoloraccent));
+    fun getAllNoteDBCount() {
+        try {
+            notesCount = mbinding.navMain.menu.findItem(R.id.notes).actionView as TextView
+            trasCount = mbinding.navMain.menu.findItem(R.id.trash).actionView as TextView
+            privacyCount = mbinding.navMain.menu.findItem(R.id.menu_privacy).actionView as TextView
+            favouritecount = mbinding.navMain.menu.findItem(R.id.myfav).actionView as TextView
 
-        trasCount.gravity = Gravity.CENTER_VERTICAL;
-        trasCount.setTypeface(null, Typeface.BOLD);
-        trasCount.setTextColor(ContextCompat.getColor(this,R.color.lightcoloraccent));
+            //Gravity property aligns the text
+            notesCount.gravity = Gravity.CENTER_VERTICAL
+            notesCount.setTypeface(null, Typeface.BOLD)
+            notesCount.setTextColor(ContextCompat.getColor(this,R.color.lightcoloraccent))
 
-        privacyCount.gravity = Gravity.CENTER_VERTICAL;
-        privacyCount.setTypeface(null, Typeface.BOLD);
-        privacyCount.setTextColor(ContextCompat.getColor(this,R.color.lightcoloraccent));
+            trasCount.gravity = Gravity.CENTER_VERTICAL
+            trasCount.setTypeface(null, Typeface.BOLD)
+            trasCount.setTextColor(ContextCompat.getColor(this,R.color.lightcoloraccent))
 
-        viewmodel.getallNotes()
-        viewmodel.allNotes.observe(this, Observer {notes->
-            if (notes.isEmpty()){
-                notesCount.text =""
-            }else{
-                val nonDeletedNotes = ArrayList<Notes>()
-                val lockedNotes = ArrayList<Notes>()
-                for (i in notes.indices){
-                    if (notes[i].isDeleted==0)
-                        nonDeletedNotes.add(notes[i])
-                    if (notes[i].islocked==1)
-                        lockedNotes.add(notes[i])
+            privacyCount.gravity = Gravity.CENTER_VERTICAL
+            privacyCount.setTypeface(null, Typeface.BOLD)
+            privacyCount.setTextColor(ContextCompat.getColor(this,R.color.lightcoloraccent))
+
+            favouritecount.gravity = Gravity.CENTER_VERTICAL
+            favouritecount.setTypeface(null, Typeface.BOLD)
+            favouritecount.setTextColor(ContextCompat.getColor(this,R.color.lightcoloraccent))
+
+            viewmodel.getallNotes()
+            viewmodel.allNotes.observe(this, Observer {notes->
+                if (notes.isEmpty()){
+                    notesCount.text =""
+                    trasCount.text =""
+                    privacyCount.text =""
+                   // favouritecount.text =""
+                }else{
+                    val nonDeletedNotes = ArrayList<Notes>()
+                    val lockedNotes = ArrayList<Notes>()
+                    val favouriteNotes = ArrayList<Notes>()
+                    val trashNotes = ArrayList<Notes>()
+
+                    for (i in notes.indices){
+                        if (notes[i].isDeleted==0 && notes[i].islocked==0 && notes[i].isFavourite==0){
+                            nonDeletedNotes.add(notes[i])
+                        }
+
+                        if (notes[i].isDeleted==1)
+                            trashNotes.add(notes[i])
+                        if (notes[i].islocked==1)
+                            lockedNotes.add(notes[i])
+                        if (notes[i].isFavourite==1)
+                            favouriteNotes.add(notes[i])
+
+                    }
+
+                    val trashcounts = trashNotes.size
+                    val notesCounts = nonDeletedNotes.size
+                    val privacyCounts = lockedNotes.size
+                    val favouriteCounts = favouriteNotes.size
+
+                    Log.d("@@@@@@","$trashcounts #### $notesCounts ###33 $privacyCounts  ##### $favouriteCounts")
+
+                    if (notesCounts==0) notesCount.text = "" else notesCount.text =notesCounts.toString()
+                    if (trashcounts==0) trasCount.text = "" else trasCount.text =trashcounts.toString()
+                    if (privacyCounts==0) privacyCount.text="" else privacyCount.text = privacyCounts.toString()
+                   if (favouriteCounts==0) favouritecount.text="" else favouritecount.text = favouriteCounts.toString()
                 }
-                notesCount.text = nonDeletedNotes.size.toString()
-                val trashcount = notes.size - nonDeletedNotes.size
-                if (trashcount==0) trasCount.text = "" else trasCount.text =trashcount.toString()
-                if (lockedNotes.size==0) privacyCount.text="" else privacyCount.text = lockedNotes.size.toString()
-            }
 
-        })
+            })
+        }catch (e:java.lang.Exception){
+            Log.d("@@@@@",e.message.toString())
+        }
+
+
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.option_menu,menu)
-        mmenu = menu
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -501,12 +573,14 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
             R.id.view_list ->{
 //                mbinding.mainContent.notelistRecycler.layoutManager = getLayoutManager(1)
 //                noteDBAdapter?.notifyDataSetChanged()
-               viewmodel.passData("view_list")
+                StoreSharedPrefData.INSTANCE.savePrefValue("viewas",1,this)
+                viewmodel.passData("view_list")
 
             }
             R.id.view_grid ->{
 //                mbinding.mainContent.notelistRecycler.layoutManager = getLayoutManager(2)
 //                noteDBAdapter?.notifyDataSetChanged()
+                StoreSharedPrefData.INSTANCE.savePrefValue("viewas",2,this)
                 viewmodel.passData("view_grid")
 
             }
@@ -560,7 +634,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
         if (mbinding.drawer.isDrawerOpen(GravityCompat.START)){
             mbinding.drawer.closeDrawer(GravityCompat.START)
         }else{
-          finishAffinity()
+            finishAffinity()
         }
 
     }
@@ -595,7 +669,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
             }
             REQUEST_CODE_CREATION->{
                 if (resultCode == RESULT_OK) {
-                    Toast.makeText(this, "Backup successufly loaded!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Backup successufly loaded!", Toast.LENGTH_SHORT).show()
                 }
             }
             REQUEST_CODE_OPENING->{

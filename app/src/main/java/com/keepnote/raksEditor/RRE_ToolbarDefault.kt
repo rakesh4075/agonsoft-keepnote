@@ -14,13 +14,9 @@ class RRE_ToolbarDefault:HorizontalScrollView, IRRE_Toolbar {
 
     constructor(context: Context):super(context,null)
 
-    constructor(context: Context,attrs:AttributeSet):super(context,attrs,0){
+    constructor(context: Context,attrs:AttributeSet):super(context,attrs,0)
 
-    }
-
-    constructor(context: Context,attr: AttributeSet,defStyle:Int):super(context,attr){
-
-    }
+    constructor(context: Context,attr: AttributeSet,defStyle:Int):super(context,attr)
 
     init {
         initSelf()

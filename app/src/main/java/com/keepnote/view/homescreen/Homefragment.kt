@@ -59,9 +59,9 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
         viewmodel.getallNotes()
         viewmodel.allNotes.observe(this, Observer {notes->
             val notesize = notes.size
-            nonDeletedNotes = ArrayList<Notes>()
+            nonDeletedNotes = ArrayList()
             for (i in 0 until notesize){
-                    if (notes[i].isDeleted==0)
+                    if (notes[i].isDeleted==0 && notes[i].isFavourite==0)
                         nonDeletedNotes.add(notes[i])
                 }
             if (nonDeletedNotes.isEmpty()){
