@@ -3,17 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="?attr/bodybg"
     tools:context="com.keepnote.view.Splashscreen">
     <ImageView
-        android:src="@drawable/note_logo"
-        android:layout_centerInParent="true"
-        android:layout_width="@dimen/_100sdp"
-        android:layout_height="@dimen/_100sdp"/>
-    <ProgressBar
-        android:layout_margin="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_150sdp"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:src="@drawable/note_logo"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_60sdp"/>
+
 </RelativeLayout>

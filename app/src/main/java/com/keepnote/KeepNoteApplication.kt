@@ -7,8 +7,16 @@ import com.keepnote.model.preferences.StoreSharedPrefData
 class KeepNoteApplication:Application() {
 
     companion object{
-        val Context.KeepNoteApplication:KeepNoteApplication
-        get() = applicationContext as KeepNoteApplication
+        private lateinit var instance: KeepNoteApplication
+        fun getInstance(): KeepNoteApplication {
+            if (!::instance.isInitialized) {
+                instance = KeepNoteApplication()
+            }
+
+            return instance
+        }
+
+
     }
 
     override fun onCreate() {

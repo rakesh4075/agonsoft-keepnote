@@ -5,25 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/drawer_header"
-    android:background="?attr/colorAccent"
+    android:background="@drawable/navbglight"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.keepnote.utils.CircleImageView
-        app:civ_border_width="2dp"
-        app:civ_border_color="?attr/nav_color"
+    <ImageView
         android:id="@+id/mem_image"
-        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_15sdp"
         android:src="@drawable/note_logo"
         android:layout_marginTop="@dimen/_15sdp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_width="@dimen/_60sdp"
-        android:layout_height="@dimen/_60sdp"/>
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_50sdp"/>
     <TextView
         android:id="@+id/mem_name"
         android:textColor="?attr/nav_color"
         android:fontFamily="@font/robotoslabregular"
         android:textSize="@dimen/_18ssp"
-        android:text="Rakesh"
         android:layout_marginTop="@dimen/_10sdp"
         app:layout_constraintTop_toBottomOf="@id/mem_image"
         app:layout_constraintStart_toStartOf="@id/mem_image"
@@ -36,7 +33,6 @@
         android:textColor="?attr/nav_color"
         android:fontFamily="@font/robotoslabregular"
         android:textSize="@dimen/_12ssp"
-        android:text="raksexplore@gmail.com"
         android:layout_marginTop="@dimen/_2sdp"
         android:layout_marginBottom="@dimen/_10sdp"
         app:layout_constraintBottom_toBottomOf="parent"

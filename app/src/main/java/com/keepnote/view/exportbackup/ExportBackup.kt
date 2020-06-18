@@ -7,6 +7,7 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -239,32 +240,33 @@ class ExportBackup : AppCompatActivity() {
     }
 
 
-    fun  createPdfFile(sd: File?) {
-        try {
-            if (Constants.isInternetAvailable(this)){
-                var file:File?=null
-                var html = ""
-                viewmodel.getallNotes()
-                viewmodel.allNotes.observe(this, androidx.lifecycle.Observer {notes->
+    fun  createPdfFile(sd: File?) = try {
+        if (Constants.isInternetAvailable(this)){
+            var file:File?=null
+            var html = ""
+            viewmodel.getallNotes()
+            viewmodel.allNotes.observe(this, androidx.lifecycle.Observer {notes->
 //                val html = "<body>\n" +
 //                        "\n" +
 //                        "<h2>Using a Full URL File Path</h2>\n" +
 //                        "<img src=\"https://www.w3schools.com/images/picture.jpg\" alt=\"Mountain\" style=\"width:300px\">\n" +
 //                        "\n" +
 //                        "</body>"
-                    for (i in notes.indices){
-                        html = html +notes[i].title+ "<br>"+ notes[i].content + "\n"+ "<br>"+ "<br>"
-                    }
-                    file =File(sd,"keepnote.pdf")
-                    val converter = Html2Pdf.Companion.Builder()
-                        .context(this)
-                        .html(html)
-                        .file(file!!)
-                        .build()
+                for (i in notes.indices){
+                    html = html +notes[i].title+ "<br>"+ notes[i].content + "\n"+ "<br>"+ "<br>"
+                }
+                file =File(sd,"keepnote.pdf")
+                val converter = Html2Pdf.Companion.Builder()
+                    .context(this)
+                    .html(html)
+                    .file(file!!)
+                    .build()
 
 
-                    converter.convertToPdf(object: Html2Pdf.OnCompleteConversion {
-                        override fun onSuccess(msg: String) {
+                converter.convertToPdf(object: Html2Pdf.OnCompleteConversion {
+                    override fun onSuccess(msg: String) {
+                        try {
+
                             if (mProgressDialog.isShowing) mProgressDialog.dismiss()
                             Constants.showToast(msg,this@ExportBackup)
                             val uri:Uri? = try {
@@ -274,28 +276,39 @@ class ExportBackup : AppCompatActivity() {
                                 null
                             }
 
-                            val intent = Intent(Intent.ACTION_VIEW)
-                            intent.setDataAndType(uri,"application/pdf")
-                            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            startActivity(intent)
+                            if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.setDataAndType(uri,"application/pdf")
+                                intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                startActivity(intent)
+                            }else{
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.setDataAndType(Uri.parse(file?.absolutePath),"application/pdf")
+                                val intentfinal = Intent.createChooser(intent,"Open File")
+                                intentfinal.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                startActivity(intentfinal)
+                            }
 
-
+                        }catch (e:Exception){
+                            Log.d("@@@@@@",e.message.toString())
                         }
 
-                        override fun onFailed(msg: String) {
-                            if (mProgressDialog.isShowing) mProgressDialog.dismiss()
-                            mbinding.progressBar.visibility = View.GONE
-                            Constants.showToast(msg,this@ExportBackup)
-                        }
-                    })
+
+
+                    }
+
+                    override fun onFailed(msg: String) {
+                        if (mProgressDialog.isShowing) mProgressDialog.dismiss()
+                        mbinding.progressBar.visibility = View.GONE
+                        Constants.showToast(msg,this@ExportBackup)
+                    }
                 })
-            }else{
-                if (mProgressDialog.isShowing) mProgressDialog.dismiss()
-                Constants.showToast("Check network connection",this)
-            }
-        }catch (e:Exception){
-
+            })
+        }else{
+            if (mProgressDialog.isShowing) mProgressDialog.dismiss()
+            Constants.showToast("Check network connection",this)
         }
+    }catch (e:Exception){
 
     }
 

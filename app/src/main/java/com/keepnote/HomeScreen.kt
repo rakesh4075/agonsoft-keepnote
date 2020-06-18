@@ -1,5 +1,6 @@
 package com.keepnote
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
@@ -30,7 +31,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.gms.ads.AdListener
@@ -46,6 +46,7 @@ import com.keepnote.databinding.HomescreenBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
+import com.keepnote.utils.PassDataToFragListner
 import com.keepnote.view.exportbackup.DriveUtil
 import com.keepnote.view.exportbackup.ExportBackup
 import com.keepnote.view.exportbackup.RemoteBackup
@@ -65,9 +66,10 @@ import java.text.DateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
+class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToFragListner {
 
 
+    private var fragment: Fragment? = null
     private var clickedNavItem: Int?=null
     private var lastsyncTime: String?=null
     private lateinit var dialog: Dialog
@@ -76,11 +78,6 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
     private lateinit var mbinding:HomescreenBinding
     private lateinit var viewmodel: HomeViewmodel
     private lateinit var toggle: ActionBarDrawerToggle
-    private lateinit var stagLayoutManager: StaggeredGridLayoutManager
-    private lateinit var linearLayoutManager: LinearLayoutManager
-    private lateinit var gridLayoutManager: GridLayoutManager
-    private lateinit var noteListAdapter: NoteListAdapter
-    private lateinit var fstore:FirebaseFirestore
     private lateinit var notesCount:TextView
     private lateinit var trasCount:TextView
     private lateinit var privacyCount:TextView
@@ -89,7 +86,8 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
     private var showtoolbarView = false
     private var isBackup = true
     private var fromPage:String? = ""
-    private lateinit var mInterstitialAd: InterstitialAd
+    private var mInterstitialAd: InterstitialAd?=null
+    private var passDataToFragListners:PassDataToFragListner?=null
 
 
     companion object{
@@ -113,57 +111,62 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
 
         mbinding = DataBindingUtil.setContentView(this, R.layout.homescreen)
+        if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,this))as Boolean){
+            mbinding.navMain.getHeaderView(0).drawer_header.background = getDrawable(R.drawable.navbgdark)
+        }else{
+            mbinding.navMain.getHeaderView(0).drawer_header.background = getDrawable(R.drawable.navbglight)
+        }
         toolbar = mbinding.mainContent.toolbarLl.toolbar
         fromPage = intent.getStringExtra("frompage")
-        if (fromPage!=null)
-            Log.d("@@@@@@2",fromPage)
-        mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
-        mInterstitialAd.loadAd(AdRequest.Builder().build())
-        mInterstitialAd.adListener = object: AdListener() {
-            override fun onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-                Log.d("@@@@@@","onAdLoaded")
-                if (fromPage!=null){
+        if (fromPage!=null){
+            mInterstitialAd = InterstitialAd(this)
+            mInterstitialAd?.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+            mInterstitialAd?.loadAd(AdRequest.Builder().build())
+            mInterstitialAd?.adListener = object: AdListener() {
+                override fun onAdLoaded() {
+                    // Code to be executed when an ad finishes loading.
+                    Log.d("@@@@@@","onAdLoaded")
+                    if (fromPage!=null){
 
-                    when(fromPage){
-                        "editnotesavenote"->{
-                            if (mInterstitialAd.isLoaded) {
-                                Log.d("@@@@@","loaded")
-                                mInterstitialAd.show()
-                            } else {
-                                Log.d("@@@@", "The interstitial wasn't loaded yet.")
+                        when(fromPage){
+                            "editnotesavenote"->{
+                                if (mInterstitialAd!!.isLoaded) {
+                                    Log.d("@@@@@","loaded")
+                                    mInterstitialAd!!  .show()
+                                } else {
+                                    Log.d("@@@@", "The interstitial wasn't loaded yet.")
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            override fun onAdFailedToLoad(errorCode: Int) {
-                // Code to be executed when an ad request fails.
-                Log.d("@@@@@@","onAdFailedToLoad")
-            }
+                override fun onAdFailedToLoad(errorCode: Int) {
+                    // Code to be executed when an ad request fails.
+                    Log.d("@@@@@@","onAdFailedToLoad")
+                }
 
-            override fun onAdOpened() {
-                // Code to be executed when the ad is displayed.
-                Log.d("@@@@@@","onAdOpened")
-            }
+                override fun onAdOpened() {
+                    // Code to be executed when the ad is displayed.
+                    Log.d("@@@@@@","onAdOpened")
+                }
 
-            override fun onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-                Log.d("@@@@@@","onAdClicked")
-            }
+                override fun onAdClicked() {
+                    // Code to be executed when the user clicks on an ad.
+                    Log.d("@@@@@@","onAdClicked")
+                }
 
-            override fun onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-                Log.d("@@@@@@","onAdLeftApplication")
-            }
+                override fun onAdLeftApplication() {
+                    // Code to be executed when the user has left the app.
+                    Log.d("@@@@@@","onAdLeftApplication")
+                }
 
-            override fun onAdClosed() {
-                // Code to be executed when the interstitial ad is closed.
-                Log.d("@@@@@@","onAdClosed")
-            }
+                override fun onAdClosed() {
+                    // Code to be executed when the interstitial ad is closed.
+                    Log.d("@@@@@@","onAdClosed")
+                }
 
+            }
         }
 
         mbinding.drawer.addDrawerListener(object :DrawerLayout.DrawerListener{
@@ -193,6 +196,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
             }
         })
 
+        passDataToFragListners = this
         initLayout()
 
 
@@ -293,7 +297,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
                             .addOnCompleteListener {
                                 loginMenu.title = "Login"
                                 mbinding.navMain.getHeaderView(0).mem_name.textSize = 24f
-                                mbinding.navMain.getHeaderView(0).mem_name.text = "KeepNote"
+                                mbinding.navMain.getHeaderView(0).mem_name.text = getString(R.string.app_name)
                                 mbinding.navMain.getHeaderView(0).mem_email.visibility= View.VISIBLE
                                 mbinding.navMain.getHeaderView(0).mem_email.text=""
                                 mbinding.navMain.getHeaderView(0).mem_image.visibility= View.VISIBLE
@@ -358,10 +362,10 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
             AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
         builder.setTitle("Synchronization").setIcon(null)
             .setMessage("Online synchronization will allow you to access notes from multiple devices.\nAll your notes wiil be stored online on Google Drive.")
-        builder.setPositiveButton(R.string.no) { dialog, which ->
+        builder.setPositiveButton(R.string.no) { dialog, _ ->
             dialog.dismiss()
         }
-        builder.setNegativeButton("Continue") { dialog, which ->
+        builder.setNegativeButton("Continue") { _, _ ->
             try {
                 isBackup = true
                 remoteBackup?.connectToDrive(isBackup)
@@ -374,14 +378,15 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
     }
 
 
-    private fun showSyncDialog(progress:Int,show:Boolean){
+    @SuppressLint("SetTextI18n")
+    private fun showSyncDialog(progress:Int, show:Boolean){
         dialog.setContentView(R.layout.sync_dialog)
         dialog.setCanceledOnTouchOutside(false)
         dialog.setCancelable(false)
         val syncProgress = dialog.findViewById<ProgressBar>(R.id.syncprogress)
         val syncText = dialog.findViewById<TextView>(R.id.progress_txt)
         syncProgress.progress = progress
-        syncText.text = "${progress} %"
+        syncText.text = "$progress %"
         if (show) {
             dialog.show()
         } else {
@@ -395,8 +400,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
 
     fun initFragment(For:Int){
-        var fragment: Fragment? = null
-        var fragmentClass: Class<*>?=null
+        val fragmentClass: Class<*>?
         when(For){
             1-> {
                 mbinding.mainContent.toolbarLl.toolbartitle.text = "Notes"
@@ -546,7 +550,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
                     val privacyCounts = lockedNotes.size
                     val favouriteCounts = favouriteNotes.size
 
-                    Log.d("@@@@@@","$trashcounts #### $notesCounts ###33 $privacyCounts  ##### $favouriteCounts")
+
 
                     if (notesCounts==0) notesCount.text = "" else notesCount.text =notesCounts.toString()
                     if (trashcounts==0) trasCount.text = "" else trasCount.text =trashcounts.toString()
@@ -571,17 +575,15 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
         when(item.itemId){
 
             R.id.view_list ->{
-//                mbinding.mainContent.notelistRecycler.layoutManager = getLayoutManager(1)
-//                noteDBAdapter?.notifyDataSetChanged()
                 StoreSharedPrefData.INSTANCE.savePrefValue("viewas",1,this)
-                viewmodel.passData("view_list")
+                passDataToFragListners?.passData("view_list")
+
 
             }
             R.id.view_grid ->{
-//                mbinding.mainContent.notelistRecycler.layoutManager = getLayoutManager(2)
-//                noteDBAdapter?.notifyDataSetChanged()
                 StoreSharedPrefData.INSTANCE.savePrefValue("viewas",2,this)
-                viewmodel.passData("view_grid")
+                passDataToFragListners?.passData("view_grid")
+
 
             }
 
@@ -599,32 +601,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
 
 
-    private fun getLayoutManager(i:Int):RecyclerView.LayoutManager{
-        when(i){
-            1->{
-                linearLayoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
-                return linearLayoutManager
-            }
 
-            2->{
-                gridLayoutManager = GridLayoutManager(this,3)
-                return gridLayoutManager
-            }
-
-
-            3->{
-                stagLayoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
-                return stagLayoutManager
-            }
-
-            else ->{
-                stagLayoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
-                return stagLayoutManager
-            }
-
-
-        }
-    }
 
 
 
@@ -746,6 +723,20 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner {
 
                 }
 
+            }
+        }
+
+    }
+
+    override fun passData(value: String) {
+        when(fragment?.javaClass){
+            Homefragment::class.java->{
+                val sf = supportFragmentManager.findFragmentById(R.id.fragcontainer) as Homefragment
+                sf.getDate(value)
+            }
+            TrashFragment::class.java->{
+                val sf = supportFragmentManager.findFragmentById(R.id.fragcontainer) as TrashFragment
+                sf.getDate(value)
             }
         }
 

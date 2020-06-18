@@ -17,12 +17,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.keepnote.EditNote
+import com.keepnote.HomeScreen
 import com.keepnote.NoteListAdapter
 import com.keepnote.R
 import com.keepnote.databinding.HomefragmentBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
+import com.keepnote.utils.PassDataToFragListner
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
 import com.raks.roomdatabase.NoteDatabase
@@ -33,7 +35,7 @@ import kotlinx.coroutines.launch
 /**
  * A simple [Fragment] subclass.
  */
-class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
+class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any>{
 
     private lateinit var nonDeletedNotes: java.util.ArrayList<Notes>
     private  var noteDBAdapter: NoteListAdapter?=null
@@ -52,12 +54,25 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
         super.onActivityCreated(savedInstanceState)
         val delete = activity?.findViewById<ImageView>(R.id.toolbar_editicon)
         delete?.visibility = View.GONE
+        getAllNoteDB()
+        mbinding.swiperefresh.setOnRefreshListener {
+            GlobalScope.launch {
+                delay(1000L)
+                activity?.runOnUiThread {
+                    getAllNoteDB()
+                    mbinding.swiperefresh.isRefreshing =false
+                }
+
+            }
+
+        }
 
     }
 
     private fun getAllNoteDB() {
         viewmodel.getallNotes()
         viewmodel.allNotes.observe(this, Observer {notes->
+            Log.d("@@@@@observed",notes.toString())
             val notesize = notes.size
             nonDeletedNotes = ArrayList()
             for (i in 0 until notesize){
@@ -73,11 +88,11 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
                 mbinding.errLayout.root.visibility  = View.GONE
                 noteDBAdapter =
                     NoteListAdapter(nonDeletedNotes, this)
-                val layout = StoreSharedPrefData.INSTANCE.getPref("layout",3,context)
+                val layout = StoreSharedPrefData.INSTANCE.getPref("viewas",1,context)
                 mbinding.notelistRecycler.layoutManager = getLayoutManager(layout as Int)
                 mbinding.notelistRecycler.adapter = noteDBAdapter
                 noteDBAdapter?.notifyDataSetChanged()
-                Log.d("@@@@@@@@@@frag",notes.toString())
+
             }
 
 
@@ -93,14 +108,12 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
             }
 
             2->{
-               val gridLayoutManager = GridLayoutManager(context,3)
-                return gridLayoutManager
-            }
-
-
-            3->{
                val stagLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
                 return stagLayoutManager
+            }
+            3->{
+                val gridLayoutManager = GridLayoutManager(context,3)
+                return gridLayoutManager
             }
 
             else ->{
@@ -115,34 +128,20 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.title = "Notess"
-        activity?.let {
             //init viewmodel
             val application = requireNotNull(this).activity?.application
             val dataSource = context?.let { NoteDatabase.invoke(it).getNoteDao() }
             if (application!=null){
                 val homeViewmodelFactory = dataSource?.let { HomeViewmodelFactory(it, application) }
-                viewmodel = ViewModelProviders.of(it,homeViewmodelFactory).get(HomeViewmodel::class.java)
+                viewmodel = ViewModelProviders.of(this,homeViewmodelFactory).get(HomeViewmodel::class.java)
                 mbinding.viewmodel = viewmodel
                 mbinding.lifecycleOwner = this
             }
             if (context!=null)
             mbinding.swiperefresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accestcolor))
-            getAllNoteDB()
+
             viewmodel.initview(mbinding.root).observe(this,this)
             viewmodel.passedData.observe(this,this)
-
-            mbinding.swiperefresh.setOnRefreshListener {
-                GlobalScope.launch {
-                    delay(1000L)
-                    activity?.runOnUiThread {
-                        getAllNoteDB()
-                        mbinding.swiperefresh.isRefreshing =false
-                    }
-
-                }
-
-            }
-        }
 
     }
 
@@ -178,26 +177,22 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
                     startActivity(addNoteIntent)
 
                 }
-                R.id.view_list -> {
-                    context?.let { Constants.showToast("hiiiii", it) }
-                }
-            }
-        }else if (observer is String){
-            when(observer){
-                "view_list"->{
-                    context?.let { StoreSharedPrefData.INSTANCE.savePrefValue("layout",1, it) }
-                    mbinding.notelistRecycler.layoutManager = getLayoutManager(1)
-                    noteDBAdapter?.notifyDataSetChanged()
-                }
-                "view_grid"->{
-                    context?.let { StoreSharedPrefData.INSTANCE.savePrefValue("layout",3, it) }
-                    mbinding.notelistRecycler.layoutManager = getLayoutManager(3)
-                    noteDBAdapter?.notifyDataSetChanged()
-                }
             }
         }
     }
 
 
 
+    fun getDate(value:String){
+        when(value){
+            "view_list"->{
+                mbinding.notelistRecycler.layoutManager = getLayoutManager(1)
+                noteDBAdapter?.notifyDataSetChanged()
+            }
+            "view_grid"->{
+                mbinding.notelistRecycler.layoutManager = getLayoutManager(2)
+                noteDBAdapter?.notifyDataSetChanged()
+            }
+        }
+    }
 }
