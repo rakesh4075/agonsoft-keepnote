@@ -14,7 +14,6 @@
                 android:title="@string/my_favourites_txt"/>
             <item
                 android:visible="false"
-                android:icon="@drawable/ic_sync_black"
                 android:id="@+id/syncnote"
                 android:title="@string/sync_note"/>
 
@@ -23,7 +22,7 @@
                 app:actionViewClass="android.widget.TextView"
                 android:icon="@drawable/ic_lock"
                 android:id="@+id/menu_privacy"
-                android:title="Privacy"/>
+                android:title="@string/privacy_txt"/>
             <item
                 android:icon="@drawable/ic_delete"
                 android:id="@+id/trash"
@@ -45,7 +44,6 @@
             <item
                 android:visible="false"
                 app:showAsAction="never"
-                android:icon="@drawable/ic_logout_key"
                 android:id="@+id/logout"
                 android:title="@string/logintxt"/>
 

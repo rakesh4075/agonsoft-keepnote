@@ -1,5 +1,6 @@
 package com.keepnote.view.settings
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.andrognito.patternlockview.PatternLockView
 import com.andrognito.patternlockview.listener.PatternLockViewListener
 import com.andrognito.patternlockview.utils.PatternLockUtils
+import com.keepnote.HomeScreen
 import com.keepnote.NoteListAdapter
 import com.keepnote.R
 import com.keepnote.databinding.ActivityPrivacyBinding
@@ -34,6 +36,7 @@ import kotlinx.coroutines.*
 
 class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
 
+    private  var lockpattern: String?=null
     private  var  lokedNotes: ArrayList<Notes>?=null
     private var notesize: Int=0
     private var selectedQuestionPosition: Int=0
@@ -42,7 +45,10 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
     private var patternFor=""
     private var showtoolbarView = false
     private var temppasword=""
+    private var fromPage:String?=null
+    private var noteId:Long?=null
     private  var noteDBAdapter: TrashAdapter?=null
+    private var passwordReset = false
     private lateinit var viewmodel: HomeViewmodel
     var securityQuestion = arrayOf("What is your father's name?","What is your mother's name?","" +
             "What is your first girl friend name?","What is your ID card numbers?","What is your first company name?",
@@ -69,7 +75,7 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
         animshake = AnimationUtils.loadAnimation(this,R.anim.shake)
 
-        val lockpattern:String? = StoreSharedPrefData.INSTANCE.getPref("lockpattern",0,this).toString()
+        lockpattern = StoreSharedPrefData.INSTANCE.getPref("lockpattern",0,this).toString()
         if (lockpattern!=null){
             //init viewmodel
             val application = requireNotNull(this).application
@@ -78,42 +84,11 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
             viewmodel = ViewModelProviders.of(this,homeViewmodelFactory).get(HomeViewmodel::class.java)
             binding.viewmodel = viewmodel
             binding.lifecycleOwner = this
-
-            if (lockpattern == "1"){
-                binding.patternLl.visibility = View.GONE
-                binding.privacynotesLl.visibility= View.VISIBLE
-                binding.patternLockViewTest.addPatternLockListener(object :PatternLockViewListener{
-                    val savedPattern = StoreSharedPrefData.INSTANCE.getPref("securitypattern","",this@Privacy)
-                    override fun onComplete(pattern: MutableList<PatternLockView.Dot>?) {
-                        val confirmpattern = PatternLockUtils.patternToString(binding.patternLockView,pattern)
-                        if (savedPattern==confirmpattern){
-                            binding.passwordTestll.visibility = View.GONE
-                            getAllNoteDB()
-                        }else{
-                            binding.patternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG)
-                            Constants.showToast("Pattern wrong",this@Privacy)
-                        }
-                    }
-
-                    override fun onCleared() {
-
-                    }
-
-                    override fun onStarted() {
-
-                    }
-
-                    override fun onProgress(progressPattern: MutableList<PatternLockView.Dot>?) {
-
-                    }
-                })
-
-                binding.privacyResetcodeTest.setOnClickListener {
-                    binding.secquestionLl.visibility = View.VISIBLE
-                    binding.passwordTestll.visibility = View.GONE
-                }
-            }
+            fromPage = intent.getStringExtra("from")
+            noteId = intent.getLongExtra("noteid",0L)
+            getLockedNotes()
         }
+
 
 
         binding.patternLockView.addPatternLockListener(object: PatternLockViewListener {
@@ -143,7 +118,7 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
                         binding.patternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG)
 
                     }
-                }
+                }else getLockedNotes()
 
             }
 
@@ -177,24 +152,92 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
 
         binding.submitBtn.setOnClickListener {
             if (selectedQuestionPosition.toString().isNotEmpty()){
-               val selectedAnswer = binding.securityAnswer.text.toString()
-                if (selectedAnswer.isNotEmpty()){
-                    StoreSharedPrefData.INSTANCE.savePrefValue("securityquestion",selectedQuestionPosition,this)
-                    StoreSharedPrefData.INSTANCE.savePrefValue("securityanswer",selectedAnswer,this)
-                    StoreSharedPrefData.INSTANCE.savePrefValue("lockpattern",1,this)
-                    binding.privacynotesLl.visibility= View.VISIBLE
-                    binding.secquestionLl.visibility = View.GONE
-                    binding.toolbarPrivacy.toolbartitle.text = resources.getString(R.string.privacy_txt)
-                    Constants.showToast("Set successfully!",this)
+                    val selectedAnswer = binding.securityAnswer.text.toString()
+                    if (selectedAnswer.isNotEmpty()){
+                        if (passwordReset){
+                            val selectedQuestions = StoreSharedPrefData.INSTANCE.getPref("securityquestion","this",this)
+                            val selectedAnswers = StoreSharedPrefData.INSTANCE.getPref("securityanswer","this",this)
+                            if (selectedQuestions==selectedQuestionPosition){
+                                if (selectedAnswer==selectedAnswers){
+                                    StoreSharedPrefData.INSTANCE.savePrefValue("securityquestion","",this)
+                                    StoreSharedPrefData.INSTANCE.savePrefValue("securityanswer","",this)
+                                    StoreSharedPrefData.INSTANCE.savePrefValue("lockpattern",0,this)
+                                    binding.secquestionLl.visibility = View.GONE
+                                    binding.toolbarPrivacy.toolbartitle.text = resources.getString(R.string.privacy_txt)
+                                    getLockedNotes()
+                                } else Constants.showToast("Your Answer Is Not Correct.",this)
+                            } else Constants.showToast("Please Select Correct Question.",this)
+                        }else{
+                            StoreSharedPrefData.INSTANCE.savePrefValue("securityquestion",selectedQuestionPosition,this)
+                            StoreSharedPrefData.INSTANCE.savePrefValue("securityanswer",selectedAnswer,this)
+                            StoreSharedPrefData.INSTANCE.savePrefValue("lockpattern",1,this)
+                            binding.secquestionLl.visibility = View.GONE
+                            binding.toolbarPrivacy.toolbartitle.text = resources.getString(R.string.privacy_txt)
+                            getLockedNotes()
+                            Constants.showToast("Set successfully!",this)
+                        }
 
+                    }else{
+                        Constants.showToast("Input cannot be empty",this)
+                    }
                 }else{
-                    Constants.showToast("Input cannot be empty",this)
+                    Constants.showToast("Please select question list",this)
                 }
-            }else{
-                Constants.showToast("Please select question list",this)
             }
-        }
 
+
+
+    }
+
+
+
+    private fun getLockedNotes() {
+        lockpattern = StoreSharedPrefData.INSTANCE.getPref("lockpattern",0,this).toString()
+        if (lockpattern == "1"){
+            binding.patternLl.visibility = View.GONE
+            binding.privacynotesLl.visibility= View.VISIBLE
+            binding.patternLockViewTest.addPatternLockListener(object :PatternLockViewListener{
+                val savedPattern = StoreSharedPrefData.INSTANCE.getPref("securitypattern","",this@Privacy)
+                override fun onComplete(pattern: MutableList<PatternLockView.Dot>?) {
+                    val confirmpattern = PatternLockUtils.patternToString(binding.patternLockView,pattern)
+                    if (savedPattern==confirmpattern){
+                        binding.passwordTestll.visibility = View.GONE
+                        if (fromPage!=null && fromPage=="home-unlock" && noteId!=null){
+                            Log.d("@@@@@","hiiiiiiiiiii")
+                            viewmodel.updateLockbyId(noteId,0)
+                            startActivity(Intent(this@Privacy,HomeScreen::class.java))
+                            finish()
+                            return
+                        }else getAllNoteDB()
+                    }else{
+                        binding.patternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG)
+                        Constants.showToast("Pattern wrong",this@Privacy)
+                    }
+                }
+
+                override fun onCleared() {
+
+                }
+
+                override fun onStarted() {
+
+                }
+
+                override fun onProgress(progressPattern: MutableList<PatternLockView.Dot>?) {
+
+                }
+            })
+
+            binding.privacyResetcodeTest.setOnClickListener {
+                binding.secquestionLl.visibility = View.VISIBLE
+                binding.passwordTestll.visibility = View.GONE
+                passwordReset = true
+
+            }
+        }else{
+            binding.patternLl.visibility = View.VISIBLE
+            binding.privacynotesLl.visibility= View.GONE
+        }
     }
 
     private fun getAllNoteDB() {

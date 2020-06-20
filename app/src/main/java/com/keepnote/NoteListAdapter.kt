@@ -75,7 +75,11 @@ class NoteListAdapter(var noteList: List<Notes>,listner: NotesListner):RecyclerV
 
                 if (noteList[position].islocked==1){
                     popupMenu.menu.add("UnLock").setOnMenuItemClickListener {
-                        notesListner?.takeActionForNotes("updatelockbyid",position = position,noteId = noteList[position].noteId)
+                        val lockintent = Intent(holder.view.context,Privacy::class.java)
+                        lockintent.putExtra("noteid",noteList[position].noteId)
+                        lockintent.putExtra("from","home-unlock")
+                        holder.itemView.context.startActivity(lockintent)
+                      //  notesListner?.takeActionForNotes("updatelockbyid",position = position,noteId = noteList[position].noteId)
                         true
                     }
                 }else{
@@ -87,6 +91,7 @@ class NoteListAdapter(var noteList: List<Notes>,listner: NotesListner):RecyclerV
                             val lockintent = Intent(holder.view.context,Privacy::class.java)
                             lockintent.putExtra("noteid",noteList[position].noteId)
                             holder.itemView.context.startActivity(lockintent)
+                            notesListner?.takeActionForNotes("updatelockbyid",position = position,noteId = noteList[position].noteId)
                         }
 
                         true
