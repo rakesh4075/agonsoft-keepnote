@@ -3,13 +3,16 @@ package com.keepnote
 import android.content.Intent
 import android.graphics.BlurMaskFilter
 import android.text.Html
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.keepnote.databinding.NoteViewLayoutBinding
@@ -47,10 +50,12 @@ class NoteListAdapter(var noteList: List<Notes>,listner: NotesListner):RecyclerV
                 } else if (title.length>=20) holder.title.text = "${title.subSequence(0,20)}..."
                 else holder.title.text = title
             }
-            holder.content.text = Html.fromHtml(noteList[position].content)
+           val content = noteList[position].content.replace("<br>","",true)
+            Log.d("@@@@",content)
+            holder.content.text = HtmlCompat.fromHtml(content,HtmlCompat.FROM_HTML_MODE_COMPACT)
             if (noteList[position].isFavourite==1)
             holder.favItem.visibility = View.VISIBLE
-            holder.favItem.background = ContextCompat.getDrawable(holder.itemView.context,R.drawable.ic_favorite_checked)
+            holder.favItem.background = AppCompatResources.getDrawable(holder.itemView.context,R.drawable.ic_favorite_checked)
 
             if (noteList[position].islocked==1)
                 blurText(position,holder.content)
@@ -90,8 +95,9 @@ class NoteListAdapter(var noteList: List<Notes>,listner: NotesListner):RecyclerV
                         }else{
                             val lockintent = Intent(holder.view.context,Privacy::class.java)
                             lockintent.putExtra("noteid",noteList[position].noteId)
+                            lockintent.putExtra("from","home-lock")
                             holder.itemView.context.startActivity(lockintent)
-                            notesListner?.takeActionForNotes("updatelockbyid",position = position,noteId = noteList[position].noteId)
+                           // notesListner?.takeActionForNotes("updatelockbyid",position = position,noteId = noteList[position].noteId)
                         }
 
                         true

@@ -72,7 +72,6 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any>{
     private fun getAllNoteDB() {
         viewmodel.getallNotes()
         viewmodel.allNotes.observe(this, Observer {notes->
-            Log.d("@@@@@observed",notes.toString())
             val notesize = notes.size
             nonDeletedNotes = ArrayList()
             for (i in 0 until notesize){
@@ -83,6 +82,13 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any>{
                 mbinding.swiperefresh.visibility = View.GONE
                 // mbinding.adView.visibility = View.GONE
                 mbinding.errLayout.root.visibility  = View.VISIBLE
+                noteDBAdapter =
+                    NoteListAdapter(nonDeletedNotes, this)
+                val layout = StoreSharedPrefData.INSTANCE.getPref("viewas",1,context)
+                mbinding.notelistRecycler.layoutManager = getLayoutManager(layout as Int)
+                mbinding.notelistRecycler.adapter = noteDBAdapter
+                if (activity!=null) (activity as HomeScreen).getAllNoteDBCount()
+                noteDBAdapter?.notifyDataSetChanged()
             }else{
                 mbinding.swiperefresh.visibility = View.VISIBLE
                 mbinding.errLayout.root.visibility  = View.GONE
@@ -91,6 +97,7 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any>{
                 val layout = StoreSharedPrefData.INSTANCE.getPref("viewas",1,context)
                 mbinding.notelistRecycler.layoutManager = getLayoutManager(layout as Int)
                 mbinding.notelistRecycler.adapter = noteDBAdapter
+                if (activity!=null) (activity as HomeScreen).getAllNoteDBCount()
                 noteDBAdapter?.notifyDataSetChanged()
 
             }
@@ -182,15 +189,25 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any>{
     }
 
 
+    override fun onResume() {
+        super.onResume()
+        if (Constants.ReLoad){
+            Constants.ReLoad = false
+            getAllNoteDB()
+        }
+
+    }
 
     fun getDate(value:String){
         when(value){
             "view_list"->{
                 mbinding.notelistRecycler.layoutManager = getLayoutManager(1)
+                if (activity!=null) (activity as HomeScreen).getAllNoteDBCount()
                 noteDBAdapter?.notifyDataSetChanged()
             }
             "view_grid"->{
                 mbinding.notelistRecycler.layoutManager = getLayoutManager(2)
+                if (activity!=null) (activity as HomeScreen).getAllNoteDBCount()
                 noteDBAdapter?.notifyDataSetChanged()
             }
         }

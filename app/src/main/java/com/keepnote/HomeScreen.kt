@@ -20,6 +20,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -54,8 +55,6 @@ import com.keepnote.view.trash.TrashFragment
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
 import com.raks.roomdatabase.NoteDatabase
-import kotlinx.android.synthetic.main.homescreen.view.*
-import kotlinx.android.synthetic.main.nav_bottom.view.*
 import kotlinx.android.synthetic.main.nav_header.view.*
 import kotlinx.coroutines.*
 import java.text.DateFormat
@@ -108,9 +107,9 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
 
         mbinding = DataBindingUtil.setContentView(this, R.layout.homescreen)
         if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,this))as Boolean){
-            mbinding.navMain.getHeaderView(0).drawer_header.background = getDrawable(R.drawable.navbgdark)
+            mbinding.navMain.getHeaderView(0).drawer_header.background = AppCompatResources.getDrawable(this,R.drawable.navbgdark)
         }else{
-            mbinding.navMain.getHeaderView(0).drawer_header.background = getDrawable(R.drawable.navbglight)
+            mbinding.navMain.getHeaderView(0).drawer_header.background = AppCompatResources.getDrawable(this,R.drawable.navbglight)
         }
         toolbar = mbinding.mainContent.toolbarLl.toolbar
         fromPage = intent.getStringExtra("frompage")
@@ -126,7 +125,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
 
                         when(fromPage){
                             "editnotesavenote"->{
-                                if (mInterstitialAd!!.isLoaded) {
+                                if (mInterstitialAd!!.isLoaded && Constants.isInternetAvailable(this@HomeScreen)) {
                                     Log.d("@@@@@","loaded")
                                     mInterstitialAd!!  .show()
                                 } else {
@@ -178,12 +177,15 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
                 getAllNoteDBCount()
                 if (clickedNavItem!=null){
                     when(clickedNavItem){
-                        R.id.notes->{  initFragment(1) }
+                        R.id.notes->{ initFragment(1) }
                         R.id.trash ->{  initFragment(2) }
                         R.id.myfav ->{ initFragment(3) }
+                        R.id.backup->{startActivity(Intent(this@HomeScreen,ExportBackup::class.java))}
                         R.id.menu_privacy->{startActivity(Intent(this@HomeScreen,Privacy::class.java))}
                         R.id.menu_settings->{ startActivity(Intent(this@HomeScreen,Settings::class.java))}
+
                     }
+                    clickedNavItem = 0
                 }
             }
 
@@ -248,8 +250,8 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
                 }
 
                 R.id.backup->{
-                    startActivity(Intent(this,ExportBackup::class.java))
-                    mbinding.drawer.closeDrawer(GravityCompat.START)
+                    clickedNavItem = R.id.backup
+
                 }
 
                 R.id.notes->{
@@ -345,11 +347,11 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
     }
 
     private fun syncDateTime() {
-        mbinding.navMain.nav_bottomll.visibility = View.VISIBLE
+       // mbinding.navMain.nav_bottomll.visibility = View.VISIBLE
         val currentDateTime= DateFormat.getDateTimeInstance().format(Date())
         val syncDate = "Last sync: $currentDateTime"
         StoreSharedPrefData.INSTANCE.savePrefValue("lastsynctime",syncDate,this@HomeScreen)
-        mbinding.navMain.nav_bottom.last_sync.text = syncDate
+        //mbinding.navMain.nav_bottom.last_sync.text = syncDate
     }
 
 
@@ -434,22 +436,23 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
 
         toolbar.title=""
         toolbar.setNavigationIcon(R.drawable.ic_nav_menu)
-        toolbar.overflowIcon = getDrawable(R.drawable.ic_menu_overflow)
+        toolbar.overflowIcon = AppCompatResources.getDrawable(this,R.drawable.ic_menu_overflow)
         setSupportActionBar(toolbar)
         toggle = ActionBarDrawerToggle(this,mbinding.drawer,toolbar, R.string.opens, R.string.closes)
         mbinding.drawer.addDrawerListener(toggle)
         toggle.isDrawerIndicatorEnabled = false
+        toggle.syncState()
         toggle.setToolbarNavigationClickListener {
             mbinding.drawer.openDrawer(GravityCompat.START)
         }
-        toggle.syncState()
+
         if (showtoolbarView)  mbinding.mainContent.toolbarLl.vw1.visibility = View.GONE
 
         lastsyncTime = StoreSharedPrefData.INSTANCE.getPref("lastsynctime","",this) as String
 
         if (lastsyncTime!=null && lastsyncTime!=""){
-            mbinding.navMain.nav_bottomll.visibility = View.VISIBLE
-            mbinding.navMain.nav_bottom.last_sync.text = StoreSharedPrefData.INSTANCE.getPref("lastsynctime","",this@HomeScreen) as String
+          //  mbinding.navMain.nav_bottomll.visibility = View.VISIBLE
+        //    mbinding.navMain.nav_bottom.last_sync.text = StoreSharedPrefData.INSTANCE.getPref("lastsynctime","",this@HomeScreen) as String
         }
 
 //        fstore = FirebaseFirestore.getInstance()
@@ -484,8 +487,11 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
         val adRequest = AdRequest.Builder().build()
         val show = StoreSharedPrefData.INSTANCE.getPref("viewas",0,this) as Int
         if (show==1){
-            mbinding.mainContent.adView.visibility = View.VISIBLE
-            mbinding.mainContent.adView.loadAd(adRequest)
+            if (Constants.isInternetAvailable(this)){
+                mbinding.mainContent.adView.visibility = View.VISIBLE
+                mbinding.mainContent.adView.loadAd(adRequest)
+            }
+
         }
 
     }
@@ -528,7 +534,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
                     val trashNotes = ArrayList<Notes>()
 
                     for (i in notes.indices){
-                        if (notes[i].isDeleted==0 && notes[i].islocked==0 && notes[i].isFavourite==0){
+                        if (notes[i].isDeleted==0){
                             nonDeletedNotes.add(notes[i])
                         }
 
@@ -566,8 +572,9 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
 
             R.id.view_list ->{
@@ -732,6 +739,10 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
             }
             TrashFragment::class.java->{
                 val sf = supportFragmentManager.findFragmentById(R.id.fragcontainer) as TrashFragment
+                sf.getDate(value)
+            }
+            FavouriteFragment::class.java->{
+                val sf = supportFragmentManager.findFragmentById(R.id.fragcontainer) as FavouriteFragment
                 sf.getDate(value)
             }
         }

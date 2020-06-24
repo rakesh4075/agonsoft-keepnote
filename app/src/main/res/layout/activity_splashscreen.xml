@@ -3,13 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/bodybg"
+    android:background="@drawable/splash_bg"
     tools:context="com.keepnote.view.Splashscreen">
-    <ImageView
-        android:layout_marginTop="@dimen/_150sdp"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/note_logo"
-        android:layout_width="@dimen/_60sdp"
-        android:layout_height="@dimen/_60sdp"/>
 
 </RelativeLayout>

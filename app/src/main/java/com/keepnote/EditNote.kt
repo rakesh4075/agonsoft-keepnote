@@ -6,26 +6,26 @@ import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.firebase.firestore.FirebaseFirestore
 import com.keepnote.colorpicker.ColorPicker
 import com.keepnote.databinding.ActivityEditNoteBinding
-import com.keepnote.databinding.HomescreenBindingImpl
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.notesDB.NoteViewmodel
 import com.keepnote.notesDB.NoteViewmodelFactory
@@ -56,6 +56,7 @@ class EditNote : AppCompatActivity() {
     private var imageUri:ArrayList<Bitmap?>?=null
     private lateinit var mInterstitialAd: InterstitialAd
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -68,7 +69,7 @@ class EditNote : AppCompatActivity() {
             R.layout.activity_edit_note
         )
 
-        binding.toolbar.overflowIcon = getDrawable(R.drawable.ic_nav_menu)
+        binding.toolbar.overflowIcon = AppCompatResources.getDrawable(this,R.drawable.ic_menu_overflow)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
@@ -107,14 +108,14 @@ class EditNote : AppCompatActivity() {
 
 
         binding.favToogle.isChecked = false
-        binding.favToogle.background = ContextCompat.getDrawable(this,R.drawable.ic_favorite)
+        binding.favToogle.background = AppCompatResources.getDrawable(this,R.drawable.ic_favorite)
         binding.favToogle.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked){
                 isFavourite =1
-                binding.favToogle.background = ContextCompat.getDrawable(this,R.drawable.ic_favorite_checked)
+                binding.favToogle.background = AppCompatResources.getDrawable(this,R.drawable.ic_favorite_checked)
             }else{
                 isFavourite = 0
-                binding.favToogle.background = ContextCompat.getDrawable(this,R.drawable.ic_favorite)
+                binding.favToogle.background = AppCompatResources.getDrawable(this,R.drawable.ic_favorite)
             }
 
         }
@@ -170,6 +171,7 @@ class EditNote : AppCompatActivity() {
     private fun colorImageBox() {
         val coloPicker = ColorPicker(this)
         coloPicker.setOnFastChooseColorListener(object :ColorPicker.OnFastChooseColorListener{
+            @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
             override fun setOnFastChooseColorListener(position: Int, color: Int) {
                 binding.noteContenteditll.editNoteContent.backgroundTintList = ColorStateList.valueOf(color)
                 binding.noteContenteditll.txtContentll.backgroundTintList = ColorStateList.valueOf(color)

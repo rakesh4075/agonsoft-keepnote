@@ -127,6 +127,7 @@ class TrashFragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
                         noteDBAdapter =
                             TrashAdapter(deletedNotes!!, this)
                         mbinding.trashRecycler.adapter = noteDBAdapter
+                        if (activity!=null) (activity as HomeScreen).getAllNoteDBCount()
                         noteDBAdapter?.notifyDataSetChanged()
                     }else{
                         noteDBAdapter =
@@ -134,6 +135,7 @@ class TrashFragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
                         val layout = StoreSharedPrefData.INSTANCE.getPref("viewas",1,context)
                         mbinding.trashRecycler.layoutManager = getLayoutManager(layout as Int)
                         mbinding.trashRecycler.adapter = noteDBAdapter
+                        if (activity!=null) (activity as HomeScreen).getAllNoteDBCount()
                         noteDBAdapter?.notifyDataSetChanged()
 
 
@@ -186,10 +188,12 @@ class TrashFragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
         when(value){
             "view_list"->{
                 mbinding.trashRecycler.layoutManager = getLayoutManager(1)
+                if (activity!=null) (activity as HomeScreen).getAllNoteDBCount()
                 noteDBAdapter?.notifyDataSetChanged()
             }
             "view_grid"->{
                 mbinding.trashRecycler.layoutManager = getLayoutManager(2)
+                if (activity!=null) (activity as HomeScreen).getAllNoteDBCount()
                 noteDBAdapter?.notifyDataSetChanged()
             }
         }

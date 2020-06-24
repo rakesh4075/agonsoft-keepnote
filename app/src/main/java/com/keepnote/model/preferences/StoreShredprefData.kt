@@ -38,6 +38,9 @@ class StoreSharedPrefData {
                 getShredprefValue = context?.applicationContext?.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
                return getShredprefValue?.all?.get(key) ?: value
         }
+            fun removePref(key:String,context: Context?){
+                editor?.remove(key)?.apply()
+            }
 
     companion object {
         val INSTANCE: StoreSharedPrefData by lazy { StoreSharedPrefData() }

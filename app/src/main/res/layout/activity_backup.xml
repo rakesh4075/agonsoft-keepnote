@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable
             name="viewmodel"
             type="com.keepnote.viewmodel.HomeViewmodel" />
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:textAllCaps="false"
         android:id="@+id/exporttxt"
         android:fontFamily="@font/robotoslabregular"
@@ -31,26 +31,28 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@drawable/btn_normal"
         android:layout_width="0dp"
+        android:gravity="center"
+        android:background="@drawable/cur_btnbg"
+        app:backgroundTint="?attr/btnbg"
         android:layout_height="wrap_content"/>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/exportbackup"
         android:textAllCaps="false"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/_10sdp"
         android:fontFamily="@font/robotoslabregular"
         android:textColor="@color/white"
         android:text="@string/backup_notes"
-        android:layout_marginEnd="@dimen/_10sdp"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_20sdp"
         app:layout_constraintTop_toBottomOf="@id/exporttxt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="@drawable/btn_normal"
+        app:layout_constraintStart_toStartOf="@id/exporttxt"
+        app:layout_constraintEnd_toEndOf="@id/exporttxt"
         android:layout_width="0dp"
+        android:background="@drawable/cur_btnbg"
+        app:backgroundTint="?attr/btnbg"
         android:layout_height="wrap_content"/>
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_marginTop="@dimen/_15sdp"
             app:layout_constraintTop_toBottomOf="@id/exportbackup"
             android:ems="10"
@@ -60,7 +62,7 @@
             android:textSize="16sp"
             android:visibility="visible"
             android:layout_height="wrap_content"
-            android:backgroundTint="@android:color/transparent"
+            app:backgroundTint="@android:color/transparent"
             android:fontFamily="@font/robotoslabregular"
             android:text="@string/backup_title"
             android:textColor="@color/subtxtcolor"
@@ -70,7 +72,7 @@
             app:layout_constraintTop_toBottomOf="@id/exportbackup"
             app:layout_constraintEnd_toEndOf="@id/exportbackup"
             android:id="@+id/delete"
-            android:src="@drawable/ic_delete"
+            app:srcCompat="@drawable/ic_delete"
             android:layout_gravity="end|center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

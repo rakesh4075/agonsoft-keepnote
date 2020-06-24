@@ -2,12 +2,12 @@ package com.keepnote.view.favourite
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -16,11 +16,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.keepnote.HomeScreen
 import com.keepnote.NoteListAdapter
-
 import com.keepnote.R
 import com.keepnote.databinding.FragmentTrashBinding
+import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.notesDB.Notes
-import com.keepnote.view.trash.TrashAdapter
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
 import com.raks.roomdatabase.NoteDatabase
@@ -76,12 +75,15 @@ class FavouriteFragment : Fragment(),NoteListAdapter.NotesListner {
                         noteDBAdapter =
                             FavouriteAdapter(favNotes!!, this)
                         mbinding.trashRecycler.adapter = noteDBAdapter
+                        if (activity!=null) (activity as HomeScreen).getAllNoteDBCount()
                         noteDBAdapter?.notifyDataSetChanged()
                     }else{
                         noteDBAdapter =
                             FavouriteAdapter(favNotes!!, this)
-                        mbinding.trashRecycler.layoutManager = getLayoutManager(4)
+                        val layout = StoreSharedPrefData.INSTANCE.getPref("viewas",1,context)
+                        mbinding.trashRecycler.layoutManager = getLayoutManager(layout as Int)
                         mbinding.trashRecycler.adapter = noteDBAdapter
+                        if (activity!=null) (activity as HomeScreen).getAllNoteDBCount()
                         noteDBAdapter?.notifyDataSetChanged()
 
                     }
@@ -124,6 +126,20 @@ class FavouriteFragment : Fragment(),NoteListAdapter.NotesListner {
         when(actionFor){
             "restorenote"->{
                 viewmodel.updateDeleteById(noteId,0)
+            }
+        }
+    }
+    fun getDate(value:String){
+        when(value){
+            "view_list"->{
+                mbinding.trashRecycler.layoutManager = getLayoutManager(1)
+                if (activity!=null) (activity as HomeScreen).getAllNoteDBCount()
+                noteDBAdapter?.notifyDataSetChanged()
+            }
+            "view_grid"->{
+                mbinding.trashRecycler.layoutManager = getLayoutManager(2)
+                if (activity!=null) (activity as HomeScreen).getAllNoteDBCount()
+                noteDBAdapter?.notifyDataSetChanged()
             }
         }
     }

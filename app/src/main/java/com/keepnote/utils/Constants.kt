@@ -25,6 +25,7 @@ class Constants {
         private var temppassword: String?=""
         var testPattern = 0
         var patternLockNumber:String? = ""
+        var ReLoad:Boolean= false
         fun showToast(msg:String,context: Context){
             Toast.makeText(context,msg,Toast.LENGTH_LONG).show()
         }
@@ -72,26 +73,29 @@ class Constants {
         }
 
         fun verifyPermission(context: Context){
-            TedPermission.with(context)
-                .setPermissionListener(object : PermissionListener {
-                    override fun onPermissionGranted() {
-                        showToast("Permission Granted",context)
+            if (Build.VERSION.SDK_INT>=23){
+                TedPermission.with(context)
+                    .setPermissionListener(object : PermissionListener {
+                        override fun onPermissionGranted() {
+                            showToast("Permission Granted",context)
 
-                    }
+                        }
 
-                    override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                        showToast("Permission Denied",context)
-                    }
-                })
-                .setRationaleTitle(R.string.rationale_title)
-                .setRationaleMessage(R.string.rationale_message)
-                .setDeniedTitle("Permission denied")
-                .setDeniedMessage(
-                    "If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                .setGotoSettingButtonText("Settings")
-                .setPermissions(android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .setGotoSettingButton(true)
-                .check()
+                        override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                            showToast("Permission Denied",context)
+                        }
+                    })
+                    .setRationaleTitle(R.string.rationale_title)
+                    .setRationaleMessage(R.string.rationale_message)
+                    .setDeniedTitle("Permission denied")
+                    .setDeniedMessage(
+                        "If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                    .setGotoSettingButtonText("Settings")
+                    .setPermissions(android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .setGotoSettingButton(true)
+                    .check()
+            }
+
         }
 
         fun getSortOrder(context: Context):Int{

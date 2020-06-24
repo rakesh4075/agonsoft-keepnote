@@ -17,6 +17,7 @@ import com.keepnote.NoteListAdapter
 import com.keepnote.R
 import com.keepnote.databinding.SettingsItemBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
+import com.keepnote.utils.Constants
 
 
 class SettingsRecyclerAdapter(val listerner:NoteListAdapter.NotesListner) :RecyclerView.Adapter<SettingsRecyclerAdapter.ViewHolder>() {
@@ -75,6 +76,10 @@ class SettingsRecyclerAdapter(val listerner:NoteListAdapter.NotesListner) :Recyc
             if (position==itemCount-3)
                 holder.toggle.isChecked = true
         }
+        if ((StoreSharedPrefData.INSTANCE.getPref("autobackup",false,context))as Boolean){
+            if (position==itemCount-2)
+                holder.toggle.isChecked = true
+        }
         if (position>=3 || position==0){
             if (position==0)holder.toggle.visibility = View.GONE
             holder.settingValue.visibility=View.GONE
@@ -86,6 +91,18 @@ class SettingsRecyclerAdapter(val listerner:NoteListAdapter.NotesListner) :Recyc
             when(position){
 
                 0->{
+                    StoreSharedPrefData.INSTANCE.removePref("isDarktheme",context)
+                    StoreSharedPrefData.INSTANCE.removePref("synconlaunch",context)
+                    StoreSharedPrefData.INSTANCE.removePref("autobackup",context)
+                    StoreSharedPrefData.INSTANCE.removePref("notefontsize",context)
+                    StoreSharedPrefData.INSTANCE.removePref("notesortorder",context)
+                    if (context!=null){
+                        if (context is Settings){
+                            (context as Activity).finish()
+                            context.startActivity(Intent(context,Settings::class.java))
+                            Constants.showToast("Reverted!",context)
+                        }
+                    }
 
                 }
                 1->{
@@ -127,6 +144,13 @@ class SettingsRecyclerAdapter(val listerner:NoteListAdapter.NotesListner) :Recyc
                         StoreSharedPrefData.INSTANCE.savePrefValue("synconlaunch",true,context)
                     }else
                         StoreSharedPrefData.INSTANCE.savePrefValue("synconlaunch",false,context)
+
+                }
+                itemCount-2->{
+                    if (isChecked){
+                        StoreSharedPrefData.INSTANCE.savePrefValue("autobackup",true,context)
+                    }else
+                        StoreSharedPrefData.INSTANCE.savePrefValue("autobackup",false,context)
 
                 }
             }

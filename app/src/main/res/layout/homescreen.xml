@@ -28,7 +28,7 @@
         android:fitsSystemWindows="true"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
-        <RelativeLayout
+        <!--<RelativeLayout
             android:visibility="gone"
             android:id="@+id/nav_bottomll"
             android:background="?attr/colorAccent"
@@ -40,7 +40,7 @@
             <include
                 android:id="@+id/nav_bottom"
                 layout="@layout/nav_bottom"/>
-        </RelativeLayout>
+        </RelativeLayout>-->
     </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

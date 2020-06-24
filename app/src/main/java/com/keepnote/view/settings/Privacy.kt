@@ -32,7 +32,11 @@ import com.keepnote.view.trash.TrashAdapter
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
 import com.raks.roomdatabase.NoteDatabase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
 
@@ -159,9 +163,12 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
                             val selectedAnswers = StoreSharedPrefData.INSTANCE.getPref("securityanswer","this",this)
                             if (selectedQuestions==selectedQuestionPosition){
                                 if (selectedAnswer==selectedAnswers){
+                                    passwordReset = false
                                     StoreSharedPrefData.INSTANCE.savePrefValue("securityquestion","",this)
                                     StoreSharedPrefData.INSTANCE.savePrefValue("securityanswer","",this)
                                     StoreSharedPrefData.INSTANCE.savePrefValue("lockpattern",0,this)
+                                    binding.securityAnswer.setText("")
+                                    selectedQuestionPosition = 0
                                     binding.secquestionLl.visibility = View.GONE
                                     binding.toolbarPrivacy.toolbartitle.text = resources.getString(R.string.privacy_txt)
                                     getLockedNotes()
@@ -173,6 +180,10 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
                             StoreSharedPrefData.INSTANCE.savePrefValue("lockpattern",1,this)
                             binding.secquestionLl.visibility = View.GONE
                             binding.toolbarPrivacy.toolbartitle.text = resources.getString(R.string.privacy_txt)
+                            if (fromPage=="home-lock" && fromPage!=null && noteId!=null){
+                                viewmodel.updateLockbyId(noteId,1)
+                                Constants.ReLoad = true
+                            }
                             getLockedNotes()
                             Constants.showToast("Set successfully!",this)
                         }
@@ -194,6 +205,7 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
     private fun getLockedNotes() {
         lockpattern = StoreSharedPrefData.INSTANCE.getPref("lockpattern",0,this).toString()
         if (lockpattern == "1"){
+            Log.d("@@@@@","hiiiiiiiiii")
             binding.patternLl.visibility = View.GONE
             binding.privacynotesLl.visibility= View.VISIBLE
             binding.patternLockViewTest.addPatternLockListener(object :PatternLockViewListener{

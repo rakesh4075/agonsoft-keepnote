@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
@@ -133,7 +134,7 @@ class ExportBackup : AppCompatActivity() {
             for (file in listFile){
                 val fileName = file.name
                 val fileModifedDate = Date(file.lastModified()).toString()
-                val fileSize = Integer.parseInt(((file.length()/1024).toString())).toString()
+                val fileSize = Integer.parseInt(((file.length()/1024).toString())).toString().replace("0","1",ignoreCase = true)
                 if (fileName!="drive_db")
                 listFileInfo?.add(FileInfo(fileName,fileModifedDate,fileSize))
             }
