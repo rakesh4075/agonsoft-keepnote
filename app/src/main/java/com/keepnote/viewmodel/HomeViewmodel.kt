@@ -6,7 +6,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.keepnote.KeepNoteApplication
 import com.keepnote.notesDB.Notes
 import com.keepnote.notesDB.NotesDao
 import com.keepnote.utils.Constants
@@ -38,21 +37,7 @@ class HomeViewmodel(val database: NotesDao, application: Application):AndroidVie
         return views
     }
 
-    fun passMenu(menu:MenuItem){
-        menus.value = menu
-    }
 
-    fun passData(For:String){
-        passedData.value = For
-    }
-
-    fun insertNote(notes: Notes){
-        uiScope.launch{
-            withContext(Dispatchers.IO){
-               database.insertNote(notes)
-            }
-        }
-    }
     
     fun getallNotes() {
         uiScope.launch {
@@ -117,13 +102,11 @@ class HomeViewmodel(val database: NotesDao, application: Application):AndroidVie
             when(sortValue){
                 1-> return@withContext database.getAllNotesbyalphabet()
 
-                3-> {
-                    return@withContext  database.getAllNotesbycreatedtime()
-                }
+                2-> return@withContext database.getAllNotesbycolor()
 
-                4->{
-                    return@withContext  database.getAllNotesbyupdatemills()
-                }
+                3-> return@withContext  database.getAllNotesbycreatedtime()
+
+                4-> return@withContext  database.getAllNotesbyupdatemills()
 
                 else->return@withContext database.getAllNotes()
             }

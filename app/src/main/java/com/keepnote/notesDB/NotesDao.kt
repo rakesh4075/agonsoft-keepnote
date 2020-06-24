@@ -21,6 +21,9 @@ interface NotesDao {
     @Query("SELECT * FROM notes ORDER BY content ASC")
     suspend fun getAllNotesbyalphabet():List<Notes>?
 
+    @Query("SELECT * FROM notes ORDER BY notecolor ASC")
+    suspend fun getAllNotesbycolor():List<Notes>?
+
     @Query("SELECT * FROM notes WHERE noteId = :key")
     suspend fun getNote(key:Long):Notes?
 

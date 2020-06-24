@@ -214,11 +214,11 @@ class SettingsRecyclerAdapter(val listerner:NoteListAdapter.NotesListner) :Recyc
                    if (holder.adapterPosition==2) holder.settingValue.text="Alphabetical"
                     true
                 }
-                popupMenu.menu.add("Color").setOnMenuItemClickListener {
-                    StoreSharedPrefData.INSTANCE.savePrefValue("notesortorder",2,mcontext)
-                    if (holder.adapterPosition==2) holder.settingValue.text="Color"
-                    true
-                }
+//                popupMenu.menu.add("Color").setOnMenuItemClickListener {
+//                    StoreSharedPrefData.INSTANCE.savePrefValue("notesortorder",2,mcontext)
+//                    if (holder.adapterPosition==2) holder.settingValue.text="Color"
+//                    true
+//                }
                 popupMenu.menu.add("Created time").setOnMenuItemClickListener {
                     StoreSharedPrefData.INSTANCE.savePrefValue("notesortorder",3,mcontext)
                     if (holder.adapterPosition==2) holder.settingValue.text="Created time"

@@ -321,17 +321,17 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
         }
 
 
-        mbinding.mainContent.swiperefresh.setOnRefreshListener {
-            GlobalScope.launch {
-                delay(1000L)
-                runOnUiThread {
-                    noteDBAdapter?.notifyDataSetChanged()
-                    mbinding.mainContent.swiperefresh.isRefreshing =false
-                }
-
-            }
-
-        }
+//        mbinding.mainContent.swiperefresh.setOnRefreshListener {
+//            GlobalScope.launch {
+//                delay(1000L)
+//                runOnUiThread {
+//                    noteDBAdapter?.notifyDataSetChanged()
+//                    mbinding.mainContent.swiperefresh.isRefreshing =false
+//                }
+//
+//            }
+//
+//        }
 
 
 

@@ -100,7 +100,6 @@ class Constants {
 
         fun getSortOrder(context: Context):Int{
             val value = StoreSharedPrefData.INSTANCE.getPref("notesortorder",1,context) as Int
-            Log.d("@@@value",value.toString())
             return value
         }
         fun setupProgressDialog(context: Context): ProgressDialog {

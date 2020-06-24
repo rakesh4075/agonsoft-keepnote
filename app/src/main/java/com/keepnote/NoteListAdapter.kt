@@ -62,6 +62,7 @@ class NoteListAdapter(var noteList: List<Notes>,listner: NotesListner):RecyclerV
 
             val colorCode = Constants.getRandomColor()
             holder.noteCard.setCardBackgroundColor(ContextCompat.getColor(holder.view.context,colorCode))
+
             holder.view.setOnClickListener {
                 if (noteList[position].islocked==1) return@setOnClickListener
                 val intent = Intent(holder.itemView.context,NoteWebview::class.java)
