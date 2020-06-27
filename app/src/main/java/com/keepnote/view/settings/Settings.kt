@@ -1,28 +1,26 @@
 package com.keepnote.view.settings
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.keepnote.HomeScreen
-import com.keepnote.NoteListAdapter
 import com.keepnote.R
 import com.keepnote.databinding.ActivitySettingsBinding
-import com.keepnote.databinding.HomescreenBindingImpl
 import com.keepnote.model.preferences.StoreSharedPrefData
+import com.keepnote.utils.Constants
 
 class Settings : AppCompatActivity() {
 
     private var showtoolbarView: Boolean = false
-    lateinit var mbinding:ActivitySettingsBinding
+    private lateinit var mbinding:ActivitySettingsBinding
     private lateinit var toolbar: Toolbar
-    lateinit var settingAdapter:SettingsRecyclerAdapter
-    lateinit var layoutManager: LinearLayoutManager
+    private lateinit var settingAdapter:SettingsRecyclerAdapter
+    private lateinit var layoutManager: LinearLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,18 +42,10 @@ class Settings : AppCompatActivity() {
         if (showtoolbarView)  mbinding.toolbarll.vw1.visibility = View.GONE
         layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
 
-        settingAdapter = SettingsRecyclerAdapter(object :NoteListAdapter.NotesListner{
-            override fun takeActionForNotes(actionFor: String, noteId: Long, position: Int) {
-                when(actionFor){
-                    "notifydata"->{
-                        Log.d("@@@@","hiiiiiiiiii")
-                        settingAdapter.notifyDataSetChanged()
-                    }
-                }
-            }
-        })
+        settingAdapter = SettingsRecyclerAdapter()
         mbinding.settingRecyler.layoutManager = layoutManager
         mbinding.settingRecyler.adapter = settingAdapter
+        mbinding.adView.let { Constants.showBottomAds(this,it) }
     }
 
     override fun onBackPressed() {

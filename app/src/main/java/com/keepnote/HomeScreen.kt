@@ -1,15 +1,15 @@
 package com.keepnote
 
+//import com.google.android.gms.auth.api.signin.GoogleSignIn
+//import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+//import com.google.api.services.drive.DriveScopes
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -30,17 +30,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.bumptech.glide.Glide
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.services.drive.DriveScopes
 import com.keepnote.databinding.HomescreenBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
+import com.keepnote.notesDB.NoteDatabase
 import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
 import com.keepnote.utils.PassDataToFragListner
@@ -52,11 +47,13 @@ import com.keepnote.view.homescreen.Homefragment
 import com.keepnote.view.settings.Privacy
 import com.keepnote.view.settings.Settings
 import com.keepnote.view.trash.TrashFragment
+import com.keepnote.view.webview.CommonWebview
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
-import com.raks.roomdatabase.NoteDatabase
 import kotlinx.android.synthetic.main.nav_header.view.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -68,7 +65,6 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
     private var clickedNavItem: Int?=null
     private var lastsyncTime: String?=null
     private lateinit var dialog: Dialog
-    private  var noteDBAdapter: NoteListAdapter?=null
     private lateinit var toolbar: Toolbar
     private lateinit var mbinding:HomescreenBinding
     private lateinit var viewmodel: HomeViewmodel
@@ -79,15 +75,12 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
     private lateinit var favouritecount:TextView
     private var remoteBackup: RemoteBackup? = null
     private var showtoolbarView = false
-    private var isBackup = true
     private var fromPage:String? = ""
     private var mInterstitialAd: InterstitialAd?=null
     private var passDataToFragListners:PassDataToFragListner?=null
 
 
     companion object{
-        @JvmStatic
-        val GOOGLE_SIGN_IN: Int = 400
         @JvmStatic
         val REQUEST_CODE_CREATION = 401
         @JvmStatic
@@ -120,16 +113,13 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
             mInterstitialAd?.adListener = object: AdListener() {
                 override fun onAdLoaded() {
                     // Code to be executed when an ad finishes loading.
-                    Log.d("@@@@@@","onAdLoaded")
+
                     if (fromPage!=null){
 
                         when(fromPage){
                             "editnotesavenote"->{
                                 if (mInterstitialAd!!.isLoaded && Constants.isInternetAvailable(this@HomeScreen)) {
-                                    Log.d("@@@@@","loaded")
                                     mInterstitialAd!!  .show()
-                                } else {
-                                    Log.d("@@@@", "The interstitial wasn't loaded yet.")
                                 }
                             }
                         }
@@ -138,27 +128,27 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
 
                 override fun onAdFailedToLoad(errorCode: Int) {
                     // Code to be executed when an ad request fails.
-                    Log.d("@@@@@@","onAdFailedToLoad")
+
                 }
 
                 override fun onAdOpened() {
                     // Code to be executed when the ad is displayed.
-                    Log.d("@@@@@@","onAdOpened")
+
                 }
 
                 override fun onAdClicked() {
                     // Code to be executed when the user clicks on an ad.
-                    Log.d("@@@@@@","onAdClicked")
+
                 }
 
                 override fun onAdLeftApplication() {
                     // Code to be executed when the user has left the app.
-                    Log.d("@@@@@@","onAdLeftApplication")
+
                 }
 
                 override fun onAdClosed() {
                     // Code to be executed when the interstitial ad is closed.
-                    Log.d("@@@@@@","onAdClosed")
+
                 }
 
             }
@@ -183,6 +173,11 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
                         R.id.backup->{startActivity(Intent(this@HomeScreen,ExportBackup::class.java))}
                         R.id.menu_privacy->{startActivity(Intent(this@HomeScreen,Privacy::class.java))}
                         R.id.menu_settings->{ startActivity(Intent(this@HomeScreen,Settings::class.java))}
+                        R.id.menu_privacypolicy->{
+                            if (Constants.isInternetAvailable(this@HomeScreen))
+                            startActivity(Intent(this@HomeScreen,CommonWebview::class.java))
+                            else Constants.showToast("Check network connection",this@HomeScreen)
+                        }
 
                     }
                     clickedNavItem = 0
@@ -208,7 +203,6 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
             @RequiresApi(Build.VERSION_CODES.N)
             override fun showProgress(progress: Int) {
                 CoroutineScope(Dispatchers.Main).launch {
-                    Log.d("@@@@progress",progress.toString())
                     if (progress==100)
                         showSyncDialog(progress,false)
                     else{
@@ -222,12 +216,12 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
             }
 
         })
-        if(StoreSharedPrefData.INSTANCE.getPref("appstart",false,this) as Boolean){
+     /*   if(StoreSharedPrefData.INSTANCE.getPref("appstart",false,this) as Boolean){
             StoreSharedPrefData.INSTANCE.savePrefValue("appstart",false,this)
             if (StoreSharedPrefData.INSTANCE.getPref("synconlaunch",false,this) as Boolean){
                 startSyncNote()
             }
-        }
+        }*/
         if (StoreSharedPrefData.INSTANCE.getPref("firsttimepermmision",true,this) as Boolean){
             Constants.verifyPermission(this)
             StoreSharedPrefData.INSTANCE.savePrefValue("firsttimepermmision",false,this)
@@ -285,7 +279,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
                 }
 
                 R.id.logout->{
-                    val menu = mbinding.navMain.menu
+/*                    val menu = mbinding.navMain.menu
                     val loginMenu = menu.findItem(R.id.logout)
                     val account = GoogleSignIn.getLastSignedInAccount(this)
                     if (account==null){
@@ -302,11 +296,14 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
                                 StoreSharedPrefData.INSTANCE.savePrefValue("memPhoto","",this)
                                 Constants.showToast("Logged out",this)
                             }
-                    }
+                    }*/
 
                 }
                 R.id.syncnote->{
-                    startSyncNote()
+                  //  startSyncNote()
+                }
+                R.id.menu_privacypolicy->{
+                    clickedNavItem = R.id.menu_privacypolicy
                 }
 
             }
@@ -337,14 +334,14 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
 
     }
 
-    private fun startSyncNote() {
+/*    private fun startSyncNote() {
         val showAlert = StoreSharedPrefData.INSTANCE.getPref("drivealert",false,this) as Boolean
 
         if (!showAlert) showSyncAlert() else{
             isBackup = true
             remoteBackup?.connectToDrive(isBackup)
         }
-    }
+    }*/
 
     private fun syncDateTime() {
        // mbinding.navMain.nav_bottomll.visibility = View.VISIBLE
@@ -355,7 +352,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
     }
 
 
-    private fun showSyncAlert() {
+/*    private fun showSyncAlert() {
         val builder: AlertDialog.Builder =
             AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
         builder.setTitle("Synchronization").setIcon(null)
@@ -368,12 +365,12 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
                 isBackup = true
                 remoteBackup?.connectToDrive(isBackup)
             }catch (e:java.lang.Exception){
-                Log.d("@@@@",e.printStackTrace().toString())
+
             }
 
         }
         builder.show()
-    }
+    }*/
 
 
     @SuppressLint("SetTextI18n")
@@ -401,15 +398,15 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
         val fragmentClass: Class<*>?
         when(For){
             1-> {
-                mbinding.mainContent.toolbarLl.toolbartitle.text = "Notes"
+                mbinding.mainContent.toolbarLl.toolbartitle.text = getString(R.string.Notes)
                 fragmentClass = Homefragment::class.java
             }
             2-> {
-                mbinding.mainContent.toolbarLl.toolbartitle.text = "Trash"
+                mbinding.mainContent.toolbarLl.toolbartitle.text = getString(R.string.trash_menu)
                 fragmentClass = TrashFragment::class.java
             }
             3-> {
-                mbinding.mainContent.toolbarLl.toolbartitle.text = "Favourite"
+                mbinding.mainContent.toolbarLl.toolbartitle.text = getString(R.string.my_favourites_txt)
                 fragmentClass = FavouriteFragment::class.java
             }
             else -> fragmentClass = Homefragment::class.java
@@ -450,10 +447,10 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
 
         lastsyncTime = StoreSharedPrefData.INSTANCE.getPref("lastsynctime","",this) as String
 
-        if (lastsyncTime!=null && lastsyncTime!=""){
-          //  mbinding.navMain.nav_bottomll.visibility = View.VISIBLE
-        //    mbinding.navMain.nav_bottom.last_sync.text = StoreSharedPrefData.INSTANCE.getPref("lastsynctime","",this@HomeScreen) as String
-        }
+//        if (lastsyncTime!=null && lastsyncTime!=""){
+//          //  mbinding.navMain.nav_bottomll.visibility = View.VISIBLE
+//        //    mbinding.navMain.nav_bottom.last_sync.text = StoreSharedPrefData.INSTANCE.getPref("lastsynctime","",this@HomeScreen) as String
+//        }
 
 //        fstore = FirebaseFirestore.getInstance()
 //        val allNotesquery = fstore.collection("notes").orderBy("title",Query.Direction.DESCENDING)
@@ -482,17 +479,6 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
             startActivity(addNoteIntent)
         }
 
-
-        MobileAds.initialize(this)
-        val adRequest = AdRequest.Builder().build()
-        val show = StoreSharedPrefData.INSTANCE.getPref("viewas",0,this) as Int
-        if (show==1){
-            if (Constants.isInternetAvailable(this)){
-                mbinding.mainContent.adView.visibility = View.VISIBLE
-                mbinding.mainContent.adView.loadAd(adRequest)
-            }
-
-        }
 
     }
 
@@ -562,7 +548,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
 
             })
         }catch (e:java.lang.Exception){
-            Log.d("@@@@@",e.message.toString())
+
         }
 
 
@@ -624,7 +610,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
         super.onActivityResult(requestCode, resultCode, data)
 
         when(requestCode){
-            GOOGLE_SIGN_IN ->{
+           /* GOOGLE_SIGN_IN ->{
                 if (resultCode == Activity.RESULT_OK){
                     StoreSharedPrefData.INSTANCE.savePrefValue("drivefirstsync",true, this)
                     val account = GoogleSignIn.getLastSignedInAccount(this)
@@ -646,7 +632,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
                         handleSignInIntent(data)
                     }
                 }
-            }
+            }*/
             REQUEST_CODE_CREATION->{
                 if (resultCode == RESULT_OK) {
                     Toast.makeText(this, "Backup successufly loaded!", Toast.LENGTH_SHORT).show()
@@ -658,7 +644,7 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
         }
     }
 
-    private fun handleSignInIntent(data: Intent?) {
+   /* private fun handleSignInIntent(data: Intent?) {
         GoogleSignIn.getSignedInAccountFromIntent(data)
             .addOnSuccessListener { googlesigninaccount->
                 val loginMenu = mbinding.navMain.menu.findItem(R.id.logout)
@@ -680,41 +666,12 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
                     .into(mbinding.navMain.getHeaderView(0).mem_image)
             }
             .addOnCanceledListener {
-                Log.d("@@@@","cancelled")
+
             }
             .addOnFailureListener {e->
-                Log.d("@@@@exception",e.message)
+
             }
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-        val account = GoogleSignIn.getLastSignedInAccount(this)
-        val menu = mbinding.navMain.menu
-        val loginMenu = menu.findItem(R.id.logout)
-        if (account!=null) {
-            loginMenu.title="Logout"
-            mbinding.navMain.getHeaderView(0).mem_email.visibility= View.VISIBLE
-            mbinding.navMain.getHeaderView(0).mem_email.setPadding(0,0,0,10)
-            mbinding.navMain.getHeaderView(0).mem_name.text = StoreSharedPrefData.INSTANCE.getPref("memName","",this) as String
-            mbinding.navMain.getHeaderView(0).mem_email.text = StoreSharedPrefData.INSTANCE.getPref("memEmail","",this) as String
-            Glide.with(this)
-                .load(StoreSharedPrefData.INSTANCE.getPref("memPhoto","",this) as String)
-                .placeholder(R.drawable.noteavatar)
-                .error(R.drawable.noteavatar)
-                .into(mbinding.navMain.getHeaderView(0).mem_image)
-        }else{
-            loginMenu.title="Login"
-            mbinding.navMain.getHeaderView(0).mem_name.textSize = 24f
-            mbinding.navMain.getHeaderView(0).mem_name.text = "KeepNote"
-            mbinding.navMain.getHeaderView(0).mem_email.visibility= View.VISIBLE
-            mbinding.navMain.getHeaderView(0).mem_email.text=""
-            mbinding.navMain.getHeaderView(0).mem_image.visibility= View.VISIBLE
-
-        }
-
-    }
+    }*/
 
 
     override fun takeActionForNotes(actionFor: String, noteId: Long, position: Int) {

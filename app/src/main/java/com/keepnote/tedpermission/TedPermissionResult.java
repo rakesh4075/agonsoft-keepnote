@@ -7,10 +7,10 @@ import com.keepnote.tedpermission.util.ObjectUtils;
 
 import java.util.List;
 
-public class TedPermissionResult {
+class TedPermissionResult {
 
-  private boolean granted;
-  private List<String> deniedPermissions;
+  private final boolean granted;
+  private final List<String> deniedPermissions;
 
   public TedPermissionResult(List<String> deniedPermissions) {
     this.granted = ObjectUtils.isEmpty(deniedPermissions);

@@ -9,7 +9,7 @@ import androidx.annotation.ColorInt;
  * @author Kristiyan Petrov
  */
 
-public class ColorUtils {
+class ColorUtils {
 
     /**
      * Returns true if the text color should be white, given a background color

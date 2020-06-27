@@ -38,6 +38,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewOutlineProvider;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
@@ -47,7 +48,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 
 import com.keepnote.R;
 
-@SuppressWarnings("UnusedDeclaration")
+
 public class CircleImageView extends AppCompatImageView {
 
     private static final ScaleType SCALE_TYPE = ScaleType.CENTER_CROP;
@@ -95,7 +96,8 @@ public class CircleImageView extends AppCompatImageView {
         init();
     }
 
-    public CircleImageView(Context context, AttributeSet attrs) {
+    public
+    CircleImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 

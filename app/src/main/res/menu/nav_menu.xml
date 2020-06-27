@@ -40,6 +40,10 @@
                 android:icon="@drawable/ic_feedback"
                 android:id="@+id/menu_feedback"
                 android:title="@string/feedback"/>
+    <item
+        android:icon="@drawable/ic_privacy"
+        android:id="@+id/menu_privacypolicy"
+        android:title="@string/privacy_policy"/>
 
             <item
                 android:visible="false"

@@ -1,13 +1,13 @@
 package com.keepnote.colorpicker;
 
 
-public class ColorPal {
+class ColorPal {
     private int color;
     private boolean check;
 
-    public ColorPal(int color, boolean check) {
+    ColorPal(int color) {
         this.color = color;
-        this.check = check;
+        this.check = false;
     }
 
     @Override

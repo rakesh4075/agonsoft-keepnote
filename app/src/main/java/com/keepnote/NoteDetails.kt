@@ -1,14 +1,12 @@
 package com.keepnote
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Html
-import android.util.Log
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import com.keepnote.R
 import com.keepnote.databinding.ActivityNoteDetailsBinding
 
 class NoteDetails : AppCompatActivity() {
@@ -32,7 +30,6 @@ class NoteDetails : AppCompatActivity() {
             content = intent.getStringExtra("content")
             colorcode = intent.getIntExtra("colorcode",0)
             noteId = intent.getLongExtra("noteid",5)
-            Log.d("@@@noteid",noteId.toString())
         }
 
         if (title!=null && content!=null && colorcode!=null){

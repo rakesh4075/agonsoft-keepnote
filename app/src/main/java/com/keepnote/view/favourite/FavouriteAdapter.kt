@@ -1,13 +1,9 @@
 package com.keepnote.view.favourite
 
 import android.content.Intent
-import android.text.Html
-import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
@@ -20,7 +16,7 @@ import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
 import com.keepnote.view.noteview.NoteWebview
 
-class FavouriteAdapter(val noteList:ArrayList<Notes>, listner: NoteListAdapter.NotesListner):RecyclerView.Adapter<FavouriteAdapter.ViewHolder>() {
+class FavouriteAdapter(private val noteList:ArrayList<Notes>, listner: NoteListAdapter.NotesListner):RecyclerView.Adapter<FavouriteAdapter.ViewHolder>() {
     private var notesListner: NoteListAdapter.NotesListner?=null
 
 
@@ -48,10 +44,13 @@ class FavouriteAdapter(val noteList:ArrayList<Notes>, listner: NoteListAdapter.N
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         noteList[position].title?.let {title->
-            if (title.isEmpty()){
-                holder.title.text="<Untitled>"
-            } else if (title.length>=20) holder.title.text = "${title.subSequence(0,20)}..."
-            else holder.title.text = title
+            when {
+                title.isEmpty() -> {
+                    holder.title.text="<Untitled>"
+                }
+                title.length>=20 -> holder.title.text = "${title.subSequence(0,20)}..."
+                else -> holder.title.text = title
+            }
         }
         if (holder.itemView.context is HomeScreen){
             holder.viewmenu.visibility = View.GONE

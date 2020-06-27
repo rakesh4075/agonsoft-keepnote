@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
@@ -12,8 +11,8 @@ import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.WindowManager;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -29,10 +28,10 @@ import java.util.List;
 public class TedPermissionActivity extends AppCompatActivity {
 
 
-    public static final int REQ_CODE_PERMISSION_REQUEST = 10;
+    private static final int REQ_CODE_PERMISSION_REQUEST = 10;
 
-    public static final int REQ_CODE_SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST = 30;
-    public static final int REQ_CODE_SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST_SETTING = 31;
+    private static final int REQ_CODE_SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST = 30;
+    private static final int REQ_CODE_SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST_SETTING = 31;
 
 
     public static final String EXTRA_PERMISSIONS = "permissions";
@@ -47,18 +46,18 @@ public class TedPermissionActivity extends AppCompatActivity {
     public static final String EXTRA_DENIED_DIALOG_CLOSE_TEXT = "denied_dialog_close_text";
     public static final String EXTRA_SCREEN_ORIENTATION = "screen_orientation";
     private static Deque<PermissionListener> permissionListenerStack;
-    CharSequence rationaleTitle;
-    CharSequence rationale_message;
-    CharSequence denyTitle;
-    CharSequence denyMessage;
-    String[] permissions;
-    String packageName;
-    boolean hasSettingButton;
-    String settingButtonText;
-    String deniedCloseButtonText;
-    String rationaleConfirmText;
-    boolean isShownRationaleDialog;
-    int requestedOrientation;
+    private CharSequence rationaleTitle;
+    private CharSequence rationale_message;
+    private CharSequence denyTitle;
+    private CharSequence denyMessage;
+    private String[] permissions;
+    private String packageName;
+    private boolean hasSettingButton;
+    private String settingButtonText;
+    private String deniedCloseButtonText;
+    private String rationaleConfirmText;
+    private boolean isShownRationaleDialog;
+    private int requestedOrientation;
 
     public static void startActivity(Context context, Intent intent, PermissionListener listener) {
         if (permissionListenerStack == null) {
@@ -124,7 +123,7 @@ public class TedPermissionActivity extends AppCompatActivity {
     private boolean needWindowPermission() {
         for (String permission : permissions) {
             if (permission.equals(Manifest.permission.SYSTEM_ALERT_WINDOW)) {
-                return !hasWindowPermission();
+                return hasWindowPermission();
             }
         }
         return false;
@@ -132,7 +131,7 @@ public class TedPermissionActivity extends AppCompatActivity {
 
     @TargetApi(VERSION_CODES.M)
     private boolean hasWindowPermission() {
-        return Settings.canDrawOverlays(getApplicationContext());
+        return !Settings.canDrawOverlays(getApplicationContext());
     }
 
     @TargetApi(VERSION_CODES.M)
@@ -145,12 +144,7 @@ public class TedPermissionActivity extends AppCompatActivity {
                     .setMessage(rationale_message)
                     .setCancelable(false)
 
-                    .setNegativeButton(rationaleConfirmText, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            startActivityForResult(intent, REQ_CODE_SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST);
-                        }
-                    })
+                    .setNegativeButton(rationaleConfirmText, (dialogInterface, i) -> startActivityForResult(intent, REQ_CODE_SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST))
                     .show();
             isShownRationaleDialog = true;
         } else {
@@ -164,7 +158,7 @@ public class TedPermissionActivity extends AppCompatActivity {
 
         for (String permission : permissions) {
             if (permission.equals(Manifest.permission.SYSTEM_ALERT_WINDOW)) {
-                if (!hasWindowPermission()) {
+                if (hasWindowPermission()) {
                     needPermissions.add(permission);
                 }
             } else {
@@ -189,7 +183,7 @@ public class TedPermissionActivity extends AppCompatActivity {
     }
 
     private void permissionResult(List<String> deniedPermissions) {
-        Log.v(TedPermission.TAG, "permissionResult(): " + deniedPermissions);
+
 
         finish();
         overridePendingTransition(0, 0);
@@ -222,21 +216,15 @@ public class TedPermissionActivity extends AppCompatActivity {
                 .setMessage(rationale_message)
                 .setCancelable(false)
 
-                .setNegativeButton(rationaleConfirmText, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        requestPermissions(needPermissions);
-
-                    }
-                })
+                .setNegativeButton(rationaleConfirmText, (dialogInterface, i) -> requestPermissions(needPermissions))
                 .show();
         isShownRationaleDialog = true;
 
 
     }
 
-    public void requestPermissions(List<String> needPermissions) {
-        ActivityCompat.requestPermissions(this, needPermissions.toArray(new String[needPermissions.size()]),
+    private void requestPermissions(List<String> needPermissions) {
+        ActivityCompat.requestPermissions(this, needPermissions.toArray(new String[0]),
                 REQ_CODE_PERMISSION_REQUEST);
     }
 
@@ -269,7 +257,7 @@ public class TedPermissionActivity extends AppCompatActivity {
         }
     }
 
-    public void showPermissionDenyDialog(final List<String> deniedPermissions) {
+    private void showPermissionDenyDialog(final List<String> deniedPermissions) {
 
         if (TextUtils.isEmpty(denyMessage)) {
             // denyMessage 설정 안함
@@ -282,12 +270,7 @@ public class TedPermissionActivity extends AppCompatActivity {
         builder.setTitle(denyTitle)
                 .setMessage(denyMessage)
                 .setCancelable(false)
-                .setNegativeButton(deniedCloseButtonText, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        permissionResult(deniedPermissions);
-                    }
-                });
+                .setNegativeButton(deniedCloseButtonText, (dialogInterface, i) -> permissionResult(deniedPermissions));
 
         if (hasSettingButton) {
 
@@ -295,13 +278,7 @@ public class TedPermissionActivity extends AppCompatActivity {
                 settingButtonText = getString(R.string.tedpermission_setting);
             }
 
-            builder.setPositiveButton(settingButtonText, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    TedPermissionBase.startSettingActivityForResult(TedPermissionActivity.this);
-
-                }
-            });
+            builder.setPositiveButton(settingButtonText, (dialog, which) -> TedPermissionBase.startSettingActivityForResult(TedPermissionActivity.this));
 
         }
         builder.show();
@@ -323,31 +300,22 @@ public class TedPermissionActivity extends AppCompatActivity {
 
     }
 
-    public void showWindowPermissionDenyDialog() {
+    private void showWindowPermissionDenyDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert);
         builder.setMessage(denyMessage)
                 .setCancelable(false)
-                .setNegativeButton(deniedCloseButtonText, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        checkPermissions(false);
-                    }
-                });
+                .setNegativeButton(deniedCloseButtonText, (dialogInterface, i) -> checkPermissions(false));
 
         if (hasSettingButton) {
             if (TextUtils.isEmpty(settingButtonText)) {
                 settingButtonText = getString(R.string.tedpermission_setting);
             }
 
-            builder.setPositiveButton(settingButtonText, new DialogInterface.OnClickListener() {
-                @TargetApi(VERSION_CODES.M)
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Uri uri = Uri.fromParts("package", packageName, null);
-                    final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, uri);
-                    startActivityForResult(intent, REQ_CODE_SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST_SETTING);
-                }
+            builder.setPositiveButton(settingButtonText, (dialog, which) -> {
+                Uri uri = Uri.fromParts("package", packageName, null);
+                final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, uri);
+                startActivityForResult(intent, REQ_CODE_SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST_SETTING);
             });
 
         }
@@ -361,7 +329,7 @@ public class TedPermissionActivity extends AppCompatActivity {
                 checkPermissions(true);
                 break;
             case REQ_CODE_SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST:   // 최초 ALERT WINDOW 요청에 대한 결과
-                if (!hasWindowPermission() && !TextUtils.isEmpty(denyMessage)) {  // 권한이 거부되고 denyMessage 가 있는 경우
+                if (hasWindowPermission() && !TextUtils.isEmpty(denyMessage)) {  // 권한이 거부되고 denyMessage 가 있는 경우
                     showWindowPermissionDenyDialog();
                 } else {     // 권한있거나 또는 denyMessage가 없는 경우는 일반 permission 을 확인한다.
                     checkPermissions(false);

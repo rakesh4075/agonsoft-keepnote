@@ -40,9 +40,11 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
+                android:contentDescription="@string/empty"
                 app:srcCompat="@drawable/ic_bold" />
 
             <ImageView
+                android:contentDescription="@string/empty"
                 android:id="@+id/rteItalic"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -50,6 +52,7 @@
                 app:srcCompat="@drawable/ic_italic" />
 
             <ImageView
+                android:contentDescription="@string/empty"
                 android:id="@+id/rteUnderline"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -57,6 +60,7 @@
                 app:srcCompat="@drawable/ic_underlined" />
 
             <ImageView
+                android:contentDescription="@string/empty"
                 android:id="@+id/rteStrikethrough"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -98,6 +102,7 @@
 
 
             <ImageView
+                android:contentDescription="@string/empty"
                 android:id="@+id/rteFontColor"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -105,6 +110,7 @@
                 app:srcCompat="@drawable/ic_text_format" />
 
             <ImageView
+                android:contentDescription="@string/empty"
                 android:id="@+id/rteBackground"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -113,11 +119,11 @@
                 />
 
             <ImageView
+                android:contentDescription="@string/empty"
                 android:id="@+id/rteLink"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:paddingEnd="8dp"
                 app:srcCompat="@drawable/ic_insert_link"
                 />
 

@@ -1,7 +1,7 @@
 package com.keepnote.notesDB
 
 import androidx.room.*
-import com.google.firebase.firestore.core.OrderBy
+
 
 @Dao
 interface NotesDao {

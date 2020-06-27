@@ -23,9 +23,7 @@ class Html2Pdf private constructor(
         })
     }
 
-    fun convertToPdf() {
-        PdfConverter.instance.convert(context, html, file, null)
-    }
+
 
     interface OnCompleteConversion {
 

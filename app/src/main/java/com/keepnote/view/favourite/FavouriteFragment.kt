@@ -1,7 +1,6 @@
 package com.keepnote.view.favourite
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,10 +18,10 @@ import com.keepnote.NoteListAdapter
 import com.keepnote.R
 import com.keepnote.databinding.FragmentTrashBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
+import com.keepnote.notesDB.NoteDatabase
 import com.keepnote.notesDB.Notes
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
-import com.raks.roomdatabase.NoteDatabase
 
 /**
  * A simple [Fragment] subclass.
@@ -60,7 +59,6 @@ class FavouriteFragment : Fragment(),NoteListAdapter.NotesListner {
         try {
             viewmodel.getallNotes()
             viewmodel.allNotes.observe(this, Observer {notes->
-                Log.d("@@@@@",notes.toString())
                 notesize = notes.size
                 favNotes = ArrayList()
                 for (i in 0 until notesize){
@@ -98,24 +96,20 @@ class FavouriteFragment : Fragment(),NoteListAdapter.NotesListner {
     private fun getLayoutManager(i:Int): RecyclerView.LayoutManager{
         when(i){
             1->{
-                val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
-                return linearLayoutManager
+                return LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
             }
 
             2->{
-                val gridLayoutManager = GridLayoutManager(context,3)
-                return gridLayoutManager
+                return GridLayoutManager(context,3)
             }
 
 
             3->{
-                val stagLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                return stagLayoutManager
+                return StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             }
 
             else ->{
-                val stagLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                return stagLayoutManager
+                return StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             }
 
 

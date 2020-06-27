@@ -28,16 +28,16 @@ public abstract class PermissionBuilder<T extends PermissionBuilder> {
     private CharSequence deniedCloseButtonText;
     private CharSequence rationaleConfirmText;
     private int requestedOrientation;
-    private Context context;
+    private final Context context;
 
-    public PermissionBuilder(Context context) {
+    PermissionBuilder(Context context) {
         this.context = context;
         deniedCloseButtonText = context.getString(R.string.tedpermission_close);
         rationaleConfirmText = context.getString(R.string.tedpermission_confirm);
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
     }
 
-    protected void checkPermissions() {
+    void checkPermissions() {
         if (listener == null) {
             throw new IllegalArgumentException("You must setPermissionListener() on TedPermission");
         } else if (ObjectUtils.isEmpty(permissions)) {
@@ -90,7 +90,7 @@ public abstract class PermissionBuilder<T extends PermissionBuilder> {
         return context.getText(stringRes);
     }
 
-    public T setRationaleMessage(CharSequence rationaleMessage) {
+    private T setRationaleMessage(CharSequence rationaleMessage) {
         this.rationaleMessage = rationaleMessage;
         return (T) this;
     }
@@ -100,7 +100,7 @@ public abstract class PermissionBuilder<T extends PermissionBuilder> {
         return setRationaleTitle(getText(stringRes));
     }
 
-    public T setRationaleTitle(CharSequence rationaleMessage) {
+    private T setRationaleTitle(CharSequence rationaleMessage) {
         this.rationaleTitle = rationaleMessage;
         return (T) this;
     }
@@ -141,12 +141,12 @@ public abstract class PermissionBuilder<T extends PermissionBuilder> {
         return setRationaleConfirmText(getText(stringRes));
     }
 
-    public T setRationaleConfirmText(CharSequence rationaleConfirmText) {
+    private T setRationaleConfirmText(CharSequence rationaleConfirmText) {
         this.rationaleConfirmText = rationaleConfirmText;
         return (T) this;
     }
 
-    public T setDeniedCloseButtonText(CharSequence deniedCloseButtonText) {
+    private T setDeniedCloseButtonText(CharSequence deniedCloseButtonText) {
         this.deniedCloseButtonText = deniedCloseButtonText;
         return (T) this;
     }

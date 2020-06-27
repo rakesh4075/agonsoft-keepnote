@@ -13,7 +13,7 @@ import android.text.Spanned;
  *
  * @param <E>
  */
-public abstract class ARE_ABS_Dynamic_Style<E extends AreDynamicSpan> extends RRE_ABS_Style<E> {
+public abstract class ARE_ABS_Dynamic_Style<E extends AreDynamicSpan> extends RREABSStyle<E> {
 
 
 
@@ -94,15 +94,6 @@ public abstract class ARE_ABS_Dynamic_Style<E extends AreDynamicSpan> extends RR
             } else {
                 editable.setSpan(newSpan(), start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             }
-        }
-    }
-
-    private void logSpans(E[] es) {
-        for (E e : es) {
-            Editable editable = getEditText().getEditableText();
-            int start = editable.getSpanStart(e);
-            int end = editable.getSpanEnd(e);
-
         }
     }
 

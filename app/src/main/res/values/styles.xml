@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -39,8 +39,8 @@
         <item name="colorAccent">#FFF05A50</item>
         <item name="android:windowBackground">#FFF0EEE8</item>
         <item name="android:textColorSecondary">#4b4b4b</item>
-        <item name="android:statusBarColor">#FF524E4A</item>
-        <item name="android:navigationBarColor">#ffffff</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">#FF524E4A</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">#ffffff</item>
         <item name="bottombarcolor">#ffffff</item>
         <item name="nav_color">#ffffff</item>
     </style>
@@ -65,8 +65,8 @@
         <item name="colorAccent">#009688</item>
         <item name="android:windowBackground">#000000</item>
         <item name="android:textColorSecondary">#ffffff</item>
-        <item name="android:statusBarColor">#263238</item>
-        <item name="android:navigationBarColor">#263238</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">#263238</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">#263238</item>
         <item name="bottombarcolor">#263238</item>
         <item name="nav_color">#ffffff</item>
     </style>
@@ -105,7 +105,7 @@
     <color name="black">#000000</color>
 
 
-    <style name="ActionButton">
+   <!-- <style name="ActionButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">@dimen/action_button_height</item>
         <item name="android:minWidth">@dimen/action_button_min_width</item>
@@ -113,7 +113,7 @@
         <item name="android:paddingRight">@dimen/action_button_padding_horizontal</item>
         <item name="android:background">@drawable/button</item>
         <item name="android:textSize">@dimen/action_button_text_size</item>
-    </style>
+    </style>-->
 
 
     <style name="Theme.Transparent.Permission"
@@ -154,6 +154,7 @@
     <style name="SplashTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/splash_bg</item>
         <item name="android:windowFullscreen">true</item>
+
 <!--        <item name="windowNoTitle">true</item>-->
 <!--        <item name="windowActionBar">false</item>-->
 <!--        <item name="android:windowFullscreen">false</item>-->

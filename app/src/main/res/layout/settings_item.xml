@@ -16,8 +16,9 @@
                 android:layout_weight="3.5"
                 android:layout_width="0dp"
                 android:layout_height="match_parent">
-                <ImageView
-                    android:backgroundTint="?attr/icontintcolor"
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:contentDescription="@string/empty"
+                    app:backgroundTint="?attr/icontintcolor"
                     android:id="@+id/settings_icon"
                     android:layout_margin="@dimen/_10sdp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -62,7 +63,7 @@
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_gravity="center_vertical"
                     android:ems="10"
                     android:gravity="end"
@@ -74,7 +75,7 @@
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:visibility="visible"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@android:color/transparent"
+                    app:backgroundTint="@android:color/transparent"
                     android:fontFamily="@font/robotoslabregular"
                     android:hint="@android:string/untitled"
                     android:textColor="?attr/txttitle"

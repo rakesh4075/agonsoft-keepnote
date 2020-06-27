@@ -23,7 +23,8 @@ class KeepNoteApplication:Application() {
     override fun onCreate() {
         super.onCreate()
 
-        StoreSharedPrefData.INSTANCE.savePrefValue("appstart",true,this)
+        if (StoreSharedPrefData.INSTANCE.getPref("appstart",0,this) as Int!=1)
+        StoreSharedPrefData.INSTANCE.savePrefValue("appstart",0,this)
 
     }
 

@@ -2,8 +2,6 @@ package com.keepnote
 
 import android.content.Intent
 import android.graphics.BlurMaskFilter
-import android.text.Html
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +21,7 @@ import com.keepnote.view.noteview.NoteWebview
 import com.keepnote.view.settings.Privacy
 
 
-class NoteListAdapter(var noteList: List<Notes>,listner: NotesListner):RecyclerView.Adapter<NoteListAdapter.ViewHolder>() {
+class NoteListAdapter(private var noteList: List<Notes>, listner: NotesListner):RecyclerView.Adapter<NoteListAdapter.ViewHolder>() {
 
     private var notesListner: NotesListner?=null
 
@@ -43,15 +41,17 @@ class NoteListAdapter(var noteList: List<Notes>,listner: NotesListner):RecyclerV
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (!(noteList[position].isDeleted==1)){
+        if (noteList[position].isDeleted != 1){
             noteList[position].title?.let {title->
-                if (title.isEmpty()){
-                    holder.title.text=holder.itemView.context.getString(R.string.title_empty_text)
-                } else if (title.length>=20) holder.title.text = "${title.subSequence(0,20)}..."
-                else holder.title.text = title
+                when {
+                    title.isEmpty() -> {
+                        holder.title.text=holder.itemView.context.getString(R.string.title_empty_text)
+                    }
+                    title.length>=20 -> holder.title.text = "${title.subSequence(0,20)}..."
+                    else -> holder.title.text = title
+                }
             }
            val content = noteList[position].content.replace("<br>","",true)
-            Log.d("@@@@",content)
             holder.content.text = HtmlCompat.fromHtml(content,HtmlCompat.FROM_HTML_MODE_COMPACT)
             if (noteList[position].isFavourite==1)
             holder.favItem.visibility = View.VISIBLE

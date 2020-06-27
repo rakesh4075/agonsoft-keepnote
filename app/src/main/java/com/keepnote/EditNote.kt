@@ -1,19 +1,17 @@
 package com.keepnote
 
+//import com.google.firebase.firestore.FirebaseFirestore
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
@@ -22,16 +20,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.ads.InterstitialAd
-import com.google.firebase.firestore.FirebaseFirestore
 import com.keepnote.colorpicker.ColorPicker
 import com.keepnote.databinding.ActivityEditNoteBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
+import com.keepnote.notesDB.NoteDatabase
 import com.keepnote.notesDB.NoteViewmodel
 import com.keepnote.notesDB.NoteViewmodelFactory
 import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
-import com.raks.roomdatabase.NoteDatabase
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
@@ -40,7 +36,7 @@ import java.io.InputStream
 class EditNote : AppCompatActivity() {
     private var displayWidth: Int=0
     private var displayHeight: Int =0
-    private val GALLERY_REQUEST_IMAGE: Int = 1
+    private val gALLERYREQUESTIMAGE: Int = 1
     private var notecolor: Int = 0
     private lateinit var viewmodel: NoteViewmodel
     private var title:String?=null
@@ -48,15 +44,14 @@ class EditNote : AppCompatActivity() {
     private var colorcode:Int?=null
     private var fromPage:Int?=0
     lateinit var binding:ActivityEditNoteBinding
-    private lateinit var fstore:FirebaseFirestore
+   // private lateinit var fstore:FirebaseFirestore
     private var noteId:Long?=null
     private var isFavourite=0
     private var note:Notes?=null
     private var addImageRecyclerview: AddImageRecyclerview?=null
     private var imageUri:ArrayList<Bitmap?>?=null
-    private lateinit var mInterstitialAd: InterstitialAd
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -73,7 +68,7 @@ class EditNote : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
-        fstore = FirebaseFirestore.getInstance()
+      //  fstore = FirebaseFirestore.getInstance()
 
         val application = requireNotNull(this).application
         val dataSource = NoteDatabase.invoke(this).getNoteDao()
@@ -109,7 +104,7 @@ class EditNote : AppCompatActivity() {
 
         binding.favToogle.isChecked = false
         binding.favToogle.background = AppCompatResources.getDrawable(this,R.drawable.ic_favorite)
-        binding.favToogle.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.favToogle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked){
                 isFavourite =1
                 binding.favToogle.background = AppCompatResources.getDrawable(this,R.drawable.ic_favorite_checked)
@@ -135,13 +130,16 @@ class EditNote : AppCompatActivity() {
                         })
                        // binding.noteContenteditll.editNoteContent.setText(Html.fromHtml(note?.content))
                         colorcode = note?.notecolor
-                        if ((colorcode.toString().subSequence(0, 1) as String) == "-") {
-                            binding.noteContenteditll.editNoteContent.backgroundTintList = ColorStateList.valueOf(colorcode!!)
-                            binding.noteContenteditll.txtContentll.backgroundTintList = ColorStateList.valueOf(colorcode!!)
-                        } else {
-                            binding.noteContenteditll.editNoteContent.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this,colorcode!!))
-                            binding.noteContenteditll.txtContentll.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this,colorcode!!))
+                        if (colorcode!=null){
+                            if ((colorcode.toString().subSequence(0, 1) as String) == "-") {
+                                binding.noteContenteditll.editNoteContent.setBackgroundColor(colorcode!!)
+                                binding.noteContenteditll.txtContentll.setBackgroundColor(colorcode!!)
+                            } else {
+                                binding.noteContenteditll.editNoteContent.setBackgroundColor(colorcode!!)
+                                binding.noteContenteditll.txtContentll.setBackgroundColor(colorcode!!)
+                            }
                         }
+
                     }
                 })
 
@@ -171,10 +169,9 @@ class EditNote : AppCompatActivity() {
     private fun colorImageBox() {
         val coloPicker = ColorPicker(this)
         coloPicker.setOnFastChooseColorListener(object :ColorPicker.OnFastChooseColorListener{
-            @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
             override fun setOnFastChooseColorListener(position: Int, color: Int) {
-                binding.noteContenteditll.editNoteContent.backgroundTintList = ColorStateList.valueOf(color)
-                binding.noteContenteditll.txtContentll.backgroundTintList = ColorStateList.valueOf(color)
+                binding.noteContenteditll.editNoteContent.setBackgroundColor(color)
+                binding.noteContenteditll.txtContentll.setBackgroundColor(color)
                 notecolor = color
                 colorcode = color
                 if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,this@EditNote))as Boolean)
@@ -249,7 +246,7 @@ class EditNote : AppCompatActivity() {
                         viewmodel.insertNote(Notes(0,title, content,notecolor,isFavourite = isFavourite))
 
                     }catch (e:Exception){
-                        Log.d("@@@@",e.message.toString())
+
                     }
 
                 }
@@ -265,7 +262,7 @@ class EditNote : AppCompatActivity() {
 
         if (resultCode== RESULT_OK && data!=null){
             when(requestCode){
-                GALLERY_REQUEST_IMAGE ->{
+                gALLERYREQUESTIMAGE ->{
                     val selectedImage = data.data
                     try {
                         val bitmap = decodeSampledBitmapFromUri(this,selectedImage,500,500)

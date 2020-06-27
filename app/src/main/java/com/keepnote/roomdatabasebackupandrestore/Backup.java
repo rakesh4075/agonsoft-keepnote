@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class Backup {
-    private static ArrayList<String> SQLITE_TABLES = new ArrayList<String>() {{
+    private static final ArrayList<String> SQLITE_TABLES = new ArrayList<String>() {{
         add("android_metadata");
         add("room_master_table");
         add("sqlite_sequence");
@@ -20,7 +20,7 @@ public class Backup {
     private static boolean isInSQLiteTables(String table){
         return SQLITE_TABLES.contains(table);
     }
-     static String STRING_FOR_NULL_VALUE = "!!!string_for_null_value!!!";
+     private static final String STRING_FOR_NULL_VALUE = "!!!string_for_null_value!!!";
 
     public static class Init{
         private RoomDatabase database;

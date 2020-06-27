@@ -3,7 +3,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/txt_contentll"
     android:orientation="vertical"
-    android:backgroundTint="?attr/bodybg"
+    android:background="?attr/bodybg"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -35,7 +35,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"/>
             <com.keepnote.raksEditor.RREEditText
-                android:backgroundTint="?attr/bodybg"
+                android:background="?attr/bodybg"
                 android:fontFamily="@font/robotoslabregular"
                 android:inputType="textMultiLine"
                 android:autofillHints="@string/note_hint"

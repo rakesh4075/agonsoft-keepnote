@@ -4,28 +4,27 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.webkit.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import com.keepnote.EditNote
 import com.keepnote.R
 import com.keepnote.databinding.NotedetViewBinding
+import com.keepnote.notesDB.NoteDatabase
 import com.keepnote.notesDB.NoteViewmodel
 import com.keepnote.notesDB.NoteViewmodelFactory
-import com.raks.roomdatabase.NoteDatabase
 
 class NoteWebview : AppCompatActivity() {
     private var notecolor: Int?=null
     private var noteid: Long?=null
     private var notetitle: String?=null
-    private var m_downX: Float = 0f
+    private var mDownx: Float = 0f
     private lateinit var mBinding: NotedetViewBinding
     private var from: Int? = 0
     private lateinit var viewmodel: NoteViewmodel
@@ -115,17 +114,17 @@ class NoteWebview : AppCompatActivity() {
 
 
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
+                return if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
                     view?.context?.startActivity(
                         Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     )
-                    return true
+                    true
                 } else if (url!!.startsWith("mailto:")) {
                     val i = Intent(Intent.ACTION_SENDTO, Uri.parse(url))
                     startActivity(i)
-                    return true
+                    true
                 } else {
-                    return false
+                    false
                 }
             }
 
@@ -139,7 +138,6 @@ class NoteWebview : AppCompatActivity() {
             override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
                 super.onReceivedError(view, request, error)
                 mBinding.progressBar.visibility = View.GONE
-                Log.d("@@@@@@error",error.toString())
                 invalidateOptionsMenu()
 
             }
@@ -158,11 +156,11 @@ class NoteWebview : AppCompatActivity() {
             when(event.action){
                 MotionEvent.ACTION_UP ->{
                     // save the x
-                    m_downX = event.x
+                    mDownx = event.x
                 }
                 MotionEvent.ACTION_DOWN ->{
                     // set x so that it doesn't move
-                    event.setLocation(m_downX, event.y)
+                    event.setLocation(mDownx, event.y)
                 }
             }
             return@setOnTouchListener false

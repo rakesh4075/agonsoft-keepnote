@@ -1,28 +1,16 @@
 package com.keepnote.view.exportbackup
 
-import android.content.Context
-import android.os.Environment
-import android.util.Log
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.Scope
-import com.google.api.client.extensions.android.http.AndroidHttp
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.http.FileContent
-import com.google.api.client.json.gson.GsonFactory
-import com.google.api.services.drive.Drive
-import com.google.api.services.drive.DriveScopes
-import com.google.api.services.drive.model.File
+//import com.google.android.gms.auth.api.signin.GoogleSignIn
+//import com.google.android.gms.auth.api.signin.GoogleSignInClient
+//import com.google.api.client.extensions.android.http.AndroidHttp
+//import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+
+//import com.google.api.services.drive.Drive
+//import com.google.api.services.drive.DriveScopes
+//import com.google.api.services.drive.model.File
 import com.keepnote.HomeScreen
-import com.keepnote.HomeScreen.Companion.GOOGLE_SIGN_IN
-import com.keepnote.model.preferences.StoreSharedPrefData
-import kotlinx.coroutines.*
-import java.io.ByteArrayOutputStream
-import java.io.FileOutputStream
-import java.util.*
-import kotlin.collections.ArrayList
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 
 class RemoteBackup(activitys:HomeScreen, private val listner:DriveUtil?) {
@@ -36,7 +24,7 @@ class RemoteBackup(activitys:HomeScreen, private val listner:DriveUtil?) {
 
 
 
-    fun connectToDrive(backup: Boolean) {
+ /*   fun connectToDrive(backup: Boolean) {
         try {
             val account = GoogleSignIn.getLastSignedInAccount(activity)
             if (account == null) {
@@ -55,16 +43,14 @@ class RemoteBackup(activitys:HomeScreen, private val listner:DriveUtil?) {
 
             }
         }catch (e:Exception){
-            Log.d("@@@@@",e.message)
-        }
 
         }
 
-    private fun startDriveRestore() {
+        }*/
 
-    }
 
-    private fun startDriveBackup(account: GoogleSignInAccount) {
+
+/*    private fun startDriveBackup(account: GoogleSignInAccount) {
         try {
             val credential = GoogleAccountCredential.usingOAuth2(activity, mutableListOf(DriveScopes.DRIVE_FILE,DriveScopes.DRIVE_APPDATA))
             credential.selectedAccount = account.account
@@ -236,7 +222,10 @@ class RemoteBackup(activitys:HomeScreen, private val listner:DriveUtil?) {
                 .requestScopes(Scope(DriveScopes.DRIVE_FILE), Scope(DriveScopes.DRIVE_APPDATA))
                 .build()
         return GoogleSignIn.getClient(activity!!, signInOptions)
-    }
+    }*/
+
+
+
     }
 
 

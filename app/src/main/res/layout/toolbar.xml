@@ -12,18 +12,18 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
-        <ImageView
-            android:backgroundTintMode="?attr/icontintcolor"
+        <androidx.appcompat.widget.AppCompatImageView
+            app:backgroundTintMode="?attr/icontintcolor"
             android:layout_marginEnd="@dimen/_10sdp"
-            android:backgroundTint="@color/black"
+            app:backgroundTint="@color/black"
             android:id="@+id/toolbar_search"
             app:srcCompat="@drawable/ic_search"
             android:layout_gravity="end"
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-        <ImageView
-            android:backgroundTintMode="?attr/icontintcolor"
+        <androidx.appcompat.widget.AppCompatImageView
+            app:backgroundTintMode="?attr/icontintcolor"
             android:layout_marginEnd="@dimen/_10sdp"
             android:visibility="gone"
             android:id="@+id/toolbar_editicon"
@@ -31,7 +31,7 @@
             android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:ems="10"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +40,7 @@
             android:textSize="16sp"
             android:visibility="visible"
             android:layout_height="wrap_content"
-            android:backgroundTint="@android:color/transparent"
+            app:backgroundTint="@android:color/transparent"
             android:fontFamily="@font/robotoslabregular"
             android:hint="@android:string/untitled"
             android:textColor="?attr/txttitle"

@@ -1,14 +1,9 @@
-package com.raks.roomdatabase
+package com.keepnote.notesDB
 
 import android.content.Context
-import android.os.Environment
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.keepnote.model.preferences.StoreSharedPrefData
-import com.keepnote.notesDB.Notes
-import com.keepnote.notesDB.NotesDao
-import java.io.File
 
 @Database(
     entities = [Notes::class],
@@ -30,7 +25,7 @@ abstract class NoteDatabase : RoomDatabase(){
             }
         }
 
-        fun buildDatabase(context: Context) = Room.databaseBuilder(
+        private fun buildDatabase(context: Context) = Room.databaseBuilder(
             context.applicationContext,
             NoteDatabase::class.java,
             "note_db"
@@ -38,15 +33,6 @@ abstract class NoteDatabase : RoomDatabase(){
             .fallbackToDestructiveMigration()
             .build()
 
-        fun closeDatabase(){
-            if (this.instance?.isOpen!!){
-                instance?.openHelper?.close()
-            }
-        }
-        fun openDatabase() {
-            if(!(this.instance?.isOpen)!!){
-                this.instance?.openHelper?.writableDatabase
-            }
-        }
+
     }
 }

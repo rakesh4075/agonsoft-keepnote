@@ -10,13 +10,15 @@
     <ImageView
         android:id="@+id/mem_image"
         android:layout_marginStart="@dimen/_15sdp"
-        android:src="@drawable/note_logo"
+        app:srcCompat="@drawable/note_logo"
         android:layout_marginTop="@dimen/_15sdp"
+        android:contentDescription="@string/empty"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="@dimen/_50sdp"
         android:layout_height="@dimen/_50sdp"/>
     <TextView
+        android:text="@string/app_name"
         android:id="@+id/mem_name"
         android:textColor="?attr/nav_color"
         android:fontFamily="@font/robotoslabregular"

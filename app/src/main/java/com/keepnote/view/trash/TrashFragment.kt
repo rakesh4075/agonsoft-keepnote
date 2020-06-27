@@ -2,14 +2,12 @@ package com.keepnote.view.trash
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,18 +16,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.keepnote.HomeScreen
 import com.keepnote.NoteListAdapter
-
 import com.keepnote.R
 import com.keepnote.databinding.FragmentTrashBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
+import com.keepnote.notesDB.NoteDatabase
 import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
-import com.raks.roomdatabase.NoteDatabase
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /**
  * A simple [Fragment] subclass.
@@ -48,10 +42,6 @@ class TrashFragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
     }
 
     override fun onChanged(observer: Any?) {
-        if (observer is View) {
-
-        }
-
     }
 
 
@@ -112,7 +102,6 @@ class TrashFragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
         try {
             viewmodel.getallNotes()
             viewmodel.allNotes.observe(this, Observer {notes->
-                Log.d("@@@@@observed",notes.toString())
                 notesize = notes.size
                 deletedNotes = ArrayList()
                 for (i in 0 until notesize){
@@ -144,7 +133,6 @@ class TrashFragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
 
             })
         }catch (e:Exception){
-            Log.d("@@@@@@@2222",e.message.toString())
         }
 
     }
@@ -152,24 +140,20 @@ class TrashFragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
     private fun getLayoutManager(i:Int): RecyclerView.LayoutManager{
         when(i){
             1->{
-                val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
-                return linearLayoutManager
+                return LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
             }
 
             3->{
-                val gridLayoutManager = GridLayoutManager(context,3)
-                return gridLayoutManager
+                return GridLayoutManager(context,3)
             }
 
 
             2->{
-                val stagLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                return stagLayoutManager
+                return StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             }
 
             else ->{
-                val stagLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                return stagLayoutManager
+                return StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             }
 
 

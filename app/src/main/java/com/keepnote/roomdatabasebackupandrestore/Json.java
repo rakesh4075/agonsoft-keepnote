@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 
 public class Json {
-    private JsonObject jsonObject;
+    private final JsonObject jsonObject;
 
     private Json(JsonObject jsonObject) {
         this.jsonObject = jsonObject;
@@ -19,26 +19,24 @@ public class Json {
     }
 
     public static class Builder{
-        private JsonObject object;
+        private final JsonObject object;
         
         public Builder(){
             this.object = new JsonObject();
         }
         
-        public Builder putItem(String key, String value){
+        public void putItem(String key, String value){
             Gson gson = new Gson();
             JsonElement je = gson.toJsonTree(value);
             object.add(key,je);
-            return this;
         }
         
-        public Builder putItem(String key, ArrayList<Json> items){
+        public void putItem(String key, ArrayList<Json> items){
             JsonArray jsonArray = new JsonArray();
             for (Json item: items) {
                 jsonArray.add(item.getAsJsonObject());
             }
             this.object.add(key,jsonArray);
-            return this;
         }
 
         public Json build(){

@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class Restore {
-     static String STRING_FOR_NULL_VALUE = "!!!string_for_null_value!!!";
+     private static final String STRING_FOR_NULL_VALUE = "!!!string_for_null_value!!!";
 
     public static class Init{
         private RoomDatabase database;
@@ -105,7 +105,7 @@ public class Restore {
     private static String convertStreamToString(InputStream is) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
-        String line = null;
+        String line;
         while ((line = reader.readLine()) != null) {
             sb.append(line).append("\n");
         }

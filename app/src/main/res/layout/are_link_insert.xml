@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <EditText
+        android:autofillHints="@string/are_link_insert_hint"
         android:id="@+id/are_insert_link_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

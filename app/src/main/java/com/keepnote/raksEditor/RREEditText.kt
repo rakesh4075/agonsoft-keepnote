@@ -20,13 +20,11 @@ class RREEditText: AppCompatEditText {
 
     private var sToolbar: RRE_Toolbar? = null
 
-    private var mToolbar: IRRE_Toolbar? = null
-
-    private var sStylesList: ArrayList<IRRE_Style>? = ArrayList()
+    private var sStylesList: ArrayList<IRREStyle>? = ArrayList()
 
     private var mTextWatcher: TextWatcher? = null
 
-    private val MONITORING = true
+    private val monitoring = true
 
     constructor(context: Context):super(context,null)
 
@@ -74,8 +72,7 @@ class RREEditText: AppCompatEditText {
         val toolItems = toolbar?.getStylesList()
         if (toolItems != null) {
             for (toolItem in toolItems) {
-                val style = toolItem
-                sStylesList?.add(style)
+                sStylesList?.add(toolItem)
             }
         }
     }
@@ -89,12 +86,10 @@ class RREEditText: AppCompatEditText {
         var endPos = 0
         mTextWatcher = object :TextWatcher{
             override fun afterTextChanged(s: Editable?) {
-                if (!MONITORING) {
+                if (!monitoring) {
                     return
                 }
-                Util.log("afterTextChanged:: s = $s")
                 if (endPos <= startPos) {
-                    Util.log("User deletes: start == $startPos endPos == $endPos")
                 }
                 if (sStylesList!=null){
                     for (style in sStylesList!!) {
@@ -106,24 +101,16 @@ class RREEditText: AppCompatEditText {
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                if (!MONITORING) {
+                if (!monitoring) {
                     return
                 }
-                Util.log(
-                    "beforeTextChanged:: s = " + s + ", start = " + start + ", count = " + count
-                            + ", after = " + after
-                )
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!MONITORING) {
+                if (!monitoring) {
                     return
                 }
 
-                Util.log(
-                    "onTextChanged:: s = " + s + ", start = " + start + ", count = " + count + ", before = "
-                            + before
-                )
                 startPos = start
                 endPos = start + count
             }

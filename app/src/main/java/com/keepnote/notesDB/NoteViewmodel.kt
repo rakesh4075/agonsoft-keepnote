@@ -1,32 +1,23 @@
 package com.keepnote.notesDB
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.keepnote.utils.Constants
-import com.raks.roomdatabase.NoteDatabase
 import kotlinx.coroutines.*
 
 class NoteViewmodel(val database: NotesDao, application: Application):AndroidViewModel(application) {
 
-      var allNotes = MutableLiveData<List<Notes>>()
-      var viewModelJob = Job()
+      private var allNotes = MutableLiveData<List<Notes>>()
+      private var viewModelJob = Job()
     var note = MutableLiveData<Notes?>()
-    val noteDatabase = NoteDatabase.invoke(application.applicationContext)
 
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
     }
 
-    val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
-
-
-    init {
-
-    }
-
+    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     fun insertNote(notes: Notes){
         uiScope.launch {
@@ -36,7 +27,7 @@ class NoteViewmodel(val database: NotesDao, application: Application):AndroidVie
         }
     }
     
-    fun getallNotes() {
+    private fun getallNotes() {
         uiScope.launch {
             allNotes.value = getallnote()
         }
@@ -50,13 +41,13 @@ class NoteViewmodel(val database: NotesDao, application: Application):AndroidVie
     }
 
 
-     fun deleteNotebyId(noteID: Long?){
+    /* fun deleteNotebyId(noteID: Long?){
         uiScope.launch {
             noteID?.let { database.deletenoteById(it) }
         }
-    }
+    }*/
 
-    suspend fun getNote(noteID:Long?): Notes?{
+    private suspend fun getNote(noteID:Long?): Notes?{
         return withContext(Dispatchers.IO){
             return@withContext noteID?.let { database.getNote(it) }
         }

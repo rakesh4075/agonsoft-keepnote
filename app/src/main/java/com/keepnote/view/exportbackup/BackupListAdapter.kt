@@ -1,7 +1,6 @@
 package com.keepnote.view.exportbackup
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +10,11 @@ import com.keepnote.HomeScreen
 import com.keepnote.R
 import com.keepnote.databinding.BackupViewBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
+import com.keepnote.notesDB.NoteDatabase
 import com.keepnote.roomdatabasebackupandrestore.Restore
 import com.keepnote.utils.Constants
-import com.raks.roomdatabase.NoteDatabase
-import java.lang.Exception
 
-class BackupListAdapter(val backupList: ArrayList<FileInfo>):RecyclerView.Adapter<BackupListAdapter.ViewHolder>() {
+class BackupListAdapter(private val backupList: ArrayList<FileInfo>):RecyclerView.Adapter<BackupListAdapter.ViewHolder>() {
     class ViewHolder(binding: BackupViewBinding):RecyclerView.ViewHolder(binding.root) {
         val fileName = binding.fileName
         val fileDate = binding.lastmodifieddate
@@ -57,10 +55,10 @@ class BackupListAdapter(val backupList: ArrayList<FileInfo>):RecyclerView.Adapte
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                 holder.itemView.context.startActivity(intent)
                             }else
-                                com.keepnote.utils.Constants.showToast(s,holder.itemView.context)
+                                Constants.showToast(s,holder.itemView.context)
 
                         }catch (e:Exception){
-                            Log.d("@@@@@2",e.printStackTrace().toString())
+
                         }
 
                     }

@@ -1,11 +1,8 @@
 package com.keepnote.raksEditor
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Point
 import android.text.Selection
-import android.util.DisplayMetrics
-import android.util.Log
 import android.view.WindowManager
 import android.widget.EditText
 
@@ -24,17 +21,8 @@ class Util {
             return widthAndHeight
         }
 
-        fun getPixelByDp(context: Context?, dp: Int): Int {
-            var pixels = dp
-            val displayMetrics = DisplayMetrics()
-            (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
-            pixels = (displayMetrics.density * dp + 0.5).toInt()
-            return pixels
-        }
 
-        fun log(s: String?) {
-            Log.d("RAKS", s)
-        }
+
 
         fun getCurrentCursorLine(editText: EditText): Int {
             val selectionStart = Selection.getSelectionStart(editText.text)

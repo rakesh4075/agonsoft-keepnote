@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:ads="http://schemas.android.com/apk/res-auto">
+<layout>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_contll"
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -11,7 +11,7 @@
             layout="@layout/toolbar"/>
         <FrameLayout
             android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@id/adView"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/fragcontainer"
             app:layout_constraintTop_toBottomOf="@id/toolbar_ll"
@@ -21,7 +21,7 @@
         </FrameLayout>
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/adView"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/swiperefresh"
             app:layout_constraintTop_toBottomOf="@id/toolbar_ll"
@@ -48,17 +48,6 @@
             android:layout_margin="@dimen/_15sdp"
             app:maxImageSize="@dimen/_25sdp"
             app:srcCompat="@drawable/ic_add_black" />
-        <com.google.android.gms.ads.AdView
-            android:visibility="gone"
-            android:id="@+id/adView"
-            android:layout_margin="@dimen/_10sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_width="match_parent"
-            ads:adSize="BANNER"
-            ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
-            android:layout_height="wrap_content"/>
 
         <ProgressBar
             android:visibility="gone"

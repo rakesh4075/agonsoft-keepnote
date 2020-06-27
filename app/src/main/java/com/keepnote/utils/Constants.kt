@@ -1,35 +1,33 @@
 
 package com.keepnote.utils
 
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import android.os.Environment
-import android.util.Log
+import android.view.View
 import android.widget.Toast
-import com.keepnote.KeepNoteApplication
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.keepnote.R
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.tedpermission.PermissionListener
 import com.keepnote.tedpermission.TedPermission
-import java.io.File
+import com.keepnote.view.settings.Privacy
+import com.keepnote.view.settings.Settings
 import java.util.*
-import java.util.jar.Manifest
 import kotlin.collections.ArrayList
 
 class Constants {
     companion object{
-        private var confirmPattern: String?=""
-        private var temppassword: String?=""
-        var testPattern = 0
-        var patternLockNumber:String? = ""
         var ReLoad:Boolean= false
         fun showToast(msg:String,context: Context){
             Toast.makeText(context,msg,Toast.LENGTH_LONG).show()
         }
-        var adUnitId = "ca-app-pub-3940256099942544~3347511713"
+
 
         fun colorLists():ArrayList<String>{
             val lists = ArrayList<String>()
@@ -99,8 +97,7 @@ class Constants {
         }
 
         fun getSortOrder(context: Context):Int{
-            val value = StoreSharedPrefData.INSTANCE.getPref("notesortorder",1,context) as Int
-            return value
+            return StoreSharedPrefData.INSTANCE.getPref("notesortorder",1,context) as Int
         }
         fun setupProgressDialog(context: Context): ProgressDialog {
             val mProgress = ProgressDialog(context, R.style.AppProgressDialogTheme)
@@ -143,7 +140,31 @@ class Constants {
             return result
         }
 
-        // create folder if it not exist
+        fun showBottomAds(context: Context, adView: AdView) {
+            MobileAds.initialize(context)
+            val adRequest = AdRequest.Builder().build()
+            val showValue = StoreSharedPrefData.INSTANCE.getPref("appstart",0,context) as Int
+            if (showValue==0){
+                StoreSharedPrefData.INSTANCE.savePrefValue("appstart",1,context)
+            }else if (showValue==1){
+                if (isInternetAvailable(context)){
+                    when(context as Activity){
+                        is Settings -> {
+                            adView.visibility = View.VISIBLE
+                            adView.loadAd(adRequest)
+
+                        }
+                        is Privacy -> {
+                            adView.visibility = View.VISIBLE
+                            adView.loadAd(adRequest)
+
+                        }
+                    }
+                }
+            }
+        }
+
+        /*// create folder if it not exist
          fun createFolder(context: Context):File {
             val sd = File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString())
             if (!sd.exists()) {
@@ -153,10 +174,12 @@ class Constants {
                 Log.d("@@@@","folder exists")
             }
             return sd
-        }
+        }*/
 
 
     }
+
+
 
 
 }

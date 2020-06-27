@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
+<!--    <color name="colorPrimary">#6200EE</color>-->
+<!--    <color name="colorPrimaryDark">#3700B3</color>-->
     <color name="colorAccent">#03DAC5</color>
 <!--    <color name="yellow">#FFE66E</color>-->
 <!--    <color name="lightGreen">#a0ef9a</color>-->
@@ -17,10 +17,10 @@
     <color name="tabunsel" >#a5a5a5</color>
     <color name="subtxtcolor">#4b4b4b</color>
     <color name="blackgrey">#bfbfbf</color>
-    <color name="palegreen">#98fb98</color>
+<!--    <color name="palegreen">#98fb98</color>-->
     <color name="failurecolor">#FFF05A50</color>
     <color name="text_lt_clr">#a5a5a5</color>
-    <color name="light_red">#FFF05A50</color>
+<!--    <color name="light_red">#FFF05A50</color>-->
 
 
     <color name="edit_yellow">#FFE66E</color>
@@ -32,7 +32,7 @@
     <color name="edit_red">#ff8080</color>
     <color name="edit_darkblue">#8C9EFF</color>
     <color name="edit_darkgreen">#96D162</color>
-    <color name="edit_white">#ffffff</color>
+ <!--   <color name="edit_white">#ffffff</color>-->
     <color name="edit_darkpink">#EA80FC</color>
     <color name="edit_paalgreen">#66ffcc</color>
     <color name="edit_skyblue">#9edfff</color>

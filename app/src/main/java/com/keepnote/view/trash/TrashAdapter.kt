@@ -1,8 +1,6 @@
 package com.keepnote.view.trash
 
 import android.content.Intent
-import android.text.Html
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +18,7 @@ import com.keepnote.utils.Constants
 import com.keepnote.view.noteview.NoteWebview
 import com.keepnote.view.settings.Privacy
 
-class TrashAdapter(val noteList:ArrayList<Notes>,listner: NoteListAdapter.NotesListner):RecyclerView.Adapter<TrashAdapter.ViewHolder>() {
+class TrashAdapter(private val noteList:ArrayList<Notes>, listner: NoteListAdapter.NotesListner):RecyclerView.Adapter<TrashAdapter.ViewHolder>() {
     private var notesListner: NoteListAdapter.NotesListner?=null
 
 
@@ -48,10 +46,13 @@ class TrashAdapter(val noteList:ArrayList<Notes>,listner: NoteListAdapter.NotesL
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         noteList[position].title?.let {title->
-            if (title.isEmpty()){
-                holder.title.text="<Untitled>"
-            } else if (title.length>=20) holder.title.text = "${title.subSequence(0,20)}..."
-            else holder.title.text = title
+            when {
+                title.isEmpty() -> {
+                    holder.title.text="<Untitled>"
+                }
+                title.length>=20 -> holder.title.text = "${title.subSequence(0,20)}..."
+                else -> holder.title.text = title
+            }
         }
         if (holder.itemView.context is Privacy){
             holder.viewmenu.visibility = View.GONE

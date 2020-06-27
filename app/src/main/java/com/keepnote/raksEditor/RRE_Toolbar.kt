@@ -20,22 +20,22 @@ class RRE_Toolbar:LinearLayout {
     /**
      * Request code for selecting an image.
      */
-    val REQ_IMAGE = 1
+
 
     /**
      * Request code for choosing a people to @.
      */
-    val REQ_AT = 2
+
 
     /**
      * Request code for choosing a video.
      */
-    val REQ_VIDEO_CHOOSE = 3
+
 
     /**
      * Request code for inserting a video
      */
-    val REQ_VIDEO = 4
+
 
     private var mContext: Activity? = null
 
@@ -48,7 +48,7 @@ class RRE_Toolbar:LinearLayout {
     private var mEmojiShownNow = false
     private var mHideEmojiWhenHideKeyboard = true
     private var mKeyboardHeight = 0
-    private val mEmojiPanel: View? = null
+
 
 
 
@@ -66,40 +66,40 @@ class RRE_Toolbar:LinearLayout {
     /**
      * Supported styles list.
      */
-    private val mStylesList = ArrayList<IRRE_Style>()
+    private val mStylesList = ArrayList<IRREStyle>()
 
     /**
      * Bold Style
      */
-    private var mBoldStyle: RRE_Bold? = null
+    private var mBoldStyle: RREBold? = null
 
     /**
      * Italic Style
      */
-    private var mItalicStyle: RRE_Italic? = null
+    private var mItalicStyle: RREItalic? = null
 
 
     /**
      * Underline Style
      */
-    private var mUnderlineStyle: RRE_Underline? = null
+    private var mUnderlineStyle: RREUnderline? = null
 
     /**
      * Strikethrough Style
      */
-    private var mStrikethroughStyle: RRE_Strikethrough? = null
+    private var mStrikethroughStyle: RREStrikethrough? = null
 
 
     /**
      * Font color Style
      */
-    private var mFontColorStyle: RRE_FontColor? = null
+    private var mFontColorStyle: RREFontColor? = null
 
 
     /**
      * Font color Style
      */
-    private var mTextLinkStyle: RRE_Link? = null
+    private var mTextLinkStyle: RRELink? = null
 
     /**
      * Bold button.
@@ -140,7 +140,7 @@ class RRE_Toolbar:LinearLayout {
      */
     private var mTextLinkImageView: ImageView? = null
 
-    var sInstance: RRE_Toolbar? = null
+    private var sInstance: RRE_Toolbar? = null
 
     /**
      * The color palette.
@@ -150,7 +150,7 @@ class RRE_Toolbar:LinearLayout {
     /**
      * Background color Style
      */
-    private var mBackgroundColorColoStyle: RRE_BackgroundColor? = null
+    private var mBackgroundColorColoStyle: RREBackgroundColor? = null
 
 
     private fun init() {
@@ -241,13 +241,13 @@ class RRE_Toolbar:LinearLayout {
     }
 
     private fun initStyles() {
-        mBoldStyle = mBoldImageView?.let { mContext?.let { it1 -> RRE_Bold(it1, it) } }
-        mItalicStyle = mItalicImageView?.let { mContext?.let { it1 -> RRE_Italic(it1, it) } }
-        mStrikethroughStyle = mStrikethroughImageView?.let { mContext?.let { it1 -> RRE_Strikethrough(it1, it) } }
-        mUnderlineStyle = mUnderlineImageView?.let { mContext?.let { it1 -> RRE_Underline(it1, it) } }
-        mFontColorStyle = mFontColorImageView?.let { mContext?.let { it1 -> RRE_FontColor(it1, it) } }
-        mBackgroundColorColoStyle = mBackgroundImageView?.let { mContext?.let { it1 -> RRE_BackgroundColor(it1, it,Color.YELLOW) } }
-        mTextLinkStyle = mTextLinkImageView?.let { mContext?.let { it1 -> RRE_Link(it1, it) } }
+        mBoldStyle = mBoldImageView?.let { mContext?.let { it1 -> RREBold(it1, it) } }
+        mItalicStyle = mItalicImageView?.let { mContext?.let { it1 -> RREItalic(it1, it) } }
+        mStrikethroughStyle = mStrikethroughImageView?.let { mContext?.let { it1 -> RREStrikethrough(it1, it) } }
+        mUnderlineStyle = mUnderlineImageView?.let { mContext?.let { it1 -> RREUnderline(it1, it) } }
+        mFontColorStyle = mFontColorImageView?.let { mContext?.let { it1 -> RREFontColor(it1, it) } }
+        mBackgroundColorColoStyle = mBackgroundImageView?.let { mContext?.let { it1 -> RREBackgroundColor(it1, it,Color.YELLOW) } }
+        mTextLinkStyle = mTextLinkImageView?.let { mContext?.let { it1 -> RRELink(it1, it) } }
 
         mBoldStyle?.let { mStylesList.add(it) }
         mItalicStyle?.let { mStylesList.add(it) }
@@ -284,14 +284,8 @@ class RRE_Toolbar:LinearLayout {
         return mEditText
     }
 
-    fun addToolItem(toolItem: IRRE_ToolItem?) {
-        val view: View? =  toolItem?.getView(context)
-        this.addView(view)
-        // addView to toolbar
-        // add tool item to a collection
-    }
 
-    fun getStylesList(): ArrayList<IRRE_Style> {
+    fun getStylesList(): ArrayList<IRREStyle> {
         return mStylesList
     }
 

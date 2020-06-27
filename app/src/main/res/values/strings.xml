@@ -1,11 +1,7 @@
 <resources>
     <string name="app_name">KeepNote</string>
     <string name="Notes">Notes</string>
-    <string name="addnote">Add Note</string>
     <string name="sync_note">Sync Notes</string>
-    <string name="rate_app">Rate App</string>
-    <string name="Share_app">ShareApp</string>
-    <string name="logouttxt">Logout</string>
     <string name="closes">close</string>
     <string name="opens">open</string>
     <string name="settings">Settings</string>
@@ -13,10 +9,7 @@
     <string name="my_favourites_txt">Favourite</string>
     <string name="export_backup">Export &amp; Backup</string>
     <string name="trash_menu">Trash</string>
-    <string name="backup_data">Backup data</string>
-    <string name="import_data">Import data</string>
     <string name="backup_before_import">Do you want backup current database before import an old database?</string>
-    <string name="select_file">Select file</string>
     <string name="backup_empty">Backup file is empty</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
@@ -31,7 +24,7 @@
 
 
     <string name="colorpicker_dialog_title">Choose the color</string>
-    <string name="colorpicker_dialog_cancel">CANCEL</string>
+    <string name="colorpicker_dialog_cancel">Cancel</string>
     <string name="colorpicker_dialog_ok">OK</string>
 
     <string name="tedpermission_setting">Setting</string>
@@ -59,8 +52,10 @@
     <string name="reset_code_text">Reset passcode</string>
     <string name="privacy_test_title">Draw unlock pattern</string>
     <string name="please_wait">Please wait</string>
-    <string name="loading_dots">Loading...</string>
+    <string name="loading_dots">Loading…</string>
     <string name="title_empty_text"><![CDATA[<Untitled>]]></string>
     <string name="feedback">Help &amp; Feedback</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="input_your_answer">Input your answer</string>
 
 </resources>

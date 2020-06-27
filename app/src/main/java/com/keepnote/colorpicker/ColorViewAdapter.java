@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.keepnote.R;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -25,7 +27,7 @@ import java.util.ArrayList;
 public class ColorViewAdapter extends RecyclerView.Adapter<ColorViewAdapter.ViewHolder> {
 
     private ColorPicker.OnFastChooseColorListener onFastChooseColorListener;
-    private ArrayList<ColorPal> mDataset;
+    private final ArrayList<ColorPal> mDataset;
     private int colorPosition = -1;
     private int colorSelected;
     private int marginLeft, marginRight, marginTop, marginBottom;
@@ -38,9 +40,9 @@ public class ColorViewAdapter extends RecyclerView.Adapter<ColorViewAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
 
-        public AppCompatButton colorItem;
+        final AppCompatButton colorItem;
 
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
             //buttons settings
             colorItem = v.findViewById(R.id.color);
@@ -106,6 +108,7 @@ public class ColorViewAdapter extends RecyclerView.Adapter<ColorViewAdapter.View
     }
 
 
+    @NotNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.palette_item, parent, false);
@@ -113,7 +116,7 @@ public class ColorViewAdapter extends RecyclerView.Adapter<ColorViewAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
         int color = mDataset.get(position).getColor();
 
         int textColor = ColorUtils.isWhiteText(color) ? Color.WHITE : Color.BLACK;

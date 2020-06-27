@@ -1,26 +1,24 @@
 package com.keepnote.view.settings
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.keepnote.NoteListAdapter
 import com.keepnote.R
 import com.keepnote.databinding.SettingsItemBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.utils.Constants
 
 
-class SettingsRecyclerAdapter(val listerner:NoteListAdapter.NotesListner) :RecyclerView.Adapter<SettingsRecyclerAdapter.ViewHolder>() {
+class SettingsRecyclerAdapter :RecyclerView.Adapter<SettingsRecyclerAdapter.ViewHolder>() {
     private var titleList = arrayOf("Revert","Font size","Notes sort order","Online Sync","Backup","Night mode")
     private var settingsIcon = arrayOf(R.drawable.ic_undo,R.drawable.ic_format_size,R.drawable.ic_filter,R.drawable.ic_sync_black,R.drawable.ic_backup,R.drawable.ic_darkness)
     private var contentList = arrayOf("Revert to default settings","Set the default notes font size","Set the default notes sort order","Sync on launch","Auto backup","Set dark or light background")
@@ -28,7 +26,7 @@ class SettingsRecyclerAdapter(val listerner:NoteListAdapter.NotesListner) :Recyc
 
     class ViewHolder(binding: SettingsItemBinding):RecyclerView.ViewHolder(binding.root) {
         private  var layout:ConstraintLayout = binding.rootview
-        val params = ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
+        private val params = ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
         val title = binding.title
         val settingImage= binding.settingsIcon
         val settingValue = binding.settingValue
@@ -57,7 +55,7 @@ class SettingsRecyclerAdapter(val listerner:NoteListAdapter.NotesListner) :Recyc
         val context = holder.itemView.context
         holder.title.text = titleList[position]
         holder.content.text = contentList[position]
-        holder.settingImage.setBackgroundResource(settingsIcon[position])
+        holder.settingImage.background = AppCompatResources.getDrawable(context,settingsIcon[position])
 
         if (position==1){
             holder.settingValue.visibility = View.VISIBLE

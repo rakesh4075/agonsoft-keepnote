@@ -8,7 +8,6 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.AsyncTask
 import android.os.Environment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView.OnItemClickListener
@@ -46,13 +45,10 @@ class BackupDatas(private val context: Context) {
     private var onBackupListener: OnBackupListener? = null
 
     // create folder if it not exist
-     fun createFolder() {
+    private fun createFolder() {
         val sd = File(folderSD)
         if (!sd.exists()) {
             sd.mkdir()
-          Log.d("@@@","create folder")
-        } else {
-            Log.d("@@@","folder exists")
         }
     }
 
@@ -62,13 +58,13 @@ class BackupDatas(private val context: Context) {
      * When finish, we call onFinishExport method to send notify for activity
      */
 
-    fun exportToSD(){
+    private fun exportToSD(){
         var error: String? = null
         try {
             createFolder()
             val sd = File(folderSD)
             if (sd.canWrite()){
-                val formatTime = SimpleDateFormat("yyyy_MM_dd__HH_mm_ss")
+                val formatTime = SimpleDateFormat("yyyy_MM_dd__HH_mm_ss", Locale.US)
                 val backupDBPath: String =
                     databaseName + "_" + formatTime.format(Date())
                 val currentDB =
@@ -89,7 +85,6 @@ class BackupDatas(private val context: Context) {
             }
 
         }catch (e:Exception) {
-          Log.d("@@@exception",e.message)
             error = "Error backup"
         }
     }
@@ -185,7 +180,7 @@ class BackupDatas(private val context: Context) {
                     error = "Error import"
                 }
             }
-           // Log.d("@@@@2",error)
+
 
             /**
              * when copy old database into temp database success
@@ -199,8 +194,8 @@ class BackupDatas(private val context: Context) {
         }
     }
 
-     class CopyDataAsyncTask(var db: SQLiteDatabase,val context: Context) : AsyncTask<Void?, Void?, Void?>() {
-        var progress = ProgressDialog(context)
+     class CopyDataAsyncTask(private var db: SQLiteDatabase, val context: Context) : AsyncTask<Void?, Void?, Void?>() {
+        private var progress = ProgressDialog(context)
 
         /**
          * will call first
@@ -244,7 +239,7 @@ class BackupDatas(private val context: Context) {
              )
              cursor.moveToFirst()
              while (!cursor.isAfterLast){
-                 Log.d("@@@@@2",cursor.columnCount.toString())
+
              }
              cursor.close()
          }

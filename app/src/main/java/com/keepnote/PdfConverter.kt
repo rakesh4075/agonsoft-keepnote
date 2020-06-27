@@ -1,14 +1,10 @@
 package android.print
 
 import android.content.Context
-import android.os.Build
 import android.os.Handler
 import android.os.ParcelFileDescriptor
-import android.util.AttributeSet
-import android.util.Log
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.keepnote.KeepNoteApplication
 import java.io.File
 
 internal class PdfConverter private constructor() : Runnable {
@@ -28,7 +24,7 @@ internal class PdfConverter private constructor() : Runnable {
                 mPdfFile!!.createNewFile()
                 return ParcelFileDescriptor.open(mPdfFile, ParcelFileDescriptor.MODE_TRUNCATE or ParcelFileDescriptor.MODE_READ_WRITE)
             } catch (e: Exception) {
-                Log.d(TAG, "Failed to open ParcelFileDescriptor", e)
+
             }
 
             return null
@@ -47,35 +43,31 @@ internal class PdfConverter private constructor() : Runnable {
             mWebView = WebView(mContext)
             mWebView?.webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView, url: String) {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
-                        throw RuntimeException("call requires API level 19")
-                    else {
-                        val documentAdapter = mWebView!!.createPrintDocumentAdapter()
-                        documentAdapter.onLayout(null, pdfPrintAttrs, null, object : PrintDocumentAdapter.LayoutResultCallback() {
-                            override fun onLayoutFinished(info: PrintDocumentInfo?, changed: Boolean) {
-                                super.onLayoutFinished(info, changed)
+                    val documentAdapter = mWebView!!.createPrintDocumentAdapter()
+                    documentAdapter.onLayout(null, pdfPrintAttrs, null, object : PrintDocumentAdapter.LayoutResultCallback() {
+                        override fun onLayoutFinished(info: PrintDocumentInfo?, changed: Boolean) {
+                            super.onLayoutFinished(info, changed)
 
-                                documentAdapter.onWrite(arrayOf(PageRange.ALL_PAGES), outputFileDescriptor, null, object : PrintDocumentAdapter.WriteResultCallback() {
-                                    override fun onWriteFinished(pages: Array<PageRange>) {
-                                        mOnComplete?.onWriteComplete()
-                                        destroy()
-                                    }
+                            documentAdapter.onWrite(arrayOf(PageRange.ALL_PAGES), outputFileDescriptor, null, object : PrintDocumentAdapter.WriteResultCallback() {
+                                override fun onWriteFinished(pages: Array<PageRange>) {
+                                    mOnComplete?.onWriteComplete()
+                                    destroy()
+                                }
 
-                                    override fun onWriteFailed(error: CharSequence?) {
-                                        super.onWriteFailed(error)
-                                        mOnComplete?.onWriteFailed()
-                                    }
-                                })
+                                override fun onWriteFailed(error: CharSequence?) {
+                                    super.onWriteFailed(error)
+                                    mOnComplete?.onWriteFailed()
+                                }
+                            })
 
-                            }
-                        }, null)
-                    }
+                        }
+                    }, null)
                 }
             }
 
             mWebView?.loadDataWithBaseURL("", mHtmlString, "text/html", "UTF-8", null)
         }catch (E:Exception){
-            Log.d("@@@@",E.message.toString())
+
         }
 
     }

@@ -20,15 +20,15 @@ class AESUtils {
         return new String(result);
     }
 
-    private static byte[] getRawKey(byte[] keyValue) throws Exception {
+    private static byte[] getRawKey(byte[] keyValue) {
         SecretKey key = new SecretKeySpec(keyValue, "AES");
         return key.getEncoded();
 
     }
 
     private static byte[] encrypt(byte[] raw, byte[] clear) throws Exception {
-        SecretKey skeySpec = new SecretKeySpec(raw, "AES");
-        Cipher cipher = Cipher.getInstance("AES");
+        SecretKey skeySpec = new SecretKeySpec(raw, "REE");
+        Cipher cipher = Cipher.getInstance("REE");
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
         return cipher.doFinal(clear);
 
@@ -36,7 +36,7 @@ class AESUtils {
 
     private static byte[] decrypt(byte[] encrypted, byte[] keyValue) throws Exception {
         SecretKey skeySpec = new SecretKeySpec(keyValue, "AES");
-        Cipher cipher = Cipher.getInstance("AES");
+        Cipher cipher = Cipher.getInstance("REE");
         cipher.init(Cipher.DECRYPT_MODE, skeySpec);
         return cipher.doFinal(encrypted);
 
@@ -54,8 +54,8 @@ class AESUtils {
         if (buf == null)
             return "";
         StringBuffer result = new StringBuffer(2 * buf.length);
-        for (int i = 0; i < buf.length; i++) {
-            appendHex(result, buf[i]);
+        for (byte b : buf) {
+            appendHex(result, b);
         }
         return result.toString();
     }

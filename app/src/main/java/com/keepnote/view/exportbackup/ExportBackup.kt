@@ -10,11 +10,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
@@ -24,13 +22,13 @@ import com.keepnote.Html2Pdf
 import com.keepnote.R
 import com.keepnote.databinding.ActivityBackupBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
+import com.keepnote.notesDB.NoteDatabase
 import com.keepnote.roomdatabasebackupandrestore.Backup
 import com.keepnote.roomdatabasebackupandrestore.Restore
 import com.keepnote.tedpermission.TedPermission
 import com.keepnote.utils.Constants
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
-import com.raks.roomdatabase.NoteDatabase
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -90,7 +88,7 @@ class ExportBackup : AppCompatActivity() {
                 try {
                     converthtmlTopdf()
                 }catch (e:Exception){
-                    Log.d("@@@@@@",e.message.toString())
+
                 }
 
             }else Constants.verifyPermission(this)
@@ -159,11 +157,9 @@ class ExportBackup : AppCompatActivity() {
      fun restore(restoreFor:Int,activity: Activity) {
          if (TedPermission.isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
              var backupFilePath = ""
-             if (restoreFor == 0) {
-                 backupFilePath =
-                     "/storage/emulated/0/Android/data/com.keepnote/files/Documents/note_2020_05_01__15_32_31"
-             } else backupFilePath =
-                 "/storage/emulated/0/Android/data/com.keepnote/files/Documents/drive_db"
+             backupFilePath = if (restoreFor == 0) {
+                 "/storage/emulated/0/Android/data/com.keepnote/files/Documents/note_2020_05_01__15_32_31"
+             } else "/storage/emulated/0/Android/data/com.keepnote/files/Documents/drive_db"
 
              Restore.Init()
                  .database(NoteDatabase.invoke(this))
@@ -189,12 +185,11 @@ class ExportBackup : AppCompatActivity() {
 
     }
 
-     fun backup(context: Context) {
+     private fun backup(context: Context) {
         if (TedPermission.isGranted(context, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
             createFolder(context)
             val formatTime = SimpleDateFormat("yyyy_MM_dd__HH_mm_ss", Locale("en"))
             backupDBPath = "note" + "_" + formatTime.format(Date())
-            Log.d("@@@@@dbpath",backupDBPath)
             Backup.Init()
                 .database(NoteDatabase.invoke(context))
                 .path("/storage/emulated/0/Android/data/com.keepnote/files/Documents")
@@ -241,7 +236,7 @@ class ExportBackup : AppCompatActivity() {
     }
 
 
-    fun  createPdfFile(sd: File?) = try {
+    private fun  createPdfFile(sd: File?) = try {
         if (Constants.isInternetAvailable(this)){
             var file:File?=null
             var html = ""
@@ -291,7 +286,7 @@ class ExportBackup : AppCompatActivity() {
                             }
 
                         }catch (e:Exception){
-                            Log.d("@@@@@@",e.message.toString())
+
                         }
 
 
@@ -314,13 +309,10 @@ class ExportBackup : AppCompatActivity() {
     }
 
     // create folder if it not exist
-    fun createFolder(context: Context):File {
+    private fun createFolder(context: Context):File {
         val sd = File(context.getExternalFilesDir(null).toString())
         if (!sd.exists()) {
             sd.mkdir()
-            Log.d("@@@@","folder created")
-        } else {
-            Log.d("@@@@","folder exists")
         }
         return sd
     }

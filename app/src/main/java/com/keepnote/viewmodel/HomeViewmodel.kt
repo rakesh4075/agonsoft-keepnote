@@ -1,8 +1,6 @@
 package com.keepnote.viewmodel
 
 import android.app.Application
-import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -14,25 +12,20 @@ import kotlinx.coroutines.*
 class HomeViewmodel(val database: NotesDao, application: Application):AndroidViewModel(application) {
 
       var allNotes = MutableLiveData<List<Notes>>()
-      var viewModelJob = Job()
+      private var viewModelJob = Job()
     var views:MutableLiveData<View> = MutableLiveData()
     val passedData:MutableLiveData<String> = MutableLiveData()
-    val menus = MutableLiveData<MenuItem>()
+
 
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
     }
 
-    val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-
-    init {
-
-    }
 
     fun initview(view:View):MutableLiveData<View>{
-        Log.d("@@@@2","vvvvvvvv")
         views.value = view
         return views
     }
@@ -50,16 +43,19 @@ class HomeViewmodel(val database: NotesDao, application: Application):AndroidVie
     fun updateDeleteById(noteID: Long?, isDeleted:Int){
             uiScope.launch {
 
-                val deleteRequest =async {
-                    noteID?.let { database.updateDeleteById(it,isDeleted) }
-                }.await()
-                val getAllNotesRequest = async {
+                withContext(Dispatchers.Default) {
+                    noteID?.let { database.updateDeleteById(it, isDeleted) }
+                }
+                withContext(Dispatchers.Default) {
                     getallNotes()
-                    if (isDeleted==1)
-                    Constants.showToast("The note has been moved to the trash",getApplication())
-                    else Constants.showToast("Restored",getApplication())
+                    if (isDeleted == 1)
+                        Constants.showToast(
+                            "The note has been moved to the trash",
+                            getApplication()
+                        )
+                    else Constants.showToast("Restored", getApplication())
 
-                }.await()
+                }
 
             }
     }
@@ -67,14 +63,14 @@ class HomeViewmodel(val database: NotesDao, application: Application):AndroidVie
     fun deleteNoteById(noteID: Long?){
         uiScope.launch {
 
-            val deleteRequest =async {
+            withContext(Dispatchers.Default) {
                 noteID?.let { database.deletenoteById(it) }
-            }.await()
-            val getAllNotesRequest = async {
+            }
+            withContext(Dispatchers.Default) {
                 getallNotes()
-                Constants.showToast("Deleted",getApplication())
+                Constants.showToast("Deleted", getApplication())
 
-            }.await()
+            }
 
         }
     }
@@ -82,22 +78,21 @@ class HomeViewmodel(val database: NotesDao, application: Application):AndroidVie
 
     fun updateLockbyId(noteID: Long?,isLocked:Int){
         uiScope.launch {
-            val updateLockRequest =async {
-                noteID?.let { database.updateLockById(it,isLocked) }
-            }.await()
-            val getAllNotesRequest = async {
+            withContext(Dispatchers.Default) {
+                noteID?.let { database.updateLockById(it, isLocked) }
+            }
+            withContext(Dispatchers.Default) {
                 getallNotes()
-                if (isLocked==0) Constants.showToast("UnLocked",getApplication())
-                else Constants.showToast("Locked",getApplication())
+                if (isLocked == 0) Constants.showToast("UnLocked", getApplication())
+                else Constants.showToast("Locked", getApplication())
 
-            }.await()
+            }
 
         }
     }
 
     private suspend fun getallnote(): List<Notes>? {
         val sortValue = Constants.getSortOrder(getApplication())
-        Log.d("@@@@@",sortValue.toString())
         return withContext(Dispatchers.Main){
             when(sortValue){
                 1-> return@withContext database.getAllNotesbyalphabet()

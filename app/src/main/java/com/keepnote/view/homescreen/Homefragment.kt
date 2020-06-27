@@ -2,7 +2,6 @@ package com.keepnote.view.homescreen
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,10 +23,9 @@ import com.keepnote.databinding.HomefragmentBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
-import com.keepnote.utils.PassDataToFragListner
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
-import com.raks.roomdatabase.NoteDatabase
+import com.keepnote.notesDB.NoteDatabase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -39,7 +37,7 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any>{
 
     private lateinit var nonDeletedNotes: java.util.ArrayList<Notes>
     private  var noteDBAdapter: NoteListAdapter?=null
-    lateinit var mbinding:HomefragmentBinding
+    private lateinit var mbinding:HomefragmentBinding
     lateinit var viewmodel: HomeViewmodel
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -110,22 +108,18 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any>{
     private fun getLayoutManager(i:Int):RecyclerView.LayoutManager{
         when(i){
             1->{
-              val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
-                return linearLayoutManager
+                return LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
             }
 
             2->{
-               val stagLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                return stagLayoutManager
+                return StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             }
             3->{
-                val gridLayoutManager = GridLayoutManager(context,3)
-                return gridLayoutManager
+                return GridLayoutManager(context,3)
             }
 
             else ->{
-               val stagLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                return stagLayoutManager
+                return StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             }
 
 

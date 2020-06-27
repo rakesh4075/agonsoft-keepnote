@@ -2,7 +2,6 @@ package com.keepnote.view.settings
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.Animation
@@ -26,17 +25,16 @@ import com.keepnote.NoteListAdapter
 import com.keepnote.R
 import com.keepnote.databinding.ActivityPrivacyBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
+import com.keepnote.notesDB.NoteDatabase
 import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
 import com.keepnote.view.trash.TrashAdapter
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
-import com.raks.roomdatabase.NoteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
 
@@ -54,7 +52,7 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
     private  var noteDBAdapter: TrashAdapter?=null
     private var passwordReset = false
     private lateinit var viewmodel: HomeViewmodel
-    var securityQuestion = arrayOf("What is your father's name?","What is your mother's name?","" +
+    private var securityQuestion = arrayOf("What is your father's name?","What is your mother's name?","" +
             "What is your first girl friend name?","What is your ID card numbers?","What is your first company name?",
     "What is your favorite actor?","What is your first pet name?")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -205,9 +203,9 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
     private fun getLockedNotes() {
         lockpattern = StoreSharedPrefData.INSTANCE.getPref("lockpattern",0,this).toString()
         if (lockpattern == "1"){
-            Log.d("@@@@@","hiiiiiiiiii")
             binding.patternLl.visibility = View.GONE
             binding.privacynotesLl.visibility= View.VISIBLE
+            binding.adView.let { Constants.showBottomAds(this,it) }
             binding.patternLockViewTest.addPatternLockListener(object :PatternLockViewListener{
                 val savedPattern = StoreSharedPrefData.INSTANCE.getPref("securitypattern","",this@Privacy)
                 override fun onComplete(pattern: MutableList<PatternLockView.Dot>?) {
@@ -215,7 +213,6 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
                     if (savedPattern==confirmpattern){
                         binding.passwordTestll.visibility = View.GONE
                         if (fromPage!=null && fromPage=="home-unlock" && noteId!=null){
-                            Log.d("@@@@@","hiiiiiiiiiii")
                             viewmodel.updateLockbyId(noteId,0)
                             startActivity(Intent(this@Privacy,HomeScreen::class.java))
                             finish()
@@ -255,7 +252,6 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
     private fun getAllNoteDB() {
         viewmodel.getallNotes()
         viewmodel.allNotes.observe(this, Observer {notes->
-            Log.d("@@@@@",notes.toString())
             notesize = notes.size
             lokedNotes = ArrayList()
             for (i in 0 until notesize){
@@ -270,6 +266,7 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
                     TrashAdapter(lokedNotes!!, this)
                 binding.trashRecycler.adapter = noteDBAdapter
                 noteDBAdapter?.notifyDataSetChanged()
+
             }else{
                 noteDBAdapter =
                     TrashAdapter(lokedNotes!!, this)
@@ -277,6 +274,7 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
                 binding.trashRecycler.layoutManager = getLayoutManager(4)
                 binding.trashRecycler.adapter = noteDBAdapter
                 noteDBAdapter?.notifyDataSetChanged()
+
 
             }
 
