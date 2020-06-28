@@ -57,5 +57,6 @@
     <string name="feedback">Help &amp; Feedback</string>
     <string name="privacy_policy">Privacy policy</string>
     <string name="input_your_answer">Input your answer</string>
+    <string name="note_title">%1$s ..</string>
 
 </resources>

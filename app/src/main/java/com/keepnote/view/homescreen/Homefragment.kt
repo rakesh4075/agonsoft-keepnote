@@ -21,11 +21,11 @@ import com.keepnote.NoteListAdapter
 import com.keepnote.R
 import com.keepnote.databinding.HomefragmentBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
+import com.keepnote.notesDB.NoteDatabase
 import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
-import com.keepnote.notesDB.NoteDatabase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

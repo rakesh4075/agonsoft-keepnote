@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/lightprimary</item>
         <item name="colorPrimaryDark">@color/lightprimarydark</item>
-        <item name="colorAccent">#FFF05A50</item>
+
     </style>
 
   <!--  <style name="AppTheme.Noactionbar" parent="Theme.AppCompat.Light.NoActionBar">
@@ -43,6 +43,8 @@
         <item name="android:navigationBarColor" tools:targetApi="lollipop">#ffffff</item>
         <item name="bottombarcolor">#ffffff</item>
         <item name="nav_color">#ffffff</item>
+        <item name="android:indeterminateTint" tools:targetApi="lollipop">#FFF05A50</item>
+
     </style>
 
 
@@ -69,6 +71,7 @@
         <item name="android:navigationBarColor" tools:targetApi="lollipop">#263238</item>
         <item name="bottombarcolor">#263238</item>
         <item name="nav_color">#ffffff</item>
+        <item name="android:indeterminateTint" tools:targetApi="lollipop">#009688</item>
     </style>
 
 

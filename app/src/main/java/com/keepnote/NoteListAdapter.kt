@@ -2,6 +2,7 @@ package com.keepnote
 
 import android.content.Intent
 import android.graphics.BlurMaskFilter
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -41,18 +42,33 @@ class NoteListAdapter(private var noteList: List<Notes>, listner: NotesListner):
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val context = holder.itemView.context
         if (noteList[position].isDeleted != 1){
             noteList[position].title?.let {title->
                 when {
                     title.isEmpty() -> {
                         holder.title.text=holder.itemView.context.getString(R.string.title_empty_text)
                     }
-                    title.length>=20 -> holder.title.text = "${title.subSequence(0,20)}..."
+                    title.length>=20 -> holder.title.text = context.getString(R.string.note_title,title.subSequence(0,20))
                     else -> holder.title.text = title
                 }
             }
-           val content = noteList[position].content.replace("<br>","",true)
-            holder.content.text = HtmlCompat.fromHtml(content,HtmlCompat.FROM_HTML_MODE_COMPACT)
+            noteList[position].content.let {content->
+               content.replace("<br>","",true)
+                Log.d("@@@@",content)
+                when {
+                    content.length>=250 -> {
+                        holder.content.text = if (position%2!=0){
+                            HtmlCompat.fromHtml(content.subSequence(0,250) as String,HtmlCompat.FROM_HTML_MODE_COMPACT)
+                        }else HtmlCompat.fromHtml(content.subSequence(0,200) as String,HtmlCompat.FROM_HTML_MODE_COMPACT)
+                    }
+                    content == "<html><body></body></html>" ->{
+                        holder.content.text=noteList[position].title
+                    }
+                    else -> holder.content.text = HtmlCompat.fromHtml(content,HtmlCompat.FROM_HTML_MODE_COMPACT)
+                }
+            }
+
             if (noteList[position].isFavourite==1)
             holder.favItem.visibility = View.VISIBLE
             holder.favItem.background = AppCompatResources.getDrawable(holder.itemView.context,R.drawable.ic_favorite_checked)
