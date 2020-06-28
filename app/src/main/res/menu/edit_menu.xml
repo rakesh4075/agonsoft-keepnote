@@ -2,8 +2,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/savenote"
         android:title="@string/save"/>
-    <item android:id="@+id/addfav"
-        android:title="Add star"/>
-
-
 </menu>

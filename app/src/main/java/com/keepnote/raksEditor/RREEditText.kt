@@ -43,14 +43,15 @@ class RREEditText: AppCompatEditText {
 
     private fun init() {
         isFocusableInTouchMode = true
-        if (mContext!=null)
-        setBackgroundColor(ContextCompat.getColor(mContext!!,R.color.lightwindoebackground))
-        inputType = (EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE
-                or EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS)
+        if (mContext!=null){
+            inputType = (EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE
+                    or EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS)
 //        var padding = 8
 //        padding = Util.getPixelByDp(mContext, padding)
 //        setPadding(padding, padding, padding, padding)
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, Constants.DEFAULT_FONT_SIZE)
+//        setTextSize(TypedValue.COMPLEX_UNIT_SP, Constants.DEFAULT_FONT_SIZE)
+        }
+
 
     }
 

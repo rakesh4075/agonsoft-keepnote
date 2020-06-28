@@ -35,7 +35,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"/>
             <com.keepnote.raksEditor.RREEditText
-                android:background="?attr/bodybg"
                 android:fontFamily="@font/robotoslabregular"
                 android:inputType="textMultiLine"
                 android:autofillHints="@string/note_hint"

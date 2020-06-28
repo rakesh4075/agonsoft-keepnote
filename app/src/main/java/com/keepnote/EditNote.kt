@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -50,19 +49,26 @@ class EditNote : AppCompatActivity() {
     private var note:Notes?=null
     private var addImageRecyclerview: AddImageRecyclerview?=null
     private var imageUri:ArrayList<Bitmap?>?=null
+    private var isDarktheme = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,this))as Boolean)
-            setTheme(R.style.DarkTheme)
-        else
-            setTheme(R.style.LightTheme)
+        isDarktheme =
+            if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,this))as Boolean) {
+                setTheme(R.style.DarkTheme)
+                true
+            } else{
+                setTheme(R.style.LightTheme)
+                false
+            }
+
 
         binding = DataBindingUtil.setContentView(this,
             R.layout.activity_edit_note
         )
+
 
         binding.toolbar.overflowIcon = AppCompatResources.getDrawable(this,R.drawable.ic_menu_overflow)
         setSupportActionBar(binding.toolbar)
@@ -153,10 +159,8 @@ class EditNote : AppCompatActivity() {
 
     private fun init(){
         binding.noteContenteditll.raksToolbar.setEditText(binding.noteContenteditll.editNoteContent)
+        if (!isDarktheme) binding.noteContenteditll.editNoteContent.setBackgroundColor(ContextCompat.getColor(this,R.color.lightprimary)) else  binding.noteContenteditll.editNoteContent.setBackgroundColor(ContextCompat.getColor(this,R.color.black))
         binding.noteContenteditll.editNoteContent.setToolbar(binding.noteContenteditll.raksToolbar)
-
-
-
 
     }
 
@@ -174,9 +178,11 @@ class EditNote : AppCompatActivity() {
                 binding.noteContenteditll.txtContentll.setBackgroundColor(color)
                 notecolor = color
                 colorcode = color
-                if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,this@EditNote))as Boolean)
-                binding.noteContenteditll.editNoteContent.setTextColor(ContextCompat.getColor(this@EditNote,R.color.black))
-                if (notecolor==-16777216)binding.noteContenteditll.editNoteContent.setTextColor(ContextCompat.getColor(this@EditNote,R.color.white))
+
+                if (isDarktheme || notecolor!=-16777216){
+                    binding.noteContenteditll.editNoteContent.setTextColor(ContextCompat.getColor(this@EditNote,R.color.black))
+                }else binding.noteContenteditll.editNoteContent.setTextColor(ContextCompat.getColor(this@EditNote,R.color.white))
+
 
             }
 
@@ -197,15 +203,11 @@ class EditNote : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
         saveNote()
-        val intent = Intent(this,HomeScreen::class.java)
-        if (fromPage!=0)
-        intent.putExtra("frompage","editnotesavenote")
-        startActivity(intent)
+        Constants.showIntersialAd(this)
+        startActivity(Intent(this,HomeScreen::class.java))
         finish()
-
-
+        super.onBackPressed()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -216,12 +218,8 @@ class EditNote : AppCompatActivity() {
             }
             R.id.savenote ->{
               onBackPressed()
-            }
-
-            R.id.addfav ->{
 
             }
-
 
 
         }
@@ -232,19 +230,15 @@ class EditNote : AppCompatActivity() {
         binding.noteSaveProgress.visibility = View.VISIBLE
         val title = binding.editNoteTitle.text.toString()
         val content = binding.noteContenteditll.editNoteContent.getHtml()
-
-
         if (content!=null){
             if (title.isEmpty() && content == "<html><body></body></html>"){
                 Constants.showToast("Required field is empty",this)
             }else{
-
                 if (fromPage==0) {
                     updateNote(title,content,isFavourite)
                 } else {
                     try {
                         viewmodel.insertNote(Notes(0,title, content,notecolor,isFavourite = isFavourite))
-
                     }catch (e:Exception){
 
                     }

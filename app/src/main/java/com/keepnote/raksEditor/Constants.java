@@ -19,7 +19,7 @@ public class Constants {
 
 
 
-    public static final float DEFAULT_FONT_SIZE = 18f;
+    public static final float DEFAULT_FONT_SIZE = 40f;
 
     public static  int SCREEN_WIDTH = 0;
 

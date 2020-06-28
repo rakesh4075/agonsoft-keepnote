@@ -55,7 +55,7 @@ class ExportBackup : AppCompatActivity() {
         else
             setTheme(R.style.LightTheme)
 
-       mbinding = DataBindingUtil.setContentView(this,R.layout.activity_backup)
+        mbinding = DataBindingUtil.setContentView(this,R.layout.activity_backup)
         //init viewmodel
         val application = requireNotNull(this).application
         val dataSource = NoteDatabase.invoke(this).getNoteDao()
@@ -88,7 +88,6 @@ class ExportBackup : AppCompatActivity() {
                 try {
                     converthtmlTopdf()
                 }catch (e:Exception){
-
                 }
 
             }else Constants.verifyPermission(this)
@@ -132,9 +131,9 @@ class ExportBackup : AppCompatActivity() {
             for (file in listFile){
                 val fileName = file.name
                 val fileModifedDate = Date(file.lastModified()).toString()
-                val fileSize = Integer.parseInt(((file.length()/1024).toString())).toString().replace("0","1",ignoreCase = true)
+                val fileSize = Integer.parseInt(((file.length()/1024).toString())).toString()
                 if (fileName!="drive_db")
-                listFileInfo?.add(FileInfo(fileName,fileModifedDate,fileSize))
+                    listFileInfo?.add(FileInfo(fileName,fileModifedDate,fileSize))
             }
         }
         val layoutManager = LinearLayoutManager(this)
@@ -154,38 +153,40 @@ class ExportBackup : AppCompatActivity() {
 
     }
 
-     fun restore(restoreFor:Int,activity: Activity) {
-         if (TedPermission.isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-             var backupFilePath = ""
-             backupFilePath = if (restoreFor == 0) {
-                 "/storage/emulated/0/Android/data/com.keepnote/files/Documents/note_2020_05_01__15_32_31"
-             } else "/storage/emulated/0/Android/data/com.keepnote/files/Documents/drive_db"
+    fun restore(restoreFor:Int,activity: Activity) {
+        if (TedPermission.isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            var backupFilePath = ""
+            if (restoreFor == 0) {
+                backupFilePath =
+                    "/storage/emulated/0/Android/data/com.keepnote/files/Documents/note_2020_05_01__15_32_31"
+            } else backupFilePath =
+                "/storage/emulated/0/Android/data/com.keepnote/files/Documents/drive_db"
 
-             Restore.Init()
-                 .database(NoteDatabase.invoke(this))
+            Restore.Init()
+                .database(NoteDatabase.invoke(this))
 //            .backupFilePath("/storage/emulated/0/Android/data/com.keepnote/files/Documents/file.db")
-                 .backupFilePath(backupFilePath)
-                 .secretKey("123")
-                 .onWorkFinishListener { _, message ->
-                     Constants.showToast(message, activity)
-                     if (restoreFor == 0) {
-                         startActivity(Intent(activity, HomeScreen::class.java))
-                         finish()
-                     } else {
-                         (activity as HomeScreen).initFragment(1)
+                .backupFilePath(backupFilePath)
+                .secretKey("123")
+                .onWorkFinishListener { _, message ->
+                    Constants.showToast(message, activity)
+                    if (restoreFor == 0) {
+                        startActivity(Intent(activity, HomeScreen::class.java))
+                        finish()
+                    } else {
+                        (activity as HomeScreen).initFragment(1)
 
 
-                     }
+                    }
 
-                 }
-                 .execute()
-         }else{
-             Constants.verifyPermission(this)
-         }
+                }
+                .execute()
+        }else{
+            Constants.verifyPermission(this)
+        }
 
     }
 
-     private fun backup(context: Context) {
+    fun backup(context: Context) {
         if (TedPermission.isGranted(context, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
             createFolder(context)
             val formatTime = SimpleDateFormat("yyyy_MM_dd__HH_mm_ss", Locale("en"))
@@ -200,7 +201,7 @@ class ExportBackup : AppCompatActivity() {
                         populateDB()
                         Constants.showToast("Backed up successfully", context)
                     }else
-                    Constants.showToast(message, context)
+                        Constants.showToast(message, context)
                 }
                 .execute()
         }else{
@@ -236,7 +237,7 @@ class ExportBackup : AppCompatActivity() {
     }
 
 
-    private fun  createPdfFile(sd: File?) = try {
+    fun  createPdfFile(sd: File?) = try {
         if (Constants.isInternetAvailable(this)){
             var file:File?=null
             var html = ""
@@ -286,7 +287,6 @@ class ExportBackup : AppCompatActivity() {
                             }
 
                         }catch (e:Exception){
-
                         }
 
 
@@ -309,10 +309,11 @@ class ExportBackup : AppCompatActivity() {
     }
 
     // create folder if it not exist
-    private fun createFolder(context: Context):File {
+    fun createFolder(context: Context):File {
         val sd = File(context.getExternalFilesDir(null).toString())
         if (!sd.exists()) {
             sd.mkdir()
+        } else {
         }
         return sd
     }

@@ -2,6 +2,7 @@ package com.keepnote.viewmodel
 
 import android.app.Application
 import android.view.View
+import androidx.annotation.UiThread
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.keepnote.notesDB.Notes
@@ -46,7 +47,7 @@ class HomeViewmodel(val database: NotesDao, application: Application):AndroidVie
                 withContext(Dispatchers.Default) {
                     noteID?.let { database.updateDeleteById(it, isDeleted) }
                 }
-                withContext(Dispatchers.Default) {
+                withContext(Dispatchers.Main) {
                     getallNotes()
                     if (isDeleted == 1)
                         Constants.showToast(
@@ -66,7 +67,7 @@ class HomeViewmodel(val database: NotesDao, application: Application):AndroidVie
             withContext(Dispatchers.Default) {
                 noteID?.let { database.deletenoteById(it) }
             }
-            withContext(Dispatchers.Default) {
+            withContext(Dispatchers.Main) {
                 getallNotes()
                 Constants.showToast("Deleted", getApplication())
 
@@ -81,10 +82,12 @@ class HomeViewmodel(val database: NotesDao, application: Application):AndroidVie
             withContext(Dispatchers.Default) {
                 noteID?.let { database.updateLockById(it, isLocked) }
             }
-            withContext(Dispatchers.Default) {
+            withContext(Dispatchers.Main) {
                 getallNotes()
                 if (isLocked == 0) Constants.showToast("UnLocked", getApplication())
-                else Constants.showToast("Locked", getApplication())
+                else {
+                    Constants.showToast("Locked", getApplication())
+                }
 
             }
 

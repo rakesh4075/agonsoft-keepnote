@@ -4,14 +4,15 @@ package com.keepnote.utils
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.view.View
 import android.widget.Toast
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
+import com.keepnote.EditNote
+import com.keepnote.HomeScreen
 import com.keepnote.R
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.tedpermission.PermissionListener
@@ -176,6 +177,49 @@ class Constants {
             return sd
         }*/
 
+        fun showIntersialAd(context: Context){
+           val mInterstitialAd = InterstitialAd(context)
+            mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+            mInterstitialAd.loadAd(AdRequest.Builder().build())
+            mInterstitialAd.adListener = object: AdListener() {
+                override fun onAdLoaded() {
+                    // Code to be executed when an ad finishes loading.
+                    if (mInterstitialAd.isLoaded && isInternetAvailable(context) && context is EditNote) { mInterstitialAd.show() }
+
+
+                }
+                override fun onAdFailedToLoad(errorCode: Int) {
+                }
+
+                override fun onAdOpened() {
+                    // Code to be executed when the ad is displayed.
+
+                }
+
+                override fun onAdClicked() {
+                    // Code to be executed when the user clicks on an ad.
+
+                }
+
+                override fun onAdLeftApplication() {
+                    // Code to be executed when the user has left the app.
+
+                }
+
+                override fun onAdClosed() {
+                    when(context as Activity){
+                        is EditNote ->{
+//                            (context as EditNote).let {
+//                                it.startActivity(Intent(context,HomeScreen::class.java))
+//                                it.finish()
+//                            }
+
+                        }
+                    }
+                }
+
+            }
+        }
 
     }
 

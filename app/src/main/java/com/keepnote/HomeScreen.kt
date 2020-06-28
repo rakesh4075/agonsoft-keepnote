@@ -30,8 +30,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.keepnote.databinding.HomescreenBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
@@ -75,7 +73,6 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
     private lateinit var favouritecount:TextView
     private var remoteBackup: RemoteBackup? = null
     private var showtoolbarView = false
-    private var fromPage:String? = ""
     private var mInterstitialAd: InterstitialAd?=null
     private var passDataToFragListners:PassDataToFragListner?=null
 
@@ -105,55 +102,6 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
             mbinding.navMain.getHeaderView(0).drawer_header.background = AppCompatResources.getDrawable(this,R.drawable.navbglight)
         }
         toolbar = mbinding.mainContent.toolbarLl.toolbar
-        fromPage = intent.getStringExtra("frompage")
-        if (fromPage!=null){
-            mInterstitialAd = InterstitialAd(this)
-            mInterstitialAd?.adUnitId = "ca-app-pub-3940256099942544/1033173712"
-            mInterstitialAd?.loadAd(AdRequest.Builder().build())
-            mInterstitialAd?.adListener = object: AdListener() {
-                override fun onAdLoaded() {
-                    // Code to be executed when an ad finishes loading.
-
-                    if (fromPage!=null){
-
-                        when(fromPage){
-                            "editnotesavenote"->{
-                                if (mInterstitialAd!!.isLoaded && Constants.isInternetAvailable(this@HomeScreen)) {
-                                    mInterstitialAd!!  .show()
-                                }
-                            }
-                        }
-                    }
-                }
-
-                override fun onAdFailedToLoad(errorCode: Int) {
-                    // Code to be executed when an ad request fails.
-
-                }
-
-                override fun onAdOpened() {
-                    // Code to be executed when the ad is displayed.
-
-                }
-
-                override fun onAdClicked() {
-                    // Code to be executed when the user clicks on an ad.
-
-                }
-
-                override fun onAdLeftApplication() {
-                    // Code to be executed when the user has left the app.
-
-                }
-
-                override fun onAdClosed() {
-                    // Code to be executed when the interstitial ad is closed.
-
-                }
-
-            }
-        }
-
         mbinding.drawer.addDrawerListener(object :DrawerLayout.DrawerListener{
             override fun onDrawerStateChanged(newState: Int) {
 
@@ -177,6 +125,15 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
                             if (Constants.isInternetAvailable(this@HomeScreen))
                             startActivity(Intent(this@HomeScreen,CommonWebview::class.java))
                             else Constants.showToast("Check network connection",this@HomeScreen)
+                        }
+                        R.id.menu_feedback->{
+                            val emailList = arrayOf("raksexplore@gmail.com")
+                            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                                data = Uri.parse("mailto:") // only email apps should handle this
+                                putExtra(Intent.EXTRA_EMAIL,emailList)
+                            }
+                            if (intent.resolveActivity(packageManager) != null) {
+                                startActivity(intent) }
                         }
 
                     }
@@ -269,13 +226,8 @@ class HomeScreen : AppCompatActivity(), NoteListAdapter.NotesListner,PassDataToF
                 }
 
                 R.id.menu_feedback->{
-                    val emailList = arrayOf("raksexplore@gmail.com")
-                    val intent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = Uri.parse("mailto:") // only email apps should handle this
-                        putExtra(Intent.EXTRA_EMAIL,emailList)
-                    }
-                    if (intent.resolveActivity(packageManager) != null) {
-                        startActivity(intent) }
+                    clickedNavItem = R.id.menu_feedback
+
                 }
 
                 R.id.logout->{
