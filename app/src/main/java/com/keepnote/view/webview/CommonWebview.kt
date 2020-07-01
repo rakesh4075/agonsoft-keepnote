@@ -5,25 +5,40 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.webkit.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.keepnote.R
 import com.keepnote.databinding.ActivityWebviewBinding
+import com.keepnote.model.preferences.StoreSharedPrefData
 
 class CommonWebview : AppCompatActivity() {
     lateinit var mBinding:ActivityWebviewBinding
     private var mDownx: Float = 0f
     private var webUrl: String? = ""
+    private var isDarktheme = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isDarktheme =
+            if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,this))as Boolean) {
+                setTheme(R.style.DarkTheme)
+                true
+            } else{
+                setTheme(R.style.LightTheme)
+                false
+            }
+
         mBinding = DataBindingUtil.setContentView(this,R.layout.activity_webview)
         mBinding.toolbar.toolbar.title = ""
-        mBinding.toolbar.toolbartitle.text = "Privacy policy"
+        mBinding.toolbar.toolbartitle.text = getString(R.string.privacy_policy_txt)
         setSupportActionBar(mBinding.toolbar.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+        mBinding.notewebView.setBackgroundColor(if (isDarktheme) ContextCompat.getColor(this,R.color.text_lt_clr) else ContextCompat.getColor(this,R.color.lightprimary))
         initWebView()
         webUrl = "https://rakesh4075.github.io/agonsoft/privacy_policy.html"
         if (!(webUrl.isNullOrEmpty())) mBinding.notewebView.loadUrl(webUrl)
@@ -105,6 +120,10 @@ class CommonWebview : AppCompatActivity() {
         super.onBackPressed()
         overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
         finish()
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        onBackPressed()
+        return true
     }
 
 }

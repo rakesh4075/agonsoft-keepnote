@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.keepnote.HomeScreen
+import com.keepnote.view.homescreen.HomeScreen
 import com.keepnote.R
 import com.keepnote.databinding.ActivitySettingsBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
@@ -39,7 +39,7 @@ class Settings : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
-        if (showtoolbarView)  mbinding.toolbarll.vw1.visibility = View.GONE
+        if (showtoolbarView)  mbinding.toolbarll.view.visibility = View.GONE
         layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
 
         settingAdapter = SettingsRecyclerAdapter()
@@ -51,7 +51,7 @@ class Settings : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
-        startActivity(Intent(this,HomeScreen::class.java))
+        startActivity(Intent(this, HomeScreen::class.java))
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         onBackPressed()

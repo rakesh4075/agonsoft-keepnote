@@ -3,7 +3,6 @@ package com.keepnote.utils
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.AsyncTask
@@ -13,8 +12,8 @@ import android.view.View
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import com.keepnote.HomeScreen
 import com.keepnote.R
+import com.keepnote.view.homescreen.HomeScreen
 import java.io.*
 import java.nio.channels.FileChannel
 import java.text.SimpleDateFormat
@@ -85,6 +84,7 @@ class BackupDatas(private val context: Context) {
             }
 
         }catch (e:Exception) {
+            ExceptionTrack.getInstance().TrackLog(e)
             error = "Error backup"
         }
     }
@@ -97,11 +97,10 @@ class BackupDatas(private val context: Context) {
         builder.setPositiveButton(R.string.no) { dialog, which ->
             showDialogListFile(folderSD)
         }
-        builder.setNegativeButton(R.string.yes,
-            DialogInterface.OnClickListener { dialog, which ->
-                showDialogListFile(folderSD)
-                exportToSD()
-            })
+        builder.setNegativeButton(R.string.yes) { _, _ ->
+            showDialogListFile(folderSD)
+            exportToSD()
+        }
         builder.show()
     }
 
@@ -174,9 +173,10 @@ class BackupDatas(private val context: Context) {
                     src.close()
                     dst.close()
                 } catch (e: FileNotFoundException) {
-                    e.printStackTrace()
+                    ExceptionTrack.getInstance().TrackLog(e)
                     error = "Error load file"
                 } catch (e: IOException) {
+                    ExceptionTrack.getInstance().TrackLog(e)
                     error = "Error import"
                 }
             }
@@ -238,9 +238,6 @@ class BackupDatas(private val context: Context) {
                  null
              )
              cursor.moveToFirst()
-             while (!cursor.isAfterLast){
-
-             }
              cursor.close()
          }
 

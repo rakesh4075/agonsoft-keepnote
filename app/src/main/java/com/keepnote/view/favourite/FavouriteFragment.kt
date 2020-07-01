@@ -13,13 +13,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.keepnote.HomeScreen
+import com.keepnote.view.homescreen.HomeScreen
 import com.keepnote.NoteListAdapter
 import com.keepnote.R
 import com.keepnote.databinding.FragmentTrashBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.notesDB.NoteDatabase
 import com.keepnote.notesDB.Notes
+import com.keepnote.utils.ExceptionTrack
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
 
@@ -89,7 +90,7 @@ class FavouriteFragment : Fragment(),NoteListAdapter.NotesListner {
 
             })
         }catch (e:Exception){
-
+            ExceptionTrack.getInstance().TrackLog(e)
         }
 
     }
@@ -99,12 +100,12 @@ class FavouriteFragment : Fragment(),NoteListAdapter.NotesListner {
                 return LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
             }
 
-            2->{
+            3->{
                 return GridLayoutManager(context,3)
             }
 
 
-            3->{
+            2->{
                 return StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             }
 

@@ -13,8 +13,8 @@ import com.keepnote.tedpermission.util.ObjectUtils;
 
 public abstract class PermissionBuilder<T extends PermissionBuilder> {
 
-    private static final String PREFS_NAME_PERMISSION = "PREFS_NAME_PERMISSION";
-    private static final String PREFS_IS_FIRST_REQUEST = "PREFS_IS_FIRST_REQUEST";
+//    private static final String PREFS_NAME_PERMISSION = "PREFS_NAME_PERMISSION";
+//    private static final String PREFS_IS_FIRST_REQUEST = "PREFS_IS_FIRST_REQUEST";
 
     private PermissionListener listener;
     private String[] permissions;
@@ -105,18 +105,18 @@ public abstract class PermissionBuilder<T extends PermissionBuilder> {
         return (T) this;
     }
 
-    public T setDeniedMessage(@StringRes int stringRes) {
-        return setDeniedMessage(getText(stringRes));
-    }
+//    public T setDeniedMessage(@StringRes int stringRes) {
+//        return setDeniedMessage(getText(stringRes));
+//    }
 
     public T setDeniedMessage(CharSequence denyMessage) {
         this.denyMessage = denyMessage;
         return (T) this;
     }
 
-    public T setDeniedTitle(@StringRes int stringRes) {
-        return setDeniedTitle(getText(stringRes));
-    }
+//    public T setDeniedTitle(@StringRes int stringRes) {
+//        return setDeniedTitle(getText(stringRes));
+//    }
 
     public T setDeniedTitle(CharSequence denyTitle) {
         this.denyTitle = denyTitle;
@@ -128,36 +128,36 @@ public abstract class PermissionBuilder<T extends PermissionBuilder> {
         return (T) this;
     }
 
-    public T setGotoSettingButtonText(@StringRes int stringRes) {
-        return setGotoSettingButtonText(getText(stringRes));
-    }
+//    public T setGotoSettingButtonText(@StringRes int stringRes) {
+//        return setGotoSettingButtonText(getText(stringRes));
+//    }
 
     public T setGotoSettingButtonText(CharSequence rationaleConfirmText) {
         this.settingButtonText = rationaleConfirmText;
         return (T) this;
     }
 
-    public T setRationaleConfirmText(@StringRes int stringRes) {
-        return setRationaleConfirmText(getText(stringRes));
-    }
+//    public T setRationaleConfirmText(@StringRes int stringRes) {
+//        return setRationaleConfirmText(getText(stringRes));
+//    }
 
-    private T setRationaleConfirmText(CharSequence rationaleConfirmText) {
-        this.rationaleConfirmText = rationaleConfirmText;
-        return (T) this;
-    }
+//    private T setRationaleConfirmText(CharSequence rationaleConfirmText) {
+//        this.rationaleConfirmText = rationaleConfirmText;
+//        return (T) this;
+//    }
+//
+//    private T setDeniedCloseButtonText(CharSequence deniedCloseButtonText) {
+//        this.deniedCloseButtonText = deniedCloseButtonText;
+//        return (T) this;
+//    }
 
-    private T setDeniedCloseButtonText(CharSequence deniedCloseButtonText) {
-        this.deniedCloseButtonText = deniedCloseButtonText;
-        return (T) this;
-    }
-
-    public T setDeniedCloseButtonText(@StringRes int stringRes) {
+  /*  public T setDeniedCloseButtonText(@StringRes int stringRes) {
         return setDeniedCloseButtonText(getText(stringRes));
     }
 
     public T setScreenOrientation(int requestedOrientation) {
         this.requestedOrientation = requestedOrientation;
         return (T) this;
-    }
+    }*/
 
 }

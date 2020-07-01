@@ -8,14 +8,7 @@
 
     </style>
 
-  <!--  <style name="AppTheme.Noactionbar" parent="Theme.AppCompat.Light.NoActionBar">
-        &lt;!&ndash; Customize your theme here. &ndash;&gt;
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:itemBackground">@color/white</item>
-        <item name="android:textColor">@color/black_de</item>
-    </style>-->
+
 
     <!-- Use this theme in Manifest by default -->
     <style name="LightTheme" parent="Base.AppTheme.Light"/>
@@ -56,22 +49,22 @@
        <item name="toolbarbg">#263238</item>
         <item name="txttitle">#ffffff</item>
         <item name="txtcontent">#ffffff</item>
-        <item name="btnbg">#009688</item>
+        <item name="btnbg">#ff3d00</item>
         <item name="btntxtcolor">#ffffff</item>
-        <item name="alerttitlecolor">#009688</item>
+        <item name="alerttitlecolor">#ff3d00</item>
         <item name="iconcolor">#ffffff</item>
         <item name="icontintcolor">#ffffff</item>
         <item name="titlesubcolor">#4b4b4b</item>
         <item name="bodybg">#000000</item>
         <item name="txtinactiveclr">#4b4b4b</item>
-        <item name="colorAccent">#009688</item>
+        <item name="colorAccent">#ff3d00</item>
         <item name="android:windowBackground">#000000</item>
         <item name="android:textColorSecondary">#ffffff</item>
         <item name="android:statusBarColor" tools:targetApi="lollipop">#263238</item>
         <item name="android:navigationBarColor" tools:targetApi="lollipop">#263238</item>
         <item name="bottombarcolor">#263238</item>
         <item name="nav_color">#ffffff</item>
-        <item name="android:indeterminateTint" tools:targetApi="lollipop">#009688</item>
+        <item name="android:indeterminateTint" tools:targetApi="lollipop">#ff3d00</item>
     </style>
 
 
@@ -105,7 +98,7 @@
     </attr><attr format="reference" name="colors"/></declare-styleable>
 
 
-    <color name="black">#000000</color>
+
 
 
    <!-- <style name="ActionButton">
@@ -119,6 +112,7 @@
     </style>-->
 
 
+    <style name="Themepermission" parent="Theme.Transparent.Permission"/>
     <style name="Theme.Transparent.Permission"
         parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
@@ -126,7 +120,6 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
-
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowNoTitle">true</item>
@@ -136,7 +129,7 @@
 
     <style name="raksSwitch" parent="Theme.AppCompat.Light">
         <!-- active thumb & track color (30% transparency) -->
-        <item name="colorControlActivated">?attr/colorAccent</item>
+        <item name="colorControlActivated">@color/lightcoloraccent</item>
 
         <!-- inactive thumb color -->
         <item name="colorSwitchThumbNormal">?attr/toolbarbg</item>
@@ -147,23 +140,19 @@
         <item name="android:textColor">#000000</item>
     </style>
     <style name="AppProgressDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textSize">15sp</item>
+        <item name="colorAccent">@color/wrng_clr</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:textColor">#000000</item>
         <item name="android:windowTitleStyle">@style/ExitDialogTitleStyle</item>
     </style>
 
 
+
     <style name="SplashTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/splash_bg</item>
         <item name="android:windowFullscreen">true</item>
-
-<!--        <item name="windowNoTitle">true</item>-->
-<!--        <item name="windowActionBar">false</item>-->
-<!--        <item name="android:windowFullscreen">false</item>-->
-<!--        <item name="android:windowIsTranslucent">true</item>-->
-<!--        <item name="android:windowContentOverlay">@null</item>-->
-<!--        <item name="android:backgroundDimEnabled">false</item>-->
-<!--        <item name="android:windowDisablePreview">true</item>-->
     </style>
+
+
 </resources>
+

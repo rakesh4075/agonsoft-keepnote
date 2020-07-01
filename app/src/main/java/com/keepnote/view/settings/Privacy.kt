@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.andrognito.patternlockview.PatternLockView
 import com.andrognito.patternlockview.listener.PatternLockViewListener
 import com.andrognito.patternlockview.utils.PatternLockUtils
-import com.keepnote.HomeScreen
+import com.keepnote.view.homescreen.HomeScreen
 import com.keepnote.NoteListAdapter
 import com.keepnote.R
 import com.keepnote.databinding.ActivityPrivacyBinding
@@ -71,7 +71,7 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
         binding.toolbarPrivacy.toolbartitle.text = resources.getString(R.string.privacy_txt)
         binding.toolbarPrivacy.toolbarSearch.visibility = View.GONE
 
-        if (showtoolbarView)  binding.toolbarPrivacy.vw1.visibility = View.GONE
+        if (showtoolbarView)  binding.toolbarPrivacy.view.visibility = View.GONE
         setSupportActionBar(binding.toolbarPrivacy.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
@@ -161,11 +161,11 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
                             val selectedAnswers = StoreSharedPrefData.INSTANCE.getPref("securityanswer","this",this)
                             if (selectedQuestions==selectedQuestionPosition){
                                 if (selectedAnswer==selectedAnswers){
+                                    binding.securityAnswer.setText("")
                                     passwordReset = false
                                     StoreSharedPrefData.INSTANCE.savePrefValue("securityquestion","",this)
                                     StoreSharedPrefData.INSTANCE.savePrefValue("securityanswer","",this)
                                     StoreSharedPrefData.INSTANCE.savePrefValue("lockpattern",0,this)
-                                    binding.securityAnswer.setText("")
                                     selectedQuestionPosition = 0
                                     binding.secquestionLl.visibility = View.GONE
                                     binding.toolbarPrivacy.toolbartitle.text = resources.getString(R.string.privacy_txt)
@@ -173,6 +173,7 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
                                 } else Constants.showToast("Your Answer Is Not Correct.",this)
                             } else Constants.showToast("Please Select Correct Question.",this)
                         }else{
+                            binding.securityAnswer.setText("")
                             StoreSharedPrefData.INSTANCE.savePrefValue("securityquestion",selectedQuestionPosition,this)
                             StoreSharedPrefData.INSTANCE.savePrefValue("securityanswer",selectedAnswer,this)
                             StoreSharedPrefData.INSTANCE.savePrefValue("lockpattern",1,this)
@@ -182,7 +183,8 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
                                 viewmodel.updateLockbyId(noteId,1)
                                 Constants.ReLoad = true
                             }
-                            getLockedNotes()
+                            finish()
+                            startActivity(Intent(this,Privacy::class.java))
                             Constants.showToast("Set successfully!",this)
                         }
 
@@ -205,7 +207,6 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
         if (lockpattern == "1"){
             binding.patternLl.visibility = View.GONE
             binding.privacynotesLl.visibility= View.VISIBLE
-            binding.adView.let { Constants.showBottomAds(this,it) }
             binding.patternLockViewTest.addPatternLockListener(object :PatternLockViewListener{
                 val savedPattern = StoreSharedPrefData.INSTANCE.getPref("securitypattern","",this@Privacy)
                 override fun onComplete(pattern: MutableList<PatternLockView.Dot>?) {
@@ -214,7 +215,8 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
                         binding.passwordTestll.visibility = View.GONE
                         if (fromPage!=null && fromPage=="home-unlock" && noteId!=null){
                             viewmodel.updateLockbyId(noteId,0)
-                            startActivity(Intent(this@Privacy,HomeScreen::class.java))
+                            startActivity(Intent(this@Privacy,
+                                HomeScreen::class.java))
                             finish()
                             return
                         }else getAllNoteDB()
@@ -266,16 +268,16 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
                     TrashAdapter(lokedNotes!!, this)
                 binding.trashRecycler.adapter = noteDBAdapter
                 noteDBAdapter?.notifyDataSetChanged()
+                binding.adView.let { Constants.showBottomAds(this,it) }
 
             }else{
                 noteDBAdapter =
                     TrashAdapter(lokedNotes!!, this)
                 binding.trashRecycler.visibility = View.VISIBLE
-                binding.trashRecycler.layoutManager = getLayoutManager(4)
+                binding.trashRecycler.layoutManager = 4.getLayoutManager()
                 binding.trashRecycler.adapter = noteDBAdapter
                 noteDBAdapter?.notifyDataSetChanged()
-
-
+                binding.adView.let { Constants.showBottomAds(this,it) }
             }
 
 
@@ -283,14 +285,14 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
         })
     }
 
-    private fun getLayoutManager(i:Int): RecyclerView.LayoutManager{
-        when(i){
+    private fun Int.getLayoutManager(): RecyclerView.LayoutManager{
+        when(this){
             1->{
-                return LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false)
+                return LinearLayoutManager(this@Privacy, LinearLayoutManager.VERTICAL,false)
             }
 
             2->{
-                return GridLayoutManager(this,3)
+                return GridLayoutManager(this@Privacy,3)
             }
 
 
@@ -319,4 +321,5 @@ class Privacy : AppCompatActivity(),NoteListAdapter.NotesListner {
     override fun takeActionForNotes(actionFor: String, noteId: Long, position: Int) {
 
     }
+
 }

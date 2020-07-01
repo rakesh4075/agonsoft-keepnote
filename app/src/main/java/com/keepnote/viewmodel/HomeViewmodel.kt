@@ -2,7 +2,6 @@ package com.keepnote.viewmodel
 
 import android.app.Application
 import android.view.View
-import androidx.annotation.UiThread
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.keepnote.notesDB.Notes

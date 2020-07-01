@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable
@@ -91,14 +93,25 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/backuprecycler"
         android:layout_marginBottom="@dimen/_5sdp"
-       app:layout_constraintBottom_toTopOf="@id/vw_2"
+       app:layout_constraintBottom_toTopOf="@id/adView"
         app:layout_constraintTop_toBottomOf="@id/vw_1"
         app:layout_constraintEnd_toEndOf="@id/exportbackup"
         app:layout_constraintStart_toStartOf="@id/exportbackup"
         android:layout_width="0dp"
         android:layout_height="0dp"/>
+    <com.google.android.gms.ads.AdView
+        android:visibility="gone"
+        android:id="@+id/adView"
+        android:layout_margin="@dimen/_5sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        android:layout_height="wrap_content"/>
     <View
-        android:visibility="invisible"
+        android:visibility="gone"
         android:layout_marginTop="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

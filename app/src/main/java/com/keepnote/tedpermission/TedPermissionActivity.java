@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -300,6 +301,7 @@ public class TedPermissionActivity extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = VERSION_CODES.M)
     private void showWindowPermissionDenyDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert);
@@ -322,6 +324,7 @@ public class TedPermissionActivity extends AppCompatActivity {
         builder.show();
     }
 
+    @RequiresApi(api = VERSION_CODES.M)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {

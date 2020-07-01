@@ -4,23 +4,24 @@ package com.keepnote.utils
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.google.android.gms.ads.*
 import com.keepnote.EditNote
-import com.keepnote.HomeScreen
 import com.keepnote.R
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.tedpermission.PermissionListener
 import com.keepnote.tedpermission.TedPermission
+import com.keepnote.view.exportbackup.ExportBackup
 import com.keepnote.view.settings.Privacy
 import com.keepnote.view.settings.Settings
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class Constants {
     companion object{
@@ -100,6 +101,7 @@ class Constants {
         fun getSortOrder(context: Context):Int{
             return StoreSharedPrefData.INSTANCE.getPref("notesortorder",1,context) as Int
         }
+        @Suppress("DEPRECATION")
         fun setupProgressDialog(context: Context): ProgressDialog {
             val mProgress = ProgressDialog(context, R.style.AppProgressDialogTheme)
             mProgress.setCancelable(false)
@@ -110,6 +112,7 @@ class Constants {
             return mProgress
         }
 
+         @Suppress("DEPRECATION")
          fun isInternetAvailable(context: Context): Boolean {
             var result = false
             val connectivityManager =
@@ -160,6 +163,10 @@ class Constants {
                             adView.loadAd(adRequest)
 
                         }
+                        is ExportBackup ->{
+                            adView.visibility = View.VISIBLE
+                            adView.loadAd(adRequest)
+                        }
                     }
                 }
             }
@@ -176,6 +183,19 @@ class Constants {
             }
             return sd
         }*/
+
+        fun keyPadClose(activity: Activity) {
+            try {
+                val view = activity.currentFocus
+                if (view != null) {
+                    val imm =
+                        activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                }
+            } catch (e: Exception) {
+                ExceptionTrack.getInstance().TrackLog(e)
+            }
+        }
 
         fun showIntersialAd(context: Context){
            val mInterstitialAd = InterstitialAd(context)

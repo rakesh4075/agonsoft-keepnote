@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.ParcelFileDescriptor
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.keepnote.utils.ExceptionTrack
 import java.io.File
 
 internal class PdfConverter private constructor() : Runnable {
@@ -24,7 +25,7 @@ internal class PdfConverter private constructor() : Runnable {
                 mPdfFile!!.createNewFile()
                 return ParcelFileDescriptor.open(mPdfFile, ParcelFileDescriptor.MODE_TRUNCATE or ParcelFileDescriptor.MODE_READ_WRITE)
             } catch (e: Exception) {
-
+                ExceptionTrack.getInstance().TrackLog(e)
             }
 
             return null
@@ -66,8 +67,8 @@ internal class PdfConverter private constructor() : Runnable {
             }
 
             mWebView?.loadDataWithBaseURL("", mHtmlString, "text/html", "UTF-8", null)
-        }catch (E:Exception){
-
+        }catch (e:Exception){
+            ExceptionTrack.getInstance().TrackLog(e)
         }
 
     }
@@ -109,7 +110,6 @@ internal class PdfConverter private constructor() : Runnable {
 
     companion object {
 
-        private const val TAG = "PdfConverter"
         private var sInstance: PdfConverter? = null
 
         val instance: PdfConverter

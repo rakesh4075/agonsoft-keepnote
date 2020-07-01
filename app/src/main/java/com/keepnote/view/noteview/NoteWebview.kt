@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -16,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.keepnote.EditNote
 import com.keepnote.R
 import com.keepnote.databinding.NotedetViewBinding
+import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.notesDB.NoteDatabase
 import com.keepnote.notesDB.NoteViewmodel
 import com.keepnote.notesDB.NoteViewmodelFactory
@@ -30,8 +32,17 @@ class NoteWebview : AppCompatActivity() {
     private lateinit var viewmodel: NoteViewmodel
     private var notecontent:String?=""
     private var webUrl: String? = ""
+    private var isDarktheme = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isDarktheme =
+            if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,this))as Boolean) {
+                setTheme(R.style.DarkTheme)
+                true
+            } else{
+                setTheme(R.style.LightTheme)
+                false
+            }
         mBinding = DataBindingUtil.setContentView(this,R.layout.notedet_view)
         mBinding.toolbar.toolbar.title = ""
         initWebView()
@@ -60,20 +71,22 @@ class NoteWebview : AppCompatActivity() {
             if ((colorcode.toString().subSequence(0,1) as String) == "-"){
                 mBinding.notewebView.setBackgroundColor(colorcode)
             }else{
-                mBinding.notewebView.setBackgroundColor(ContextCompat.getColor(this, colorcode))
+                mBinding.notewebView.setBackgroundColor(if (isDarktheme) ContextCompat.getColor(this,R.color.text_lt_clr) else ContextCompat.getColor(this,R.color.lightprimary))
             }
         }
-        notetitle?.let {
-            if (it.isNotEmpty())
-            mBinding.toolbar.toolbartitle.text = it
-            else
-                mBinding.toolbar.toolbartitle.text = "<Untitled>"
-            mBinding.toolbar.toolbarEditicon.visibility = View.VISIBLE
+        notetitle?.let {title->
+            when {
+                title.isEmpty() -> {
+                    mBinding.toolbar.toolbartitle.text = getString(R.string.title_empty_text)
+                }
+                title.length>=20 -> mBinding.toolbar.toolbartitle.text = getString(R.string.note_title,title.subSequence(0,25))
+                else ->mBinding.toolbar.toolbartitle.text = title
+            }
         }
         setSupportActionBar(mBinding.toolbar.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        mBinding.toolbar.toolbarEditicon.setOnClickListener {
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+        fun loadEditnote(){
             val editNoteIntent = Intent(this, EditNote::class.java)
             if (notetitle!=null && notecontent!=null && notecolor!=null){
                 editNoteIntent.putExtra("noteid",noteid)
@@ -82,7 +95,20 @@ class NoteWebview : AppCompatActivity() {
                 finish()
             }
         }
+        val gestureDetector = GestureDetector(this,object :GestureDetector.SimpleOnGestureListener(){
+            override fun onDoubleTap(e: MotionEvent?): Boolean {
+                loadEditnote()
+                return true
+            }
 
+            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                loadEditnote()
+                return true
+            }
+        })
+        mBinding.notewebView.setOnTouchListener { v, event ->
+            gestureDetector.onTouchEvent(event)
+        }
 
     }
 

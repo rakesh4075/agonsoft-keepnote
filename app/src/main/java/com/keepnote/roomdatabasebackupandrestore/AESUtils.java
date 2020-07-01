@@ -20,7 +20,7 @@ class AESUtils {
         return new String(result);
     }
 
-    private static byte[] getRawKey(byte[] keyValue) throws Exception {
+    private static byte[] getRawKey(byte[] keyValue) {
         SecretKey key = new SecretKeySpec(keyValue, "AES");
         return key.getEncoded();
 
@@ -54,8 +54,8 @@ class AESUtils {
         if (buf == null)
             return "";
         StringBuffer result = new StringBuffer(2 * buf.length);
-        for (int i = 0; i < buf.length; i++) {
-            appendHex(result, buf[i]);
+        for (byte b : buf) {
+            appendHex(result, b);
         }
         return result.toString();
     }

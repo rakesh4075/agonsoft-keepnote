@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.keepnote.EditNote
-import com.keepnote.HomeScreen
 import com.keepnote.NoteListAdapter
 import com.keepnote.R
 import com.keepnote.databinding.HomefragmentBinding
@@ -24,6 +23,7 @@ import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.notesDB.NoteDatabase
 import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
+import com.keepnote.utils.ExceptionTrack
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
 import kotlinx.coroutines.GlobalScope
@@ -152,7 +152,7 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any>{
                 try {
                     viewmodel.updateDeleteById(noteId,1)
                 }catch (e:java.lang.Exception){
-
+                    ExceptionTrack.getInstance().TrackLog(e)
                 }
 
             }
@@ -162,7 +162,7 @@ class Homefragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any>{
                     viewmodel.updateLockbyId(noteId,0)
                     else viewmodel.updateLockbyId(noteId,1)
                 }catch (e:java.lang.Exception){
-
+                    ExceptionTrack.getInstance().TrackLog(e)
                 }
 
             }

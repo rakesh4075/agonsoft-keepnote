@@ -2,10 +2,10 @@ package com.keepnote
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Html
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
 import com.keepnote.databinding.ActivityNoteDetailsBinding
 
@@ -34,7 +34,7 @@ class NoteDetails : AppCompatActivity() {
 
         if (title!=null && content!=null && colorcode!=null){
             binding.noteDetailsTitle.text = title
-            binding.noteContentll.noteDetailsContent.text = Html.fromHtml(content!!)
+            binding.noteContentll.noteDetailsContent.text = HtmlCompat.fromHtml(content!!,HtmlCompat.FROM_HTML_MODE_COMPACT)
             if ((colorcode.toString().subSequence(0,1) as String) == "-"){
                 binding.noteContentll.noteDetailsContent.setBackgroundColor(colorcode!!)
                 binding.noteContentll.txtContentll.setBackgroundColor(colorcode!!)

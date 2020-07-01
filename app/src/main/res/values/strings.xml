@@ -52,11 +52,20 @@
     <string name="reset_code_text">Reset passcode</string>
     <string name="privacy_test_title">Draw unlock pattern</string>
     <string name="please_wait">Please wait</string>
-    <string name="loading_dots">Loading…</string>
+    <string name="loading_dots">Processing…</string>
     <string name="title_empty_text"><![CDATA[<Untitled>]]></string>
     <string name="feedback">Help &amp; Feedback</string>
     <string name="privacy_policy">Privacy policy</string>
     <string name="input_your_answer">Input your answer</string>
     <string name="note_title">%1$s ..</string>
+    <string name="privacy_policy_txt">Privacy policy</string>
+    <string name="exportbackuptitle"><![CDATA[Exports & Backup]]></string>
+    <string name="exportbackuperrnote">Your backup files will be displayed here</string>
+    <string name="done">Done</string>
+    <string name="exit_app_txt">Do you want exit from app?</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
+    <string name="add_note">Add note</string>
+    <string name="trash_no_notes_msg">Your Notes in Trash will be deleted after 7 days</string>
 
 </resources>

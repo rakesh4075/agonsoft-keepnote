@@ -62,8 +62,8 @@
             app:dotSelectedSize="@dimen/_25sdp"
             app:dotAnimationDuration="150"
             app:normalStateColor="@color/blackgrey"
-            app:correctStateColor="#009688"
-            app:wrongStateColor="#FFF05A50"
+            app:correctStateColor="@color/correct_clr"
+            app:wrongStateColor="@color/wrng_clr"
             android:layout_width="0dp"
             android:layout_height="@dimen/_250sdp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -105,8 +105,8 @@
                 app:dotSelectedSize="@dimen/_25sdp"
                 app:dotAnimationDuration="150"
                 app:normalStateColor="@color/blackgrey"
-                app:correctStateColor="#009688"
-                app:wrongStateColor="#FFF05A50"
+                app:correctStateColor="@color/correct_clr"
+                app:wrongStateColor="@color/wrng_clr"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_250sdp"/>
             <TextView
@@ -248,7 +248,7 @@
             android:id="@+id/submit_btn"
             android:textColor="?attr/btntxtcolor"
             android:fontFamily="@font/robotoslabregular"
-            android:text="Done"
+            android:text="@string/done"
             app:backgroundTint="?attr/btnbg"
             android:textAllCaps="false"
             android:background="@drawable/cur_btnbg"

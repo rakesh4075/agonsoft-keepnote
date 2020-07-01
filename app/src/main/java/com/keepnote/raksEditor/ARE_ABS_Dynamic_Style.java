@@ -16,7 +16,6 @@ import android.text.Spanned;
 public abstract class ARE_ABS_Dynamic_Style<E extends AreDynamicSpan> extends RREABSStyle<E> {
 
 
-
     public ARE_ABS_Dynamic_Style(Context context) {
         super(context);
     }

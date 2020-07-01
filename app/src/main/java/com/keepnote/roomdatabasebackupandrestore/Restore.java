@@ -6,6 +6,8 @@ import androidx.room.RoomDatabase;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.keepnote.utils.ExceptionTrack;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -96,6 +98,7 @@ public class Restore {
                 if(onWorkFinishListener!=null)
                     onWorkFinishListener.onFinished(true, "success");
             } catch (Exception e){
+                ExceptionTrack.getInstance().TrackLog(e);
                 if(onWorkFinishListener!=null)
                     onWorkFinishListener.onFinished(false, e.toString());
             }

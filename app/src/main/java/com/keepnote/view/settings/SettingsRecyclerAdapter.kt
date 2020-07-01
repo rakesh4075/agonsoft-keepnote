@@ -16,6 +16,10 @@ import com.keepnote.R
 import com.keepnote.databinding.SettingsItemBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.utils.Constants
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class SettingsRecyclerAdapter :RecyclerView.Adapter<SettingsRecyclerAdapter.ViewHolder>() {
@@ -115,43 +119,47 @@ class SettingsRecyclerAdapter :RecyclerView.Adapter<SettingsRecyclerAdapter.View
 
         }
 
-        holder.toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+        holder.toggle.setOnCheckedChangeListener { _, isChecked ->
 
-            when(position){
-                itemCount-1->{
-                    if (isChecked){
-                        StoreSharedPrefData.INSTANCE.savePrefValue("isDarktheme",true,context)
-                        if (context!=null){
-                            if (context is Settings){
-                                (context as Activity).finish()
-                                context.startActivity(Intent(context,Settings::class.java))
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(200)
+                when(position){
+                    itemCount-1->{
+                        if (isChecked){
+                            StoreSharedPrefData.INSTANCE.savePrefValue("isDarktheme",true,context)
+                            if (context!=null){
+                                if (context is Settings){
+                                    (context as Activity).finish()
+                                    context.startActivity(Intent(context,Settings::class.java))
+                                }
                             }
-                        }
-                    }else{
-                        StoreSharedPrefData.INSTANCE.savePrefValue("isDarktheme",false,context)
-                        if (context!=null){
-                            if (context is Settings){
-                                (context as Activity).finish()
-                                context.startActivity(Intent(context,Settings::class.java))
+                        }else{
+                            StoreSharedPrefData.INSTANCE.savePrefValue("isDarktheme",false,context)
+                            if (context!=null){
+                                if (context is Settings){
+                                    (context as Activity).finish()
+                                    context.startActivity(Intent(context,Settings::class.java))
+                                }
                             }
                         }
                     }
-                }
-                itemCount-3->{
-                    if (isChecked){
-                        StoreSharedPrefData.INSTANCE.savePrefValue("synconlaunch",true,context)
-                    }else
-                        StoreSharedPrefData.INSTANCE.savePrefValue("synconlaunch",false,context)
+                    itemCount-3->{
+                        if (isChecked){
+                            StoreSharedPrefData.INSTANCE.savePrefValue("synconlaunch",true,context)
+                        }else
+                            StoreSharedPrefData.INSTANCE.savePrefValue("synconlaunch",false,context)
 
-                }
-                itemCount-2->{
-                    if (isChecked){
-                        StoreSharedPrefData.INSTANCE.savePrefValue("autobackup",true,context)
-                    }else
-                        StoreSharedPrefData.INSTANCE.savePrefValue("autobackup",false,context)
+                    }
+                    itemCount-2->{
+                        if (isChecked){
+                            StoreSharedPrefData.INSTANCE.savePrefValue("autobackup",true,context)
+                        }else
+                            StoreSharedPrefData.INSTANCE.savePrefValue("autobackup",false,context)
 
+                    }
                 }
             }
+
 
 
         }

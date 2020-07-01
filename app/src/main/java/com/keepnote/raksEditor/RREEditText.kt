@@ -7,11 +7,8 @@ import android.text.Editable
 import android.text.Html
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.content.ContextCompat
-import com.keepnote.R
 
 
 class RREEditText: AppCompatEditText {
@@ -23,8 +20,6 @@ class RREEditText: AppCompatEditText {
     private var sStylesList: ArrayList<IRREStyle>? = ArrayList()
 
     private var mTextWatcher: TextWatcher? = null
-
-    private val monitoring = true
 
     constructor(context: Context):super(context,null)
 
@@ -87,11 +82,6 @@ class RREEditText: AppCompatEditText {
         var endPos = 0
         mTextWatcher = object :TextWatcher{
             override fun afterTextChanged(s: Editable?) {
-                if (!monitoring) {
-                    return
-                }
-                if (endPos <= startPos) {
-                }
                 if (sStylesList!=null){
                     for (style in sStylesList!!) {
                         style.applyStyle(s, startPos, endPos)
@@ -102,15 +92,9 @@ class RREEditText: AppCompatEditText {
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                if (!monitoring) {
-                    return
-                }
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!monitoring) {
-                    return
-                }
 
                 startPos = start
                 endPos = start + count

@@ -1,7 +1,6 @@
 package com.keepnote.view.exportbackup
 
 import android.Manifest
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Context
@@ -17,16 +16,15 @@ import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.keepnote.HomeScreen
 import com.keepnote.Html2Pdf
 import com.keepnote.R
 import com.keepnote.databinding.ActivityBackupBinding
 import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.notesDB.NoteDatabase
 import com.keepnote.roomdatabasebackupandrestore.Backup
-import com.keepnote.roomdatabasebackupandrestore.Restore
 import com.keepnote.tedpermission.TedPermission
 import com.keepnote.utils.Constants
+import com.keepnote.utils.ExceptionTrack
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
 import java.io.File
@@ -42,6 +40,7 @@ class ExportBackup : AppCompatActivity() {
     private lateinit var backupAdapter:BackupListAdapter
     private lateinit var viewmodel: HomeViewmodel
     private var showtoolbarView = false
+    @Suppress("DEPRECATION")
     private lateinit var mProgressDialog: ProgressDialog
     // folder on sd to backup data
 
@@ -64,12 +63,12 @@ class ExportBackup : AppCompatActivity() {
         mbinding.viewmodel =viewmodel
 
         mbinding.toolbar.toolbar.title=""
-        mbinding.toolbar.toolbartitle.text="Exports & Backup"
-        if (showtoolbarView)  mbinding.toolbar.vw1.visibility = View.GONE
+        mbinding.toolbar.toolbartitle.text=getString(R.string.exportbackuptitle)
+        if (showtoolbarView)  mbinding.toolbar.view.visibility = View.GONE
         setSupportActionBar(mbinding.toolbar.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
-        mbinding.errLayout.errmsg.text="Your backup files will be displayed here"
+        mbinding.errLayout.errmsg.text=getString(R.string.exportbackuperrnote)
         mProgressDialog = Constants.setupProgressDialog(this)
         populateDB()
 
@@ -88,6 +87,7 @@ class ExportBackup : AppCompatActivity() {
                 try {
                     converthtmlTopdf()
                 }catch (e:Exception){
+                    ExceptionTrack.getInstance().TrackLog(e)
                 }
 
             }else Constants.verifyPermission(this)
@@ -98,10 +98,10 @@ class ExportBackup : AppCompatActivity() {
                 AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
             builder.setTitle("Delete").setIcon(null)
                 .setMessage("Are you sure to delete all backups forever?")
-            builder.setPositiveButton(R.string.no) { dialog, which ->
+            builder.setPositiveButton(R.string.no) { dialog, _ ->
                 dialog.dismiss()
             }
-            builder.setNegativeButton(R.string.yes) { dialog, which ->
+            builder.setNegativeButton(R.string.yes) { _, _ ->
                 deleteAllFile()
             }
             builder.show()
@@ -131,7 +131,7 @@ class ExportBackup : AppCompatActivity() {
             for (file in listFile){
                 val fileName = file.name
                 val fileModifedDate = Date(file.lastModified()).toString()
-                val fileSize = Integer.parseInt(((file.length()/1024).toString())).toString()
+                val fileSize = Integer.parseInt(((file.length()/1024).toString())).toString().replace("0","1",true)
                 if (fileName!="drive_db")
                     listFileInfo?.add(FileInfo(fileName,fileModifedDate,fileSize))
             }
@@ -144,16 +144,18 @@ class ExportBackup : AppCompatActivity() {
             backupAdapter =BackupListAdapter(listFileInfo!!)
             mbinding.backuprecycler.adapter = backupAdapter
             backupAdapter.notifyDataSetChanged()
+            mbinding.adView.let { Constants.showBottomAds(this,it) }
         }else{
             mbinding.errLayout.root.visibility = View.GONE
             backupAdapter =BackupListAdapter(listFileInfo!!)
             mbinding.backuprecycler.adapter = backupAdapter
             backupAdapter.notifyDataSetChanged()
+            mbinding.adView.let { Constants.showBottomAds(this,it) }
         }
 
     }
 
-    fun restore(restoreFor:Int,activity: Activity) {
+    /*fun restore(restoreFor:Int,activity: Activity) {
         if (TedPermission.isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
             var backupFilePath = ""
             if (restoreFor == 0) {
@@ -184,9 +186,9 @@ class ExportBackup : AppCompatActivity() {
             Constants.verifyPermission(this)
         }
 
-    }
+    }*/
 
-    fun backup(context: Context) {
+    private fun backup(context: Context) {
         if (TedPermission.isGranted(context, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
             createFolder(context)
             val formatTime = SimpleDateFormat("yyyy_MM_dd__HH_mm_ss", Locale("en"))
@@ -237,9 +239,9 @@ class ExportBackup : AppCompatActivity() {
     }
 
 
-    fun  createPdfFile(sd: File?) = try {
+    private fun  createPdfFile(sd: File?) = try {
         if (Constants.isInternetAvailable(this)){
-            var file:File?=null
+            var file: File?
             var html = ""
             viewmodel.getallNotes()
             viewmodel.allNotes.observe(this, androidx.lifecycle.Observer {notes->
@@ -270,6 +272,7 @@ class ExportBackup : AppCompatActivity() {
                                 FileProvider.getUriForFile(this@ExportBackup, applicationContext.packageName + ".provider",
                                     file!!)
                             } catch (e:Exception){
+                                ExceptionTrack.getInstance().TrackLog(e)
                                 null
                             }
 
@@ -287,6 +290,7 @@ class ExportBackup : AppCompatActivity() {
                             }
 
                         }catch (e:Exception){
+                            ExceptionTrack.getInstance().TrackLog(e)
                         }
 
 
@@ -305,15 +309,15 @@ class ExportBackup : AppCompatActivity() {
             Constants.showToast("Check network connection",this)
         }
     }catch (e:Exception){
+        ExceptionTrack.getInstance().TrackLog(e)
 
     }
 
     // create folder if it not exist
-    fun createFolder(context: Context):File {
+    private fun createFolder(context: Context):File {
         val sd = File(context.getExternalFilesDir(null).toString())
         if (!sd.exists()) {
             sd.mkdir()
-        } else {
         }
         return sd
     }

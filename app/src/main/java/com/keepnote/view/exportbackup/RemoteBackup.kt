@@ -8,15 +8,11 @@ package com.keepnote.view.exportbackup
 //import com.google.api.services.drive.Drive
 //import com.google.api.services.drive.DriveScopes
 //import com.google.api.services.drive.model.File
-import com.keepnote.HomeScreen
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.keepnote.view.homescreen.HomeScreen
 
 
-class RemoteBackup(activitys:HomeScreen, private val listner:DriveUtil?) {
-    private val uiScope = CoroutineScope(Dispatchers.Default)
+class RemoteBackup(activitys: HomeScreen) {
     var activity: HomeScreen? = null
-    private val midnight= false
 
     init {
         activity = activitys

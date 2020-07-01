@@ -2,7 +2,6 @@ package com.keepnote
 
 import android.content.Intent
 import android.graphics.BlurMaskFilter
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -54,18 +53,20 @@ class NoteListAdapter(private var noteList: List<Notes>, listner: NotesListner):
                 }
             }
             noteList[position].content.let {content->
-               content.replace("<br>","",true)
-                Log.d("@@@@",content)
                 when {
                     content.length>=250 -> {
+                        val contents = content.replace("<br>","",true)
                         holder.content.text = if (position%2!=0){
-                            HtmlCompat.fromHtml(content.subSequence(0,250) as String,HtmlCompat.FROM_HTML_MODE_COMPACT)
-                        }else HtmlCompat.fromHtml(content.subSequence(0,200) as String,HtmlCompat.FROM_HTML_MODE_COMPACT)
+                            HtmlCompat.fromHtml(contents.subSequence(0,250) as String,HtmlCompat.FROM_HTML_MODE_COMPACT)
+                        }else HtmlCompat.fromHtml(contents.subSequence(0,200) as String,HtmlCompat.FROM_HTML_MODE_COMPACT)
                     }
                     content == "<html><body></body></html>" ->{
                         holder.content.text=noteList[position].title
                     }
-                    else -> holder.content.text = HtmlCompat.fromHtml(content,HtmlCompat.FROM_HTML_MODE_COMPACT)
+                    else -> {
+                        val contents = content.replace("<br>","",true)
+                        holder.content.text = HtmlCompat.fromHtml(contents,HtmlCompat.FROM_HTML_MODE_COMPACT)
+                    }
                 }
             }
 
@@ -74,7 +75,7 @@ class NoteListAdapter(private var noteList: List<Notes>, listner: NotesListner):
             holder.favItem.background = AppCompatResources.getDrawable(holder.itemView.context,R.drawable.ic_favorite_checked)
 
             if (noteList[position].islocked==1)
-                blurText(position,holder.content)
+                blurText(holder.content)
 
             val colorCode = Constants.getRandomColor()
             holder.noteCard.setCardBackgroundColor(ContextCompat.getColor(holder.view.context,colorCode))
@@ -132,7 +133,7 @@ class NoteListAdapter(private var noteList: List<Notes>, listner: NotesListner):
 
     }
 
-    private fun blurText(position: Int, content: TextView) {
+    private fun blurText(content: TextView) {
         content.setLayerType(View.LAYER_TYPE_SOFTWARE,null)
         val radius = content.textSize/3
         val filter = BlurMaskFilter(radius,BlurMaskFilter.Blur.NORMAL)

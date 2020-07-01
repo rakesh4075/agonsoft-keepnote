@@ -17,6 +17,7 @@
     <color name="tabunsel" >#a5a5a5</color>
     <color name="subtxtcolor">#4b4b4b</color>
     <color name="blackgrey">#bfbfbf</color>
+    <color name="black">#000000</color>
 <!--    <color name="palegreen">#98fb98</color>-->
     <color name="failurecolor">#FFF05A50</color>
     <color name="text_lt_clr">#a5a5a5</color>
@@ -43,7 +44,6 @@
 
 
     <color name="lightwindoebackground">#FFF0EEE8</color>
-    <color name="window_background">#00000000</color>
     <color name="lite_blue">#42a5f5</color>
     <color name="accestcolor">#F05A50</color>
 
@@ -74,5 +74,7 @@
     <color name="lightcoloraccent">#FFF05A50</color>
     <color name="lightprimarydark">#FF524E4A</color>
     <color name="lightprimary">#FFF8F7F4</color>
+    <color name="correct_clr">#1de9b6</color>
+    <color name="wrng_clr">#FFF05A50</color>
 
 </resources>

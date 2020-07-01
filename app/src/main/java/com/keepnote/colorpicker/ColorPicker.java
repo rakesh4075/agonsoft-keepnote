@@ -8,14 +8,11 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.keepnote.colorpicker.ColorUtils.dip2px;
-import static com.keepnote.colorpicker.ColorUtils.getDimensionDp;
 
 public class ColorPicker {
 
@@ -68,7 +64,6 @@ public class ColorPicker {
     private boolean fullHeight;
     private WeakReference<CustomDialog> mDialog;
     private final RecyclerView recyclerView;
-    private final RelativeLayout colorpicker_base;
     private final LinearLayout buttons_layout;
     private int default_color;
     private int paddingTitleLeft, paddingTitleRight, paddingTitleBottom, paddingTitleTop;
@@ -82,7 +77,7 @@ public class ColorPicker {
      */
     public ColorPicker(Activity context) {
         dialogViewLayout = LayoutInflater.from(context).inflate(R.layout.color_palette_layout, null, false);
-        colorpicker_base = dialogViewLayout.findViewById(R.id.colorpicker_base);
+        RelativeLayout colorpicker_base = dialogViewLayout.findViewById(R.id.colorpicker_base);
         recyclerView = dialogViewLayout.findViewById(R.id.color_palette);
         buttons_layout = dialogViewLayout.findViewById(R.id.buttons_layout);
         positiveButton = dialogViewLayout.findViewById(R.id.positive);
@@ -134,31 +129,19 @@ public class ColorPicker {
         return this;
     }
 
-    /**
-     * Set buttons color  Example : Color.RED,Color.BLACK
-     *
-     * @param colorsList list of colors
-     * @return this
-     */
-    public ColorPicker setColors(int... colorsList) {
+    /* public ColorPicker setColors(int... colorsList) {
         colors = new ArrayList<>();
         for (int aColorsList : colorsList) {
             colors.add(new ColorPal(aColorsList));
         }
         return this;
-    }
+    }*/
 
-    /**
-     * Choose the color to be selected by default
-     *
-     * @param color int
-     * @return this
-     */
-    public ColorPicker setDefaultColorButton(int color) {
+    /* public ColorPicker setDefaultColorButton(int color) {
         this.default_color = color;
         return this;
     }
-
+*/
     /**
      * Show the Material Dialog
      */
@@ -289,16 +272,10 @@ public class ColorPicker {
         return this;
     }
 
-    /**
-     * Set tick color
-     *
-     * @param color Color
-     * @return this
-     */
-    public ColorPicker setColorButtonTickColor(int color) {
+    /* public ColorPicker setColorButtonTickColor(int color) {
         this.tickColor = color;
         return this;
-    }
+    }*/
 
     /**
      * Set a single drawable for all buttons example : you can define a different shape ( then round or square )
@@ -308,46 +285,24 @@ public class ColorPicker {
         this.colorButtonDrawable = R.drawable.round_button;
     }
 
-    /**
-     * Set the buttons size in DP
-     *
-     * @param width  width
-     * @param height height
-     * @return this
-     */
-    public ColorPicker setColorButtonSize(int width, int height) {
+    /* public ColorPicker setColorButtonSize(int width, int height) {
         this.colorButtonWidth = width;
         this.colorButtonHeight = height;
         return this;
-    }
+    }*/
 
-    /**
-     * Set the Margin between the buttons in DP is 10
-     *
-     * @param left   left
-     * @param top    top
-     * @param right  right
-     * @param bottom bottom
-     * @return this
-     */
-    public ColorPicker setColorButtonMargin(int left, int top, int right, int bottom) {
+    /*    public ColorPicker setColorButtonMargin(int left, int top, int right, int bottom) {
         this.marginColorButtonLeft = left;
         this.marginColorButtonTop = top;
         this.marginColorButtonRight = right;
         this.marginColorButtonBottom = bottom;
         return this;
-    }
+    }*/
 
-    /**
-     * Set round button
-     *
-     * @param roundButton true if you want a round button
-     * @return this
-     */
-    public ColorPicker setRoundColorButton(boolean roundButton) {
+    /* public ColorPicker setRoundColorButton(boolean roundButton) {
         this.roundColorButton = roundButton;
         return this;
-    }
+    }*/
 
     /**
      * set a fast listener ( it shows a mDialog without buttons and the event fires as soon you select a color )
@@ -363,41 +318,21 @@ public class ColorPicker {
         return this;
     }
 
-    /**
-     * set a listener for the color picked
-     *
-     * @param listener OnChooseColorListener
-     */
-    public ColorPicker setOnChooseColorListener(OnChooseColorListener listener) {
+    /* public ColorPicker setOnChooseColorListener(OnChooseColorListener listener) {
         onChooseColorListener = listener;
         return this;
-    }
+    }*/
 
-    /**
-     * Add a  Button
-     *
-     * @param text     title of button
-     * @param button   button to be added
-     * @param listener listener
-     * @return this
-     */
-    public ColorPicker addListenerButton(String text, Button button, final OnButtonListener listener) {
+    /*   public ColorPicker addListenerButton(String text, Button button, final OnButtonListener listener) {
         button.setOnClickListener(v -> listener.onClick(v, colorViewAdapter.getColorPosition(), colorViewAdapter.getColorSelected()));
         button.setText(text);
         if (button.getParent() != null)
             buttons_layout.removeView(button);
         buttons_layout.addView(button);
         return this;
-    }
+    }*/
 
-    /**
-     * add a new Button using default style
-     *
-     * @param text     title of button
-     * @param listener OnButtonListener
-     * @return this
-     */
-    public ColorPicker addListenerButton(String text, final OnButtonListener listener) {
+    /*public ColorPicker addListenerButton(String text, final OnButtonListener listener) {
         if (mContext == null)
             return this;
 
@@ -430,77 +365,44 @@ public class ColorPicker {
         buttons_layout.addView(button);
         button.setLayoutParams(params);
         return this;
-    }
+    }*/
 
-    /**
-     * set if to dismiss the mDialog or not on button listener click, by default is set to true
-     *
-     * @param dismiss boolean
-     * @return this
-     */
-    public ColorPicker setDismissOnButtonListenerClick(boolean dismiss) {
+    /*  public ColorPicker setDismissOnButtonListenerClick(boolean dismiss) {
         this.dismiss = dismiss;
         return this;
-    }
+    }*/
 
-    /**
-     * set Match_parent to RecyclerView
-     *
-     * @return this
-     */
-    public ColorPicker setDialogFullHeight() {
+    /* public ColorPicker setDialogFullHeight() {
         this.fullHeight = true;
         return this;
-    }
+    }*/
 
-    /**
-     * getmDialog if you need more options
-     *
-     * @return CustomDialog
-     */
-    public
+    /* public
     @Nullable
     CustomDialog getmDialog() {
         if (mDialog == null)
             return null;
         return mDialog.get();
-    }
+    }*/
 
-    /**
-     * getDialogViewLayout is the view inflated into the mDialog
-     *
-     * @return View
-     */
-    public View getDialogViewLayout() {
+    /* public View getDialogViewLayout() {
         return dialogViewLayout;
     }
 
-    /**
-     * getDialogBaseLayout which is the RelativeLayout that contains the RecyclerView
-     *
-     * @return RelativeLayout
-     */
+    *//*
     public RelativeLayout getDialogBaseLayout() {
         return colorpicker_base;
     }
 
-    /**
-     * get the default PositiveButton
-     *
-     * @return Button
-     */
+    *//*
     public Button getPositiveButton() {
         return positiveButton;
     }
 
-    /**
-     * get the default NegativeButton
-     *
-     * @return Button
-     */
+    *//*
     public Button getNegativeButton() {
         return negativeButton;
-    }
+    }*/
 
     /**
      * dismiss the mDialog
@@ -515,33 +417,18 @@ public class ColorPicker {
         }
     }
 
-    /**
-     * disables the postive and negative buttons
-     *
-     * @param disableDefaultButtons boolean
-     * @return this
-     */
-    public ColorPicker disableDefaultButtons(boolean disableDefaultButtons) {
+    /* public ColorPicker disableDefaultButtons(boolean disableDefaultButtons) {
         this.disableDefaultButtons = disableDefaultButtons;
         return this;
-    }
+    }*/
 
-    /**
-     * set padding to the title in DP
-     *
-     * @param left   dp
-     * @param top    dp
-     * @param right  dp
-     * @param bottom dp
-     * @return this
-     */
-    public ColorPicker setTitlePadding(int left, int top, int right, int bottom) {
+    /*   public ColorPicker setTitlePadding(int left, int top, int right, int bottom) {
         paddingTitleLeft = left;
         paddingTitleRight = right;
         paddingTitleTop = top;
         paddingTitleBottom = bottom;
         return this;
-    }
+    }*/
 
     /**
      * Set default colors defined in colorpicker-array.xml of the library
@@ -562,12 +449,12 @@ public class ColorPicker {
         }
     }
 
-    private ColorPicker setMargin(int left, int top, int right, int bottom) {
+    /*private ColorPicker setMargin(int left, int top, int right, int bottom) {
         this.marginLeft = left;
         this.marginRight = right;
         this.marginTop = top;
         this.marginBottom = bottom;
         return this;
-    }
+    }*/
 
 }

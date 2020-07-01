@@ -27,6 +27,8 @@ import com.keepnote.notesDB.NoteViewmodel
 import com.keepnote.notesDB.NoteViewmodelFactory
 import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
+import com.keepnote.utils.ExceptionTrack
+import com.keepnote.view.homescreen.HomeScreen
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
@@ -134,15 +136,17 @@ class EditNote : AppCompatActivity() {
                             HtmlCompat.fromHtml(
                                 it1,HtmlCompat.FROM_HTML_MODE_COMPACT)
                         })
-                       // binding.noteContenteditll.editNoteContent.setText(Html.fromHtml(note?.content))
                         colorcode = note?.notecolor
                         if (colorcode!=null){
                             if ((colorcode.toString().subSequence(0, 1) as String) == "-") {
+                                if (isDarktheme || notecolor!=-16777216){
+                                    binding.noteContenteditll.editNoteContent.setTextColor(ContextCompat.getColor(this@EditNote,R.color.black))
+                                }else binding.noteContenteditll.editNoteContent.setTextColor(ContextCompat.getColor(this@EditNote,R.color.white))
                                 binding.noteContenteditll.editNoteContent.setBackgroundColor(colorcode!!)
                                 binding.noteContenteditll.txtContentll.setBackgroundColor(colorcode!!)
                             } else {
-                                binding.noteContenteditll.editNoteContent.setBackgroundColor(colorcode!!)
-                                binding.noteContenteditll.txtContentll.setBackgroundColor(colorcode!!)
+                                binding.noteContenteditll.editNoteContent.setBackgroundColor(  if (isDarktheme) ContextCompat.getColor(this,R.color.black) else ContextCompat.getColor(this,R.color.lightprimary))
+                                binding.noteContenteditll.txtContentll.setBackgroundColor( if (isDarktheme) ContextCompat.getColor(this,R.color.black) else ContextCompat.getColor(this,R.color.lightprimary))
                             }
                         }
 
@@ -152,7 +156,7 @@ class EditNote : AppCompatActivity() {
             }
         }
 
-        notecolor = Constants.getRandomColor()
+        notecolor = if (isDarktheme) R.color.black else R.color.lightprimary
         binding.imageBox.setOnClickListener { colorImageBox() }
 
     }
@@ -204,8 +208,7 @@ class EditNote : AppCompatActivity() {
 
     override fun onBackPressed() {
         saveNote()
-        Constants.showIntersialAd(this)
-        startActivity(Intent(this,HomeScreen::class.java))
+        startActivity(Intent(this, HomeScreen::class.java))
         finish()
         super.onBackPressed()
     }
@@ -227,6 +230,7 @@ class EditNote : AppCompatActivity() {
     }
 
     private fun saveNote() {
+        Constants.keyPadClose(this)
         binding.noteSaveProgress.visibility = View.VISIBLE
         val title = binding.editNoteTitle.text.toString()
         val content = binding.noteContenteditll.editNoteContent.getHtml()
@@ -239,8 +243,17 @@ class EditNote : AppCompatActivity() {
                 } else {
                     try {
                         viewmodel.insertNote(Notes(0,title, content,notecolor,isFavourite = isFavourite))
+                        when {
+                            StoreSharedPrefData.INSTANCE.getPref("showIntersialAd",0,this) as Int >=2 && fromPage!=null && fromPage!=0 -> {
+                                Constants.showIntersialAd(this)
+                            }
+                            else -> {
+                                val value = StoreSharedPrefData.INSTANCE.getPref("showIntersialAd",0,this) as Int + 1
+                                StoreSharedPrefData.INSTANCE.savePrefValue("showIntersialAd",value,this)
+                            }
+                        }
                     }catch (e:Exception){
-
+                        ExceptionTrack.getInstance().TrackLog(e)
                     }
 
                 }
@@ -265,7 +278,7 @@ class EditNote : AppCompatActivity() {
                         showImageInImageview(resizedbitmap)
                     //    addImageInEditText(bitmap)
                     }catch (e:Exception){
-                        e.printStackTrace()
+                        ExceptionTrack.getInstance().TrackLog(e)
                     }
 
                 }
@@ -298,9 +311,9 @@ class EditNote : AppCompatActivity() {
 
             iStream?.close()
         } catch (e: FileNotFoundException) {
-            e.printStackTrace()
+            ExceptionTrack.getInstance().TrackLog(e)
         } catch (e: IOException) {
-            e.printStackTrace()
+            ExceptionTrack.getInstance().TrackLog(e)
         }
         return bitmap
     }

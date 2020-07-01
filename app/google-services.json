@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "616356931047",
-    "firebase_url": "https://keepnote-b84de.firebaseio.com",
-    "project_id": "keepnote-b84de",
-    "storage_bucket": "keepnote-b84de.appspot.com"
+    "project_number": "306341077660",
+    "firebase_url": "https://keepnote-275903.firebaseio.com",
+    "project_id": "keepnote-275903",
+    "storage_bucket": "keepnote-275903.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:616356931047:android:6b87cbf1bd001fae7fc942",
+        "mobilesdk_app_id": "1:306341077660:android:7c06928406fa8677020359",
         "android_client_info": {
           "package_name": "com.keepnote"
         }
       },
       "oauth_client": [
         {
-          "client_id": "616356931047-7pednmn3gi3s886e3ied2iglo2tmqbjh.apps.googleusercontent.com",
+          "client_id": "306341077660-5jqi2sf9pstl09rq3urgfme1rt56cioi.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCZz8eQdnNnGdAgy0BBYpK7v26foH4_ksk"
+          "current_key": "AIzaSyC_u765S1Ex4T9motV-74M-OeAzkO8EqfQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "616356931047-7pednmn3gi3s886e3ied2iglo2tmqbjh.apps.googleusercontent.com",
+              "client_id": "306341077660-5jqi2sf9pstl09rq3urgfme1rt56cioi.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

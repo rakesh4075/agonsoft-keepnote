@@ -11,7 +11,7 @@ public class Constants {
 
 
 
-    public static final String ZERO_WIDTH_SPACE_STR = "\u200B";
+    //public static final String ZERO_WIDTH_SPACE_STR = "\u200B";
 
 
 
@@ -19,7 +19,7 @@ public class Constants {
 
 
 
-    public static final float DEFAULT_FONT_SIZE = 40f;
+    //public static final float DEFAULT_FONT_SIZE = 40f;
 
     public static  int SCREEN_WIDTH = 0;
 

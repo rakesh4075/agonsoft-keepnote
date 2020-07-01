@@ -2,9 +2,7 @@ package com.keepnote.raksEditor
 
 import android.content.Context
 import android.graphics.Point
-import android.text.Selection
 import android.view.WindowManager
-import android.widget.EditText
 
 class Util {
 
@@ -24,7 +22,7 @@ class Util {
 
 
 
-        fun getCurrentCursorLine(editText: EditText): Int {
+       /* fun getCurrentCursorLine(editText: EditText): Int {
             val selectionStart = Selection.getSelectionStart(editText.text)
             val layout = editText.layout ?: return -1
             return if (selectionStart != -1) {
@@ -59,18 +57,13 @@ class Util {
             return start
         }
 
-        /**
-         * Returns the line end position of the current line (which cursor is focusing now).
-         *
-         * @param editText
-         * @return
-         */
+
         fun getThisLineEnd(editText: EditText, currentLine: Int): Int {
             val layout = editText.layout
             return if (-1 != currentLine) {
                 layout.getLineEnd(currentLine)
             } else -1
-        }
+        }*/
     }
 
 }

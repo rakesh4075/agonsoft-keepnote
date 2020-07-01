@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.keepnote.HomeScreen
 import com.keepnote.NoteListAdapter
 import com.keepnote.R
 import com.keepnote.databinding.FragmentTrashBinding
@@ -22,6 +21,8 @@ import com.keepnote.model.preferences.StoreSharedPrefData
 import com.keepnote.notesDB.NoteDatabase
 import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
+import com.keepnote.utils.ExceptionTrack
+import com.keepnote.view.homescreen.HomeScreen
 import com.keepnote.viewmodel.HomeViewmodel
 import com.keepnote.viewmodel.HomeViewmodelFactory
 
@@ -82,10 +83,10 @@ class TrashFragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
                         AlertDialog.Builder(context, R.style.AppCompatAlertDialogStyle)
                     builder.setTitle("Delete").setIcon(null)
                         .setMessage("Are you sure to delete all notes \nforever?")
-                    builder.setPositiveButton(R.string.no) { dialog, which ->
+                    builder.setPositiveButton(R.string.no) { dialog, _ ->
                         dialog.dismiss()
                     }
-                    builder.setNegativeButton(R.string.yes) { dialog, which ->
+                    builder.setNegativeButton(R.string.yes) { _, _ ->
                         if (deletedNotes!=null){
                             for (i in 0 until deletedNotes!!.size){
                                 viewmodel.deleteNoteById(deletedNotes!![i].noteId)
@@ -111,7 +112,7 @@ class TrashFragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
                 if (deletedNotes!=null){
                     if (deletedNotes!!.isEmpty()){
                         mbinding.errLayout.root.visibility  = View.VISIBLE
-                        mbinding.errLayout.errmsg.text = "Your Notes in Trash will be deleted after 7 days"
+                        mbinding.errLayout.errmsg.text = getString(R.string.trash_no_notes_msg)
                      //    mbinding.adView.visibility = View.GONE
                         noteDBAdapter =
                             TrashAdapter(deletedNotes!!, this)
@@ -133,6 +134,7 @@ class TrashFragment : Fragment(),NoteListAdapter.NotesListner,Observer<Any> {
 
             })
         }catch (e:Exception){
+            ExceptionTrack.getInstance().TrackLog(e)
         }
 
     }
