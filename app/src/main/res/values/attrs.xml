@@ -20,6 +20,20 @@
     <attr name="bodybg" format="color"/>
     <attr name="bottombarcolor" format="color"/>
     <attr name="nav_color" format="color"/>
-
+    <array name="colors">
+        <item>#000000</item>
+        <item>#0000FF</item>
+    </array>
+    <declare-styleable name="ColorPickerView">
+        <attr name="colorViewWidth" format="dimension" />
+        <attr name="colorViewHeight" format="dimension" />
+        <attr name="colorViewMarginLeft" format="dimension" />
+        <attr name="colorViewMarginRight" format="dimension" />
+        <attr name="colorViewCheckedType" format="enum">
+            <enum name="dot" value="0" />
+            <enum name="checkMark" value="1" />
+        </attr>
+        <attr name="colors" format="reference" />
+    </declare-styleable>
 
 </resources>

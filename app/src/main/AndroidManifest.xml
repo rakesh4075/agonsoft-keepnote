@@ -11,20 +11,20 @@
     <application
         android:name=".KeepNoteApplication"
         android:allowBackup="true"
+        android:fullBackupContent="true"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/note_logo"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:hardwareAccelerated="true"
         android:roundIcon="@drawable/note_logo"
         android:supportsRtl="true"
-        android:fullBackupContent="true"
-        tools:ignore="LockedOrientationActivity"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="LockedOrientationActivity">
+        <activity android:name=".view.SampleActivity"></activity>
         <activity
             android:name=".view.webview.CommonWebview"
             android:screenOrientation="portrait"
-            android:theme="@style/LightTheme"/>
-
+            android:theme="@style/LightTheme" />
         <activity
             android:name=".view.settings.Settings"
             android:screenOrientation="portrait"
@@ -68,8 +68,7 @@
             android:name=".tedpermission.TedPermissionActivity"
             android:configChanges="mcc|mnc|locale|keyboard|keyboardHidden|screenLayout|fontScale|uiMode|orientation|screenSize|layoutDirection"
             android:screenOrientation="unspecified"
-            android:theme="@style/Themepermission"
-           />
+            android:theme="@style/Themepermission" />
 
         <provider
             android:name=".utils.GenericFileProvider"

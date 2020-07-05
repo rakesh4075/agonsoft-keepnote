@@ -10,31 +10,13 @@ import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.LinearLayout
+import com.keepnote.EditNote
 import com.keepnote.R
+import com.keepnote.utils.ColorPickerListener
+import com.keepnote.utils.ColorPickerView
 
 
 class RRE_Toolbar:LinearLayout {
-
-
-
-    /**
-     * Request code for selecting an image.
-     */
-
-
-    /**
-     * Request code for choosing a people to @.
-     */
-
-
-    /**
-     * Request code for choosing a video.
-     */
-
-
-    /**
-     * Request code for inserting a video
-     */
 
 
     private var mContext: Activity? = null
@@ -89,6 +71,10 @@ class RRE_Toolbar:LinearLayout {
      */
     private var mStrikethroughStyle: RREStrikethrough? = null
 
+    /**
+     * The color palette.
+     */
+    private var mColorPalette: ColorPickerView? = null
 
     /**
      * Font color Style
@@ -126,6 +112,7 @@ class RRE_Toolbar:LinearLayout {
      * Foreground color image view.
      */
     private var mFontColorImageView: ImageView? = null
+
 
 
 
@@ -264,7 +251,7 @@ class RRE_Toolbar:LinearLayout {
         mStrikethroughImageView= findViewById(R.id.rteStrikethrough)
         mUnderlineImageView= findViewById(R.id.rteUnderline)
 
-      //  mcolorPallete = mContext?.findViewById(R.id.rteColorPalette)
+        mColorPalette =this.findViewById(R.id.rteColorPalette)
         mFontColorImageView = findViewById(R.id.rteFontColor)
         mBackgroundImageView = findViewById(R.id.rteBackground)
         mTextLinkImageView = findViewById(R.id.rteLink)
@@ -290,7 +277,17 @@ class RRE_Toolbar:LinearLayout {
     }
 
     fun setColorPaletteColor(color: Int) {
-      //  mcolorPallete?.setColor(color)
+        mColorPalette?.setColor(color)
     }
 
+    fun toggleColorPalette(colorPickerListener: ColorPickerListener?, mContext: Context) {
+        mColorPalette =(mContext as EditNote).findViewById(R.id.rteColorPalette)
+        val visibility = mColorPalette?.visibility
+        mColorPalette?.setColorPickerListener(colorPickerListener)
+        if (View.VISIBLE == visibility) {
+            mColorPalette?.visibility = View.GONE
+        } else {
+            mColorPalette?.visibility = View.VISIBLE
+        }
+    }
 }

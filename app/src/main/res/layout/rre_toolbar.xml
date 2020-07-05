@@ -2,12 +2,29 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="40dp">
-
+    xmlns:colorPickerView="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content">
+    <com.keepnote.utils.ColorPickerView
+        android:id="@+id/rteColorPalette"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:background="@android:color/background_light"
+        android:padding="10dp"
+        android:layout_centerHorizontal="true"
+        android:scrollbars="none"
+        android:visibility="gone"
+        colorPickerView:colorViewHeight="@dimen/_25sdp"
+        colorPickerView:colorViewWidth="@dimen/_25sdp"
+        colorPickerView:colorViewMarginLeft="@dimen/_2sdp"
+        colorPickerView:colorViewMarginRight="@dimen/_2sdp"
+        colorPickerView:colorViewCheckedType="checkMark"
+        colorPickerView:colors="@array/colorPickerColors"
+        />
     <HorizontalScrollView
+        android:layout_alignParentTop="true"
         android:background="?attr/toolbarbg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="@dimen/_40sdp">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -106,6 +123,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
+                android:background="@color/black"
                 app:srcCompat="@drawable/ic_text_format" />
 
             <ImageView

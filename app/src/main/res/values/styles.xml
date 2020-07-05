@@ -92,10 +92,7 @@
     </style>
 
 
-    <declare-styleable name="ColorPickerView"><attr format="dimension" name="colorViewWidth"/><attr format="dimension" name="colorViewHeight"/><attr format="dimension" name="colorViewMarginLeft"/><attr format="dimension" name="colorViewMarginRight"/><attr format="enum" name="colorViewCheckedType">
-        <enum name="dot" value="0"/>
-        <enum name="checkMark" value="1"/>
-    </attr><attr format="reference" name="colors"/></declare-styleable>
+
 
 
 
