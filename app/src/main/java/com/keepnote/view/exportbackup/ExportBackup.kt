@@ -254,7 +254,7 @@ class ExportBackup : AppCompatActivity() {
                 for (i in notes.indices){
                     html = html +notes[i].title+ "<br>"+ notes[i].content + "\n"+ "<br>"+ "<br>"
                 }
-                file =File(sd,"keepnote.pdf")
+                file =File(sd,"NotePad.pdf")
                 val converter = Html2Pdf.Companion.Builder()
                     .context(this)
                     .html(html)

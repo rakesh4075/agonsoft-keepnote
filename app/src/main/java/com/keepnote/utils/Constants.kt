@@ -25,6 +25,7 @@ import kotlin.collections.ArrayList
 
 class Constants {
     companion object{
+        var TOTALNOTECOUNTS: Int? = 0
         var ReLoad:Boolean= false
         fun showToast(msg:String,context: Context){
             Toast.makeText(context,msg,Toast.LENGTH_LONG).show()
@@ -199,7 +200,7 @@ class Constants {
 
         fun showIntersialAd(context: Context){
            val mInterstitialAd = InterstitialAd(context)
-            mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+            mInterstitialAd.adUnitId = "ca-app-pub-1494528376931516/4382433376"
             mInterstitialAd.loadAd(AdRequest.Builder().build())
             mInterstitialAd.adListener = object: AdListener() {
                 override fun onAdLoaded() {

@@ -1,6 +1,7 @@
 package com.keepnote.view.exportbackup
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,7 +45,8 @@ class BackupListAdapter(private val backupList: ArrayList<FileInfo>):RecyclerVie
         if ((StoreSharedPrefData.INSTANCE.getPref("isDarktheme",false,holder.itemView.context))as Boolean) holder.vw1.visibility = View.GONE
         if (position==itemCount-1) holder.vw1.visibility = View.GONE
         holder.itemView.setOnClickListener {
-            Restore.Init()
+            try {
+                Restore.Init()
                     .database(NoteDatabase.invoke(holder.itemView.context))
                     .backupFilePath("/storage/emulated/0/Android/data/com.keepnote/files/Documents/${backupList[position].fileName}")
                     .secretKey("123")
@@ -65,6 +67,10 @@ class BackupListAdapter(private val backupList: ArrayList<FileInfo>):RecyclerVie
 
                     }
                     .execute()
+
+            }catch (e:java.lang.Exception){
+                Log.d("@@@@",e.message.toString())
+            }
 
 
         }

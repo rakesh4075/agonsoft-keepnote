@@ -18,9 +18,9 @@
         android:largeHeap="true"
         android:roundIcon="@drawable/note_logo"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/SplashTheme"
         tools:ignore="LockedOrientationActivity">
-        <activity android:name=".view.SampleActivity"></activity>
+
         <activity
             android:name=".view.webview.CommonWebview"
             android:screenOrientation="portrait"
@@ -79,10 +79,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+        <receiver
+            android:name=".utils.NotificationReceiver"/>
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-1494528376931516~6878456972" />
+
     </application>
 
 </manifest>

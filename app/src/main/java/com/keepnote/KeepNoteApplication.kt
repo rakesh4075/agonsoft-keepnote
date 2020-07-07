@@ -4,6 +4,11 @@ import android.app.Application
 import android.content.Context
 import androidx.multidex.MultiDex
 import com.keepnote.model.preferences.StoreSharedPrefData
+import com.keepnote.utils.NotificationAlarm
+import com.keepnote.utils.RateThisApp
+
+
+
 
 class KeepNoteApplication:Application() {
 
@@ -25,6 +30,12 @@ class KeepNoteApplication:Application() {
 
         if (StoreSharedPrefData.INSTANCE.getPref("appstart",0,this) as Int!=1)
         StoreSharedPrefData.INSTANCE.savePrefValue("appstart",0,this)
+        // Custom condition: 3 days and 5 launches
+        // Custom condition: 3 days and 5 launches
+        val config = RateThisApp.Config(3, 5)
+        RateThisApp.init(config)
+        NotificationAlarm().setAlarm(this)
+
 
     }
 

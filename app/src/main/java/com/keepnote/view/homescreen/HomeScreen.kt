@@ -39,6 +39,7 @@ import com.keepnote.notesDB.Notes
 import com.keepnote.utils.Constants
 import com.keepnote.utils.ExceptionTrack
 import com.keepnote.utils.PassDataToFragListner
+import com.keepnote.utils.RateThisApp
 import com.keepnote.view.exportbackup.ExportBackup
 import com.keepnote.view.exportbackup.RemoteBackup
 import com.keepnote.view.favourite.FavouriteFragment
@@ -138,6 +139,13 @@ class HomeScreen : AppCompatActivity(),
                             if (intent.resolveActivity(packageManager) != null) {
                                 startActivity(intent) }
                         }
+                        R.id.menu_share->{
+                            val intent = Intent(android.content.Intent.ACTION_SEND)
+                            val msg = "I've found a nice app for Recording notes: ${"\n https://play.google.com/store/apps/details?id=com.keepnote"}"
+                            intent.setType("text/plain")
+                            intent.putExtra(Intent.EXTRA_TEXT,msg)
+                            startActivity(Intent.createChooser(intent,"Share to friends"))
+                        }
 
                     }
                     clickedNavItem = 0
@@ -178,6 +186,10 @@ class HomeScreen : AppCompatActivity(),
 //            .setApplicationName("KeepNote")
 //            .build()
 
+        // Monitor launch times and interval from installation
+        RateThisApp.onCreate(this);
+        // If the condition is satisfied, "Rate this app" dialog will be shown
+        RateThisApp.showRateDialogIfNeeded(this);
 
         mbinding.navMain.setNavigationItemSelectedListener { item ->
 
@@ -215,6 +227,9 @@ class HomeScreen : AppCompatActivity(),
                 R.id.menu_feedback ->{
                     clickedNavItem = R.id.menu_feedback
 
+                }
+                R.id.menu_share->{
+                    clickedNavItem = R.id.menu_share
                 }
 
                 R.id.logout ->{
@@ -255,6 +270,8 @@ class HomeScreen : AppCompatActivity(),
 
             true
         }
+
+
 
 
 //        mbinding.mainContent.swiperefresh.setOnRefreshListener {
@@ -428,6 +445,7 @@ class HomeScreen : AppCompatActivity(),
 
     }
 
+
     fun getAllNoteDBCount() {
         try {
             notesCount = mbinding.navMain.menu.findItem(R.id.notes).actionView as TextView
@@ -462,6 +480,7 @@ class HomeScreen : AppCompatActivity(),
 
             viewmodel.getallNotes()
             viewmodel.allNotes.observe(this, Observer {notes->
+                Constants.TOTALNOTECOUNTS = notes.size
                 if (notes.isEmpty()){
                     notesCount.text =""
                     trasCount.text =""
